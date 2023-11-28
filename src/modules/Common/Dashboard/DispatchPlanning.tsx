@@ -30,7 +30,6 @@ export default function DispatchPlanning({
     return (
         <WidgetCard
             title="Lập kế hoạch điều phối"
-            titleClassName="font-normal text-gray-500 text-sm sm:text-sm 2xl:text-base"
             description={
                 <p className="space-x-1">
                     <span className="text-xl font-semibold text-gray-900 2xl:text-2xl">

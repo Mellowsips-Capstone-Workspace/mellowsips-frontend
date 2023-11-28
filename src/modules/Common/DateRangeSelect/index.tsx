@@ -64,7 +64,6 @@ const DateRangeSelect: FC<DateRangeSelectProps> = ({ onSelect, initial }) => {
                     <PopoverClose className="text-white text-xs px-2 py-0.5 rounded bg-slate-500">
                         Huỷ
                     </PopoverClose>
-
                 </div>
             </PopoverContent>
         </Popover>

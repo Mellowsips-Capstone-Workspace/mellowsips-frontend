@@ -47,7 +47,6 @@ export default function OpenSalesOrder({ className }: { className?: string }) {
         <WidgetCard
             title="Open Sales Order"
             description={880770}
-            titleClassName="font-normal text-gray-500 text-sm sm:text-sm 2xl:text-base"
             descriptionClassName="text-xl font-semibold text-gray-900 mt-1.5 2xl:text-2xl"
             className={className}
         >
