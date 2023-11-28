@@ -8,8 +8,7 @@ import Loading from "modules/Common/Loading"
 import Modal from "modules/Common/Modal/Modal"
 import showToast from "modules/Common/Toast"
 import StoreSelect from "modules/Manager/components/Product/components/StoreSelect"
-import { VoucherContext, VoucherContextType } from "modules/Voucher/context/VoucherContext"
-import { FC, useCallback, useContext } from "react"
+import { FC, useCallback } from "react"
 import VoucherService from "services/VoucherService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
@@ -17,10 +16,14 @@ import { VOUCHER_TYPE, Voucher } from "types/voucher"
 import { parseAndPlusGMT7 } from "utils/date"
 import { date, number, object, string } from "yup"
 
-const VoucherModal: FC<{ voucher: Voucher, index: number }> = ({ voucher, index }) => {
+type VoucherModalProps = {
+    voucher: Voucher & {
+        updateVoucher: (id: string, voucher: Voucher) => void
+    }
+}
+const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
     const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
-    const { id } = voucher
-    const { updateVoucher, removeVoucher } = useContext<VoucherContextType>(VoucherContext)!
+    const { id, updateVoucher } = voucher
     const [display, setDisplay] = useBoolean(false)
     const { off } = setDisplay
 
@@ -40,7 +43,7 @@ const VoucherModal: FC<{ voucher: Voucher, index: number }> = ({ voucher, index 
             )
 
             off()
-            removeVoucher(index)
+            updateVoucher(id, body.data)
             return
         }
         showToast(
@@ -50,7 +53,7 @@ const VoucherModal: FC<{ voucher: Voucher, index: number }> = ({ voucher, index 
                 message: "Không thể thu hồi voucher."
             }
         )
-    }, [off, id, removeVoucher, index])
+    }, [off, id, updateVoucher])
 
     return (
         <div key={voucher.id}>
@@ -166,7 +169,7 @@ const VoucherModal: FC<{ voucher: Voucher, index: number }> = ({ voucher, index 
                                 )
 
                                 setDisplay.off()
-                                updateVoucher(index, body.data)
+                                updateVoucher(id, body.data)
                                 return
                             }
                             showToast(

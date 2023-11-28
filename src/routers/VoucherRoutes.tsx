@@ -4,7 +4,6 @@ import { Route } from "react-router-dom"
 
 const VoucherManageWidget = lazy(() => import("modules/Voucher"))
 
-
 const VoucherRoute = (
     <Route path="vouchers">
         <Route
