@@ -58,7 +58,10 @@ const PrintBill = () => {
                         <span className="flex-none text-xs print:text-print font-medium">ĐC:</span>
                         <p className="text-xs print:text-print">{order.details.store.address}</p>
                     </div>
-
+                    <div className="flex space-x-1">
+                        <span className="flex-none text-xs print:text-print font-medium">Phương thức:</span>
+                        <p className="text-xs print:text-print">{order.initialTransactionMethod === "ZALO_PAY" ? "Zalo Pay" : "Tiền mặt"}</p>
+                    </div>
                 </div>
                 <hr></hr>
                 <div className="py-5 space-y-1">

@@ -1,3 +1,4 @@
+import ROLE from "enums/role"
 import useBoolean from "hooks/useBoolean"
 import { isEmpty } from "lodash"
 import Button from "modules/Common/Button"
@@ -5,9 +6,12 @@ import Modal from "modules/Common/Modal/Modal"
 import { FC, memo, useCallback, useEffect } from "react"
 import StompClientService, { StompMessage } from "services/StompClientService"
 import { loadAuthenticate } from "stores/authenticate"
-import { useAppDispatch } from "stores/root"
+import { useAppDispatch, useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
 
 const NotificationApplicationApprove: FC = () => {
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
+
     const dispatch = useAppDispatch()
     const [display, { on, off }] = useBoolean(false)
     const fetchCredential = useCallback(() => {
@@ -15,6 +19,10 @@ const NotificationApplicationApprove: FC = () => {
     }, [dispatch])
 
     useEffect(() => {
+
+        if (type === ROLE.ADMIN) {
+            return
+        }
 
         const subscribe = (message: StompMessage) => {
             if (isEmpty(message)) {
@@ -37,8 +45,7 @@ const NotificationApplicationApprove: FC = () => {
                 subscribe
             )
         }
-
-    }, [on])
+    }, [on, type])
     return (
         <Modal
             flag={display}

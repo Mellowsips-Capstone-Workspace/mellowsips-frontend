@@ -15,7 +15,7 @@ const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
                 object(
                     {
                         name: string().matches(REGEX.notBlank, "Tên sản phẩm không hợp lệ.").required("Tên sản phẩm là bắt buộc"),
-                        price: number().min(0, "Giá sản phẩm không hợp lệ.").required("Giá sản phẩm là bắt buộc."),
+                        price: number().min(1, "Giá sản phẩm không hợp lệ.").required("Giá sản phẩm là bắt buộc."),
                         description: string().matches(REGEX.notBlank, "Hãy thêm mô tả sản phẩm.").typeError("Hãy thêm mô tả sản phẩm.")
                     }
                 )

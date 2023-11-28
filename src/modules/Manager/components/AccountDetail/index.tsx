@@ -6,7 +6,7 @@ import FormikTextField from 'modules/Common/FormikTextField'
 import Modal from 'modules/Common/Modal/Modal'
 import showToast from 'modules/Common/Toast'
 import StoreSelect from 'modules/Manager/components/Product/components/StoreSelect'
-import { FC, useId } from 'react'
+import { FC } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
 import { Account } from 'types/account'
 
@@ -15,8 +15,11 @@ type AccountDetailProps = {
 }
 
 const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
-    const id = useId()
+    const { id, isActive } = account
     const [display, setDisplay] = useBoolean(false)
+
+
+
 
     return (
         <div>
@@ -35,30 +38,24 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
             >
                 <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Thông tin tài khoản</p>
                 <Formik
-                    initialValues={account}
+                    initialValues={
+                        {
+                            ...account,
+                            phone: account.phone || ""
+                        }
+                    }
                     onSubmit={
                         async ({ id }) => {
 
 
-                            const { status, body } = await ManageAccountService.disable(id)
-
-                            if (status === 409) {
-                                showToast(
-                                    {
-                                        type: "warning",
-                                        title: "Thất bại",
-                                        message: "Tên đăng nhập hoặc email đã được sử dụng."
-                                    }
-                                )
-                                return
-                            }
+                            const { status, body } = isActive ? await ManageAccountService.disable(id) : await ManageAccountService.active(id)
 
                             if (status === 200 && !isEmpty(body)) {
                                 showToast(
                                     {
                                         type: "success",
                                         title: "Thành công",
-                                        message: "Tài khoản thành công."
+                                        message: "Lưu trạng thái tài khoản thành công."
                                     }
                                 )
 
@@ -70,7 +67,7 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                 {
                                     type: "error",
                                     title: "Thất bại",
-                                    message: "Lỗi bất định, tài khoản thất bại."
+                                    message: "Lỗi bất định, lưu thay đổi tài khoản thất bại."
                                 }
                             )
                         }
@@ -135,15 +132,31 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                     </div>
                                 </Form>
                                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
-                                    <Button
-                                        form={id}
-                                        disabled={isSubmitting || !isValid}
-                                        type="submit"
-                                        variant="indigo"
-                                        className="group"
-                                    >
-                                        Tạo tài khoản
-                                    </Button>
+                                    {
+                                        isActive ? (
+                                            <Button
+                                                form={id}
+                                                disabled={isSubmitting || !isValid}
+                                                type="submit"
+                                                variant="red"
+                                                className="group"
+                                            >
+                                                Vô hiệu hoá
+                                            </Button>
+
+                                        ) : (
+                                            <Button
+                                                form={id}
+                                                disabled={isSubmitting || !isValid}
+                                                type="submit"
+                                                variant="indigo"
+                                                className="group"
+                                            >
+                                                Kích hoạt
+                                            </Button>
+
+                                        )
+                                    }
                                     <Button
                                         type="button"
                                         variant="default"
@@ -155,7 +168,6 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                             </>
                         )
                     }
-
                 </Formik>
             </Modal>
         </div>

@@ -8,8 +8,9 @@ export type Account = {
     email: string
     isVerified: boolean
     avatar: string | null
-    type: 'OWNER'
-    provider: 'USERNAME'
+    type: string
+    isActive: boolean
+    provider: string
     partnerId: string
     storeId: string | null
 } & Base

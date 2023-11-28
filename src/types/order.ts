@@ -22,6 +22,7 @@ export type Order = {
     updatedBy: string
     status: string
     finalPrice: number
+    initialTransactionMethod: string
     details: {
         id: string
         createdAt: string

@@ -70,17 +70,10 @@ const Sections: FC<void | FieldArrayRenderProps> = (props) => {
                                                 <FormikTextField.Input name={`${name}.${index}.name`} />
                                             </div>
                                             <div
-                                                className="space-y-1 aria-disabled:cursor-not-allowed"
-                                                aria-disabled={!item.isRequired}
+                                                className="space-y-1"
                                             >
                                                 <label className='text-gray-500 font-medium'>Tối đa lựa chọn</label>
-                                                <div
-                                                    aria-disabled={!item.isRequired}
-                                                    className='aria-disabled:opacity-40 aria-disabled:pointer-events-none'
-                                                >
-
-                                                    <FormikTextField.Input name={`${name}.${index}.maxAllowedChoices`} />
-                                                </div>
+                                                <FormikTextField.Input name={`${name}.${index}.maxAllowedChoices`} />
                                             </div>
                                             <div className="space-y-1">
                                                 <label className='text-gray-500 font-medium'>Tuỳ chọn bắt buộc</label>
@@ -125,7 +118,7 @@ const Sections: FC<void | FieldArrayRenderProps> = (props) => {
                             name: "",
                             priority: productOptionSections.length,
                             isRequired: false,
-                            maxAllowedChoices: 0,
+                            maxAllowedChoices: 1,
                             productAddons: []
                         }
                     )

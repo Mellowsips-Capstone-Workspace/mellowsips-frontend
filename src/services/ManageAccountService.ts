@@ -70,6 +70,21 @@ class ManageAccountService {
             )
         )
     }
+
+    static active(id: string) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: Account
+        }
+
+        return requestApiHelper<body>(
+            interceptor.put(
+                `users/${id}/activate`
+            )
+        )
+    }
 }
 
 export default ManageAccountService

@@ -21,6 +21,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
     const { id } = order
     const [display, setDisplay] = useBoolean(false)
     const [displayConfirm, setDisplayConfirm] = useBoolean(false)
+    const [displayConfirmComplete, setDisplayConfirmComplete] = useBoolean(false)
     const { on, off } = setDisplay
     const { off: offConfirm } = setDisplayConfirm
     const { updateOrder } = useContext(OrdersContext)!
@@ -147,12 +148,43 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                 innerClassName="max-w-5xl w-screen flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='flex justify-between px-5 py-2 shadow border-b'>
-                    <p className=" truncate font-medium">Thông tin đơn hàng</p>
+                    <p className="text-xl truncate font-medium">Thông tin đơn hàng</p>
                     <div className='w-fit h-fit'>
                         <OrderBadge status={order.status} />
                     </div>
                 </div>
                 <div className='p-5 space-y-5'>
+                    <div className='space-y-2'>
+                        <div className='flex items-center space-x-2'>
+                            <p>Vị trí:</p>
+                            <span>{order.details.store.name} ({order.qrCode.name})</span>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                            <p>Hình thức:</p>
+                            {
+                                order.initialTransactionMethod === "ZALO_PAY" ? (
+                                    <div className='flex space-x-1 justify-center'>
+                                        <img className='h-5 w-5 inline-block border rounded' src="/images/zalo-pay.png" />
+                                        <span className='text-sm text-indigo-500'>
+                                            Zalo Pay
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div className='flex space-x-1 justify-center text-purple-700'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                                        </svg>
+
+                                        <span className='text-sm'>
+                                            Tiền Mặt
+                                        </span>
+                                    </div>
+                                )
+                            }
+                        </div>
+
+                    </div>
+                    <hr />
                     {
                         order.details.cartItems.map(
                             ({ id, addons, note, product, quantity }) => (
@@ -231,7 +263,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                             <Button
                                 type="button"
                                 variant="secondary"
-                                onClick={handleDeliveryOrder}
+                                onClick={order.initialTransactionMethod === "ZALO_PAY" ? handleDeliveryOrder : setDisplayConfirmComplete.on}
                                 disabled={submitting}
                                 className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
                             >
@@ -290,6 +322,46 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                                 type="button"
                                 variant="default"
                                 onClick={setDisplayConfirm.off}
+                            >
+                                Đóng
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                flag={displayConfirmComplete}
+                closeModal={setDisplayConfirmComplete.off}
+                closeOutside={false}
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
+            >
+                <div className='space-y-5'>
+                    <p className="px-5 py-1 shadow border-b truncate font-medium">Xác nhận khách hàng đã thanh toán</p>
+                    <div className='space-y-5'>
+                        <p className='px-5'>Đơn hàng được thanh toán bằng hình thức tiền mặt.<span className='font-medium text-red-500'> Xác nhận đã thanh toán.</span></p>
+                        <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                            <Button
+                                type="button"
+                                variant="indigo"
+                                onClick={
+                                    () => {
+                                        handleDeliveryOrder()
+                                        setDisplayConfirmComplete.off()
+                                    }
+                                }
+                                disabled={submitting}
+                                className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+                            >
+                                <span className='hidden group-disabled:block mr-2'>
+                                    <Loading.Circle size={14} />
+                                </span>
+                                <span>Xác nhận</span>
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="default"
+                                onClick={setDisplayConfirmComplete.off}
                             >
                                 Đóng
                             </Button>

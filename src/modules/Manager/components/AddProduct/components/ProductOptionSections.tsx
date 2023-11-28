@@ -133,7 +133,7 @@ const Sections: FC<void | FieldArrayRenderProps> = (props) => {
                             name: "",
                             priority: productOptionSections.length,
                             isRequired: false,
-                            maxAllowedChoices: 0,
+                            maxAllowedChoices: 1,
                             productAddons: []
                         }
                     )

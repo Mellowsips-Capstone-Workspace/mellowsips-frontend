@@ -30,7 +30,7 @@ const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
                                 {
                                     name: string().required("Trường này không được để trống."),
                                     isRequired: boolean().required("Trường này không được để trống."),
-                                    maxAllowedChoices: number().required("Trường này không được để trống."),
+                                    maxAllowedChoices: number().typeError("Vui lòng nhập giá trị là số").min(0, "Tuỳ chọn không hợp lệ.").required("Trường này không được để trống."),
                                     productAddons: array(
                                         object(
                                             {
@@ -39,7 +39,7 @@ const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
                                                 isSoldOut: boolean().required("Trường này không được để trống."),
                                             }
                                         )
-                                    ).required("Trường này không được để trống."),
+                                    ).min(1, "Thêm ít nhất 1 lựa chọn.").required("Trường này không được để trống."),
                                 }
                             )
                         )

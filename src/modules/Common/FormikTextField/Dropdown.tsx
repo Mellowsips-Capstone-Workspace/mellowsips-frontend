@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Popover from '@radix-ui/react-popover';
 import { useField } from "formik";
-import { isEmpty } from "lodash";
+import { isEmpty, isObject } from "lodash";
 import { FC, MouseEvent, useCallback, useEffect, useRef } from "react";
 
 type DropdownProps = {
@@ -26,6 +26,8 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
         setTouched(false)
     }, [setTouched])
 
+    const currentValue = (isEmpty(value) || options.length === 0) ? placeholder : options.find((item) => item.value === value)
+
     return (
         <Popover.Root >
             <Popover.Trigger
@@ -39,7 +41,7 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
                 >
                     <p className="text-left grow">
                         {
-                            (isEmpty(value) || options.length === 0) ? placeholder : options.find((item) => item.value === value)!.label
+                            isObject(currentValue) ? currentValue.label : placeholder
                         }
                     </p>
                     <ChevronDownIcon className="flex-none h-5 w-5" />
