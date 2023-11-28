@@ -3,7 +3,7 @@ import { ForwardedRef, forwardRef } from 'react';
 import { cn } from 'shadcn/utils';
 
 const widgetCardClasses = {
-    base: 'border border-gray-200 bg-gray-0 p-5 dark:bg-gray-50 lg:p-7',
+    base: 'bg-white shadow p-5',
     rounded: {
         sm: 'rounded-sm',
         DEFAULT: 'rounded-lg',
@@ -13,15 +13,14 @@ const widgetCardClasses = {
 }
 
 type WidgetCardTypes = {
-    title: React.ReactNode;
-    description?: React.ReactNode;
-    action?: React.ReactNode;
-    rounded?: keyof typeof widgetCardClasses.rounded;
-    headerClassName?: string;
-    titleClassName?: string;
-    actionClassSName?: string;
-    descriptionClassName?: string;
-    className?: string;
+    title: React.ReactNode
+    description?: React.ReactNode
+    action?: React.ReactNode
+    rounded?: keyof typeof widgetCardClasses.rounded
+    headerClassName?: string
+    actionClassSName?: string
+    descriptionClassName?: string
+    className?: string
 }
 
 function WidgetCard(
@@ -33,7 +32,6 @@ function WidgetCard(
         className,
         headerClassName,
         actionClassSName,
-        titleClassName,
         descriptionClassName,
         children,
     }: React.PropsWithChildren<WidgetCardTypes>,
@@ -49,20 +47,20 @@ function WidgetCard(
             ref={ref}
         >
             <div
-                className={cn(
-                    action && 'flex items-start justify-between',
-                    headerClassName
-                )}
+                className={
+                    cn(
+                        action && 'flex items-start justify-between',
+                        headerClassName
+                    )
+                }
             >
                 <div>
-                    <h3
-                        className={cn('text-base font-semibold sm:text-lg', titleClassName)}
-                    >
-                        {title}
-                    </h3>
-                    {description && (
-                        <div className={descriptionClassName}>{description}</div>
-                    )}
+                    {title}
+                    {
+                        description && (
+                            <div className={descriptionClassName}>{description}</div>
+                        )
+                    }
                 </div>
                 {action && <div className={cn('ps-2', actionClassSName)}>{action}</div>}
             </div>

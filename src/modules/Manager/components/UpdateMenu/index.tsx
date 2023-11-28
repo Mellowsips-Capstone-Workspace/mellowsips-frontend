@@ -98,7 +98,7 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products }) => {
                     <div className="col-span-1 p-5 grid grid-cols-2 gap-5 bg-white rounded shadow">
 
                         <div className="space-y-2">
-                            <label className='text-gray-500 font-medium'>Hiển thị</label>
+                            <label className='text-gray-500 font-medium'>Kích hoạt</label>
                             <FormikTextField.ToggleCheckbox name="isActive" />
                         </div>
                         <div className="space-y-2">
