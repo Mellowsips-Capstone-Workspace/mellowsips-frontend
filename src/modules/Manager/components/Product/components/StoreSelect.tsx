@@ -1,0 +1,49 @@
+import { isEmpty } from "lodash"
+import FormikTextField from "modules/Common/FormikTextField"
+import Loading from "modules/Common/Loading"
+import { useEffect, useState } from "react"
+import ManageStoreService from "services/ManageStoreService"
+import Store from "types/store"
+
+const StoreSelect = () => {
+    const [loading, setLoading] = useState(false)
+    const [stores, setStores] = useState<Store[]>([])
+
+    useEffect(() => {
+        (
+            async () => {
+                setLoading(true)
+                const { status, body } = await ManageStoreService.search({ pagination: { page: 1, offset: 100 } })
+                setLoading(false)
+
+                if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
+                    setStores(body.data.results)
+                } else {
+                    setStores([])
+                }
+            }
+        )()
+    }, [])
+
+    return (
+        <div className="space-y-2">
+            <label className="text-gray-500 font-medium">Chọn cửa hàng</label>
+            {
+                loading ? (
+                    <div className="flex justify-center items-center space-x-1 border p-2 text-xs">
+                        <Loading.Circle className="text-main-primary" size={14} />
+                        <span className="text-gray-400">Đang tải danh sách cửa hàng</span>
+                    </div>
+                ) : stores ? (
+                    <FormikTextField.DropdownInput
+                        options={stores.map(({ id, name }) => ({ label: name, value: id }))}
+                        name="storeId"
+                        placeholder="Chon cửa hàng"
+                    />
+                ) : null
+            }
+        </div>
+    )
+}
+
+export default StoreSelect

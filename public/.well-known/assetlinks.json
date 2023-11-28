@@ -1,0 +1,14 @@
+[
+	{
+		"relation": [
+			"delegate_permission/common.handle_all_urls"
+		],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.mellowsips.staging",
+			"sha256_cert_fingerprints": [
+				"60:4A:D2:FA:3A:BC:B9:A0:0A:23:AA:9B:99:29:E2:EB:10:A4:9C:27:1F:F9:DD:1F:DC:44:A8:3E:EC:34:5D:76"
+			]
+		}
+	}
+]

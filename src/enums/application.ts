@@ -1,0 +1,31 @@
+export const APPLICATION_TYPE = {
+    CREATE_ORGANIZATION: "CREATE_ORGANIZATION"
+}
+
+export const APPLICATION_STATUS = {
+    APPROVED: "APPROVED",
+    PROCESSING: "PROCESSING",
+    WAITING: "WAITING_FOR_APPROVAL",
+    REJECTED: "REJECTED",
+    DRAFT: "DRAFT"
+}
+
+export const APPLICATION_EVENT = {
+    PROCESS: "process",
+    APPROVE: "approve",
+    REJECT: "reject",
+    SUBMIT: "submit",
+    AMEND: "amend"
+} as const
+
+export const IDENTITY = {
+    CITIZEN_ID_CARD: "CITIZEN_ID_CARD",
+    IDENTITY_CARD: "IDENTITY_CARD",
+    PASSPORT: "PASSPORT"
+}
+
+export const ORGANIZATION = {
+    PERSONAL: "PERSONAL",
+    HOUSEHOLD: "HOUSEHOLD",
+    ENTERPRISE: "ENTERPRISE"
+} as const

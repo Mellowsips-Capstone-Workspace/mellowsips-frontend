@@ -1,0 +1,11 @@
+@tailwind components;
+
+@layer components {
+  .footer-register {
+    background-size: cover;
+    background-position-y: bottom;
+    background-repeat: no-repeat;
+    @apply bg-none xl:bg-[url("/images/footer.svg")];
+  }
+}
+

@@ -1,0 +1,15 @@
+@tailwind components;
+
+@layer components {
+    .app-sample {
+        background-image: url("/images/app-sample-bg.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .notice-section {
+        background-color: #FEEFE7;
+        border-radius: 20px;
+    }
+}

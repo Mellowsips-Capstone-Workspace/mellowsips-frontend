@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+    .nav-link{
+        @apply font-bold px-2 pb-1 border-b-2 border-transparent hover:border-b-main-primary hover:text-main-primary transition-colors;
+    }
+}
