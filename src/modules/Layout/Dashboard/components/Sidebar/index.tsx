@@ -47,14 +47,33 @@ type SidebarProps = {
 const Sidebar: FC<SidebarProps> = ({ onSidebarClick }) => {
     const { type, partnerId } = useAppSelector<Principle>(state => state.authenticate.principle!)
     const pending = isEmpty(partnerId)
+    const isAdmin = type === ROLE.ADMIN
 
-    const navigates = type === ROLE.ADMIN ? [
+    const navigates = isAdmin ? [
+        {
+            disable: false,
+            path: "vouchers",
+            label: "Khuyễn mãi",
+            pattern: "/vouchers/*",
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-full h-full">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+            )
+        },
         {
             disable: false,
             path: "applications",
             label: "Quản lý đơn",
             pattern: "/applications/*",
             icon: <FileTextIcon className="h-full w-full" />
+        },
+        {
+            disable: false,
+            path: "accounts",
+            label: "Nhân viên",
+            pattern: "/accounts/*",
+            icon: <PersonIcon className="h-full w-full" />
         }
     ] : [
         {
@@ -131,16 +150,29 @@ const Sidebar: FC<SidebarProps> = ({ onSidebarClick }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
             )
-
         },
         {
             disable: false,
-            path: "account",
+            path: "accounts",
             label: "Nhân viên",
-            pattern: "/account/*",
+            pattern: "/accounts/*",
             icon: <PersonIcon className="h-full w-full" />
         }
     ]
+
+    if (isAdmin) {
+        return (
+            <div className="w-72 sm:w-56 min-h-full sticky top-0 bg-white">
+                <ul className="space-y-1">
+                    {
+                        navigates.map(
+                            (navigate, index) => <SidebarItem key={index} onSidebarClick={onSidebarClick} {...navigate} />
+                        )
+                    }
+                </ul>
+            </div>
+        )
+    }
 
     return (
         <div className="w-72 sm:w-56 min-h-full sticky top-0 bg-white">

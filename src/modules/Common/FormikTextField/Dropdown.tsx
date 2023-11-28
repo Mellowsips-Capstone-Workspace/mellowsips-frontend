@@ -50,10 +50,12 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
             <Popover.Content
                 align="start"
                 className="min-w-full"
+                style={{ zIndex: 10 }}
             >
+
                 <ul
                     style={{ width: trigger.current?.offsetWidth }}
-                    className="rounded-md list-none bg-white border overflow-hidden min-w-full"
+                    className="rounded-md list-none bg-white border overflow-hidden min-w-full max-h-20 overflow-y-auto scrollbar-sm"
                 >
                     {
                         options.length ? options.map(
@@ -83,6 +85,7 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
                     }
                 </ul>
             </Popover.Content>
+
             {Boolean(error && touched) && <span className="text-danger text-xs">{error}</span>}
         </Popover.Root>
     )

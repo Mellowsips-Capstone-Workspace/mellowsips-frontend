@@ -56,10 +56,10 @@ const SelectStoreManage: FC<SelectStoreManageProps> = ({ loading, stores, onStor
                         </Popover.Trigger>
                         <Popover.Content
                             align="start"
-                            className="z-10"
+                            style={{ zIndex: 10 }}
                         >
                             <ul
-                                className="mt-1 py-2 rounded-md list-none bg-white border w-full"
+                                className="mt-1 py-2 rounded-md list-none bg-white border w-full max-h-20 overflow-y-auto scrollbar-sm"
                                 style={{ width: "var(--radix-popper-anchor-width)" }}
                             >
                                 {

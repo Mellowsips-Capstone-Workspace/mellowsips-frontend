@@ -1,8 +1,8 @@
-import NotfoundWidget from "modules/Common/Notfound";
+import AccountManage from "modules/Admin/widgets/AccountManage";
 import { WidgetLoading } from "modules/Common/WaitingPage";
 import DashboardLayout from "modules/Layout/Dashboard";
 import { FC, Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import VoucherRoute from "routers/VoucherRoutes";
 
 const ApplicationManageWidget = lazy(() => import("modules/Admin/widgets/ApplicationManage"))
@@ -35,8 +35,16 @@ const AdminRoutes: FC = () => {
                 </Route>
 
                 {VoucherRoute}
+                <Route
+                    path="accounts"
+                    element={
+                        <Suspense fallback={<WidgetLoading />}>
+                            <AccountManage />
+                        </Suspense>
+                    }
+                />
 
-                <Route path="*" element={<NotfoundWidget />} />
+                <Route path="*" element={<Navigate to="/vouchers" />} />
             </Route>
         </Routes>
     )

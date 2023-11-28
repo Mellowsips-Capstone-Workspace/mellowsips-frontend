@@ -3,7 +3,6 @@ import { WidgetLoading } from "modules/Common/WaitingPage"
 import DashboardLayout from "modules/Layout/Dashboard"
 import AddMenu from "modules/Manager/widgets/AddMenu"
 import MenuManage from "modules/Manager/widgets/MenuManage"
-import StoreAccountManage from "modules/Manager/widgets/StoreAccountManage"
 import UpdateMenu from "modules/Manager/widgets/UpdateMenu"
 import { FC, Suspense, lazy } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
@@ -24,6 +23,7 @@ const ProductDetailWidget = lazy(() => import("modules/Manager/widgets/Product")
 const ProductCreateWidget = lazy(() => import("modules/Manager/widgets/CreateProduct"))
 const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage"))
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
+const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
 
 const ApplicationRoute = (
     <Route path="applications">
@@ -169,12 +169,12 @@ const MenuRoute = (
 )
 
 const StoreAccountRoute = (
-    <Route path="account">
+    <Route path="accounts">
         <Route
             path="*"
             element={
                 <Suspense fallback={<WidgetLoading />}>
-                    <StoreAccountManage />
+                    <StoreAccountManageWidget />
                 </Suspense>
             }
         />
@@ -200,6 +200,7 @@ const DashboardRoute = (
         />
     </>
 )
+
 const ManageRoutes: FC = () => {
     const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
     const pending = isEmpty(principle.partnerId)
