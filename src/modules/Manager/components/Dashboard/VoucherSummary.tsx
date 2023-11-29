@@ -135,7 +135,7 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className }) => {
                 title={
                     (
                         <div className="flex justify-between">
-                            <h2 className="font-medium text-main-primary text-lg">Tổng quan doanh thu đơn hàng</h2>
+                            <h2 className="font-medium text-main-primary text-lg">Tổng quan về mã giảm giá</h2>
                             <DateRangeSelect
                                 initial={
                                     {
