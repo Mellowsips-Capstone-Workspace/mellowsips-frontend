@@ -222,6 +222,12 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className }) => {
                                     )
                                 }
                             </div>
+                            <p className="text-gray-500 text-sm text-center italic">
+                                <span>Thống kê từ ngày </span>
+                                <span className="font-medium">{range.startDate!.split("-").reverse().join("-")}</span>
+                                <span> đến </span>
+                                <span className="font-medium">{isNull(range.endDate) ? "hôm nay" : range.endDate.split("-").reverse().join("-")}.</span>
+                            </p>
                             <hr />
                             <div className="grid grid-cols-2 gap-x-5">
                                 <div className="flex items-center gap-2.5">

@@ -13,8 +13,6 @@ const Dashboard = () => {
             <OrderRate className="h-fit" />
             <StoreRevenueStatistic className="h-fit" />
             <VoucherSummary />
-
-
         </Widget>
     )
 }
