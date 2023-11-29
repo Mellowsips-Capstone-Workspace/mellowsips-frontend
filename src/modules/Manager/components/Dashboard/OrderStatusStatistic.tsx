@@ -85,7 +85,7 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className }) => {
                                 color: "#10b981",
                             },
                             {
-                                name: "Bị bom",
+                                name: "Bị boom",
                                 value: flakedOrderAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
                                 percentage: calculatePercentage(flakedOrderAmount, total),
                                 color: "#f1416c",
