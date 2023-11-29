@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
-import { isEmpty } from 'lodash'
+import { isEmpty, isString } from 'lodash'
 import Loading from 'modules/Common/Loading'
 import SelectStoreManage from 'modules/Common/SelectStoreManage'
 import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore'
@@ -8,7 +8,7 @@ import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import AddQRCode from 'modules/Manager/components/AddQRCode'
 import QRCodeModel from 'modules/Manager/components/QRCode'
-import { FC, useCallback, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import QRService from 'services/QRService'
 import { QRCode } from 'types/store'
 
@@ -79,6 +79,12 @@ const StoreQRCodeManage: FC = () => {
             setCodes([])
         }
     }, [])
+
+    useEffect(() => {
+        if (isString(storeId)) {
+            fetchData(storeId)
+        }
+    }, [storeId, fetchData])
 
     const updateQRCode = useCallback((id: string, qr: QRCode) => {
         setCodes(

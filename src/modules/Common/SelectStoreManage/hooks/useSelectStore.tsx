@@ -21,8 +21,9 @@ const useSelectStore = (): Return => {
                 setLoading(true)
                 const { status, body } = await ManageStoreService.search({ pagination: { page: 1, offset: 100 } })
 
-                if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
+                if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results) && body.data.results.length > 0) {
                     setStores(body.data.results)
+                    setStoreId(body.data.results.at(0)!.id)
                 } else {
                     setStores([])
                 }
