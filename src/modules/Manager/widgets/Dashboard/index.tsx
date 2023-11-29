@@ -1,4 +1,5 @@
 import { Widget } from "modules/Layout/Dashboard";
+import OrderRate from "modules/Manager/components/Dashboard/OrderRate";
 import OrderStatusStatistic from "modules/Manager/components/Dashboard/OrderStatusStatistic";
 
 const Dashboard = () => {
@@ -10,6 +11,7 @@ const Dashboard = () => {
             <FleetStatus className="space-y-5" />
             <StorageSummary /> */}
             <OrderStatusStatistic className="h-fit" />
+            <OrderRate className="h-fit" />
         </Widget>
     )
 }

@@ -119,8 +119,6 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className }) => {
                     </div>
                 )
             }
-            descriptionClassName="mt-2"
-            headerClassName="col-span-full"
             className={className}
         >
             {

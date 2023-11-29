@@ -8,6 +8,7 @@ function isValidHexColor(colorCode: string) {
 
 export function CustomTooltip({ active, payload, label, className }: any) {
     if (!active) return null;
+
     return (
         <div
             className={
@@ -40,9 +41,10 @@ export function CustomTooltip({ active, payload, label, className }: any) {
                                 />
                                 <p className="space-x-1">
                                     <span className="capitalize">
-                                        {camelCase(item.dataKey)}
+
+                                        {item.name ? item.name : camelCase(item.dataKey)}
                                     </span>
-                                    <span>
+                                    <span className="font-medium">
                                         {item.value}
                                     </span>
                                 </p>

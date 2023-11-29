@@ -6,10 +6,23 @@ class OrderService {
 
     static search(
         options: {
-            pagination: { page: number, offset: number }
+            pagination: { page: number, offset: number },
+            status?: string[]
+            order?: string
         }
     ) {
-        const { pagination } = options
+        const {
+            pagination,
+            status = [
+                OrderStatus.PROCESSING,
+                OrderStatus.RECEIVED,
+                OrderStatus.REJECTED,
+                OrderStatus.ORDERED,
+                OrderStatus.COMPLETED
+            ],
+            order = "DESC"
+        } = options
+
         type body = {
             statusCode: number
             message: string | undefined
@@ -32,16 +45,10 @@ class OrderService {
                     },
                     criteria: {
                         filter: {
-                            status: [
-                                OrderStatus.PROCESSING,
-                                OrderStatus.RECEIVED,
-                                OrderStatus.REJECTED,
-                                OrderStatus.ORDERED,
-                                OrderStatus.COMPLETED
-                            ]
+                            status
                         },
                         order: {
-                            createdAt: "DESC"
+                            createdAt: order
                         }
                     }
                 }
