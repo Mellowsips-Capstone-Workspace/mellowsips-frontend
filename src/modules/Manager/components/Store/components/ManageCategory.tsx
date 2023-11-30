@@ -1,4 +1,5 @@
 import Button from 'modules/Common/Button'
+import showToast from 'modules/Common/Toast'
 import { FC, MouseEvent, useCallback, useState } from 'react'
 
 const ManageCategory: FC = () => {
@@ -14,9 +15,19 @@ const ManageCategory: FC = () => {
             }
         )
     }, [])
+
+    const onClick = () => {
+        showToast(
+            {
+                type: "warning",
+                title: "Thông báo",
+                message: "Tính năng này chưa được hoàn thiện. Tính năng sẽ sớm có mặt."
+            }
+        )
+    }
+
     return (
         <div className='space-y-5 bg-white p-5 w-full rounded'>
-
             <div className='flex space-x-2 justify-between'>
                 <h2 className='text-main-primary font-medium text-lg'>Danh mục nổi bật</h2>
                 <div className="space-x-2">
@@ -24,6 +35,7 @@ const ManageCategory: FC = () => {
                         type="button"
                         variant="default"
                         className="text-xs"
+                        onClick={onClick}
                     >
                         Đặt lại
                     </Button>
@@ -31,6 +43,7 @@ const ManageCategory: FC = () => {
                         type="button"
                         variant="orange"
                         className="text-xs"
+                        onClick={onClick}
                     >
                         Lưu thay đổi
                     </Button>
@@ -65,6 +78,7 @@ const ManageCategory: FC = () => {
                     variant="indigo"
                     base="none"
                     className='px-2 py-0.5 text-xs rounded font-medium'
+                    onClick={onClick}
                 >
                     Thêm
                 </Button>
