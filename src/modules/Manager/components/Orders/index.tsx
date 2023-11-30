@@ -8,13 +8,16 @@ import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import CartItem from 'modules/Manager/components/Orders/components/CartItem'
 import OrderDetail from 'modules/Manager/components/Orders/components/OrderDetail'
-import OrderContextProvider from 'modules/Manager/components/Orders/context/OrderContext'
 import { FC, useCallback, useEffect, useState } from 'react'
 import OrderService from 'services/OrderService'
 import { Order } from 'types/order'
 import { toCurrency } from 'utils/text'
 
-const { accessor, display } = createColumnHelper<Order>()
+type OrderItem = Order & {
+    updateOrder: (id: string, order: Order) => void
+}
+
+const { accessor, display } = createColumnHelper<OrderItem>()
 
 const columns = [
     display(
@@ -98,11 +101,12 @@ const columns = [
     display(
         {
             header: "Hành động",
-            cell: ({ row: { original, index } }) => <OrderDetail order={original} index={index} />,
+            cell: ({ row: { original } }) => <OrderDetail order={original} />,
             minSize: 100
         }
     )
 ]
+
 const Orders: FC = () => {
     const [loading, setLoading] = useState(false)
     const [orders, setOrders] = useState<Order[]>([])
@@ -126,10 +130,11 @@ const Orders: FC = () => {
         refetch(page, offset)
     }, [refetch, page, offset])
 
-    const updateOrder = useCallback((index: number, order: Order) => {
+    const updateOrder = useCallback((id: string, order: Order) => {
         setOrders(
             orders => {
                 const orderUpdated = [...orders]
+                const index = orderUpdated.findIndex(order => order.id === id)
                 orderUpdated.splice(index, 1, order)
                 return orderUpdated
             }
@@ -142,15 +147,12 @@ const Orders: FC = () => {
                 loading ? (
                     <TableSkeleton column={5} />
                 ) : (
-                    <OrderContextProvider updateOrder={updateOrder}>
-                        <Table<Order>
-                            columns={columns}
-                            data={orders}
-                            refetch={refetch}
-                        />
-                    </OrderContextProvider>
+                    <Table<OrderItem>
+                        columns={columns}
+                        data={orders.map(order => ({ ...order, updateOrder }))}
+                        refetch={refetch}
+                    />
                 )
-
             }
             {
                 maxPage > 0 ? (

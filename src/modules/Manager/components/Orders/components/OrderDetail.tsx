@@ -7,24 +7,23 @@ import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import OrderBadge from 'modules/Common/OrderBadge'
 import showToast from 'modules/Common/Toast'
-import { OrdersContext } from 'modules/Manager/components/Orders/context/OrderContext'
-import { FC, useCallback, useContext, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import OrderService from 'services/OrderService'
 import { Order, OrderStatus } from 'types/order'
 
 type OrderDetailProps = {
-    order: Order
-    index: number
+    order: Order & Order & {
+        updateOrder: (id: string, order: Order) => void
+    }
 }
 
-const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
-    const { id } = order
+const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
+    const { id, updateOrder } = order
     const [display, setDisplay] = useBoolean(false)
     const [displayConfirm, setDisplayConfirm] = useBoolean(false)
     const [displayConfirmComplete, setDisplayConfirmComplete] = useBoolean(false)
     const { on, off } = setDisplay
     const { off: offConfirm } = setDisplayConfirm
-    const { updateOrder } = useContext(OrdersContext)!
     const [submitting, setSubmitting] = useState(false)
 
     const handlePrintOrder = () => {
@@ -61,9 +60,9 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                 message: "Đơn hàng được huỷ thành công."
             }
         )
-        updateOrder(index, body.data)
+        updateOrder(id, body.data)
         offConfirm()
-    }, [id, index, offConfirm, updateOrder])
+    }, [id, offConfirm, updateOrder])
 
     const handleProcessingOrder = useCallback(async () => {
         setSubmitting(true)
@@ -88,11 +87,38 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                 message: "Chuyển trạng thái thành công."
             }
         )
-        updateOrder(index, body.data)
+        updateOrder(id, body.data)
         offConfirm()
-    }, [id, index, offConfirm, updateOrder])
+    }, [id, offConfirm, updateOrder])
 
-    const handleDeliveryOrder = useCallback(async () => {
+    const handleConfirmReceiveOrder = useCallback(async () => {
+        setSubmitting(true)
+        const { status, body } = await OrderService.changeStatus(id, "receive")
+        setSubmitting(false)
+
+        if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
+            showToast(
+                {
+                    type: "error",
+                    title: "Thất bại",
+                    message: "Chuyển trạng thái đơn hàng thât bại."
+                }
+            )
+            return
+        }
+
+        showToast(
+            {
+                type: "success",
+                title: "Thành công",
+                message: "Chuyển trạng thái thành công."
+            }
+        )
+        updateOrder(id, body.data)
+        offConfirm()
+    }, [id, offConfirm, updateOrder])
+
+    const handleCompleteOrder = useCallback(async () => {
         setSubmitting(true)
         const { status, body } = await OrderService.changeStatus(id, "complete")
         setSubmitting(false)
@@ -115,9 +141,9 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                 message: "Chuyển trạng thái thành công."
             }
         )
-        updateOrder(index, body.data)
+        updateOrder(id, body.data)
         offConfirm()
-    }, [id, index, offConfirm, updateOrder])
+    }, [id, offConfirm, updateOrder])
 
     return (
 
@@ -263,11 +289,24 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                             <Button
                                 type="button"
                                 variant="secondary"
-                                onClick={order.initialTransactionMethod === "ZALO_PAY" ? handleDeliveryOrder : setDisplayConfirmComplete.on}
+                                onClick={handleCompleteOrder}
                                 disabled={submitting}
                                 className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
                             >
                                 Xác nhận hoàn thành
+                            </Button>
+                        ) : null
+                    }
+                    {
+                        order.status === OrderStatus.COMPLETED ? (
+                            <Button
+                                type="button"
+                                variant="green"
+                                onClick={order.initialTransactionMethod === "ZALO_PAY" ? handleConfirmReceiveOrder : setDisplayConfirmComplete.on}
+                                disabled={submitting}
+                                className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+                            >
+                                Xác nhận đã nhận
                             </Button>
                         ) : null
                     }
@@ -346,7 +385,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order, index }) => {
                                 variant="indigo"
                                 onClick={
                                     () => {
-                                        handleDeliveryOrder()
+                                        handleConfirmReceiveOrder()
                                         setDisplayConfirmComplete.off()
                                     }
                                 }
