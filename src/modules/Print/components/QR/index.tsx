@@ -1,16 +1,14 @@
 import { GridIcon } from "@radix-ui/react-icons";
-import CryptoLocalStorageHelper from "helpers/storage";
 import { isEmpty } from "lodash";
 import Button from "modules/Common/Button";
 import LogoFull from "modules/Common/LogoFull";
-import QRCode from "modules/Common/QRCode";
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Slider } from "shadcn/ui/slider";
 
 const PrintQR = () => {
     const [prams] = useSearchParams()
-    const data = prams.get("data")
+    const id = prams.get("id")
     const navigate = useNavigate()
 
     const [rows, setRows] = useState(4)
@@ -18,32 +16,42 @@ const PrintQR = () => {
 
     useEffect(() => {
         document.title = "QR Code - Xem trước"
-        if (isEmpty(data)) {
+        if (isEmpty(id)) {
             navigate("/", { replace: true })
             return
         }
 
-    }, [data, navigate])
+    }, [id, navigate])
 
     const handlePrint = useCallback(() => {
         window.print()
     }, [])
 
-    const isValidData = useCallback((data: string | null | undefined) => {
-        if (!data || isEmpty(data)) {
+    const isValidData = useCallback((id: string | null | undefined) => {
+        if (isEmpty(id)) {
             return false
         }
 
-        try {
-            CryptoLocalStorageHelper.decodeDataURI(data)
-
-            return true
-        } catch {
-            return false
-        }
-
+        return true
     }, [])
 
+
+
+    useEffect(() => {
+        if (id === null || isEmpty(id)) {
+            return
+        }
+
+        const unload = () => {
+            localStorage.removeItem(id)
+        }
+
+        window.addEventListener("beforeunload", unload)
+
+        return () => {
+            window.removeEventListener("beforeunload", unload)
+        }
+    }, [id])
 
     return (
         <div className="p-5 space-y-5">
@@ -52,22 +60,20 @@ const PrintQR = () => {
             </div>
 
             {
-                isValidData(data) ? (
+                isValidData(id) ? (
                     <div
                         className="grid gap-1"
                         style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
                     >
                         {
-                            Array(columns * rows).fill(JSON.parse(CryptoLocalStorageHelper.decodeDataURI(data!))).map(
+                            Array(columns * rows).fill(localStorage.getItem(id)!).map(
                                 (data, index) => (
                                     <div
                                         key={index}
+                                        data-code={data}
                                         className="w-full aspect-square border-main-primary border"
                                     >
-                                        <QRCode
-                                            data={data.code}
-                                            showAction={false}
-                                        />
+                                        <img className="block h-full w-full" src={data} />
                                     </div>
                                 )
                             )

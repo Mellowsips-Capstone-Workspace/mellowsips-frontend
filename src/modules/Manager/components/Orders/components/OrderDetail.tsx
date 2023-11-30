@@ -1,4 +1,3 @@
-import CryptoLocalStorageHelper from 'helpers/storage'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty, isString } from 'lodash'
 import Button from 'modules/Common/Button'
@@ -28,7 +27,8 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
 
     const handlePrintOrder = () => {
         const { origin } = location
-        const url = origin.concat("/print/bill?data=", CryptoLocalStorageHelper.encodeDataURI(JSON.stringify(order)))
+        const url = origin.concat("/print/bill?id=", order.id)
+        localStorage.setItem(order.id, JSON.stringify(order))
 
         window.open(
             url,

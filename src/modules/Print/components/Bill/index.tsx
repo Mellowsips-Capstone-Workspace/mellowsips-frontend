@@ -1,28 +1,43 @@
 import { format } from "date-fns";
-import CryptoLocalStorageHelper from "helpers/storage";
 import { isEmpty } from "lodash";
 import Button from "modules/Common/Button";
 import ErrorBoundary from "modules/Common/ErrorBoundary/ErrorBoundary";
 import LogoFull from "modules/Common/LogoFull";
 import OrderBadge from "modules/Common/OrderBadge";
 import QRCode from "modules/Common/QRCode";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { Order } from "types/order";
 
 const PrintBill = () => {
     const [params] = useSearchParams()
-    const payload = params.get("data")
+    const id = params.get("id")
+
+    useEffect(() => {
+        if (id === null || isEmpty(id)) {
+            return
+        }
+
+        const unload = () => {
+            localStorage.removeItem(id)
+        }
+
+        window.addEventListener("beforeunload", unload)
+
+        return () => {
+            window.removeEventListener("beforeunload", unload)
+        }
+    }, [id])
 
     const handlePrint = useCallback(() => {
         window.print()
     }, [])
 
-    if (payload === null) {
+    if (id === null) {
         return <Navigate to="/" replace={true} />
     }
 
-    const order: Order = JSON.parse(CryptoLocalStorageHelper.decodeDataURI(payload)) as Order
+    const order: Order = JSON.parse(localStorage.getItem(id)!) as Order
     const note = order.details.cartItems.filter(item => !isEmpty(item.note)).map(({ note }) => note).join(". ")
 
     return (

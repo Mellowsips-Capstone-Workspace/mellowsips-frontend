@@ -1,8 +1,8 @@
 import { DownloadIcon } from '@radix-ui/react-icons';
 import QRCodeHelper from 'helpers/qr';
-import CryptoLocalStorageHelper from 'helpers/storage';
 import { isEmpty, isUndefined } from 'lodash';
 import Button from 'modules/Common/Button';
+import { nanoid } from 'nanoid';
 import { FC, memo, useCallback, useEffect, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -34,28 +34,23 @@ const QRCode: FC<QRCodeProps> = ({ data, showAction = true }) => {
 
     }, [data, id])
 
-    const getFileName = useCallback(() => {
-        if (isUndefined(qr)) {
-            return "image.png"
-        }
-        const type = qr.substring(0, qr.indexOf(";base64,"))
-        const ext = type.substring(type.lastIndexOf("/") + 1)
-        return `${Date.now().toString()}.${ext}`
-    }, [qr])
 
     const handlePrint = useCallback(() => {
         if (isUndefined(qr)) {
             return
         }
         const { origin } = location
-        const url = origin.concat("/print/qr?data=", CryptoLocalStorageHelper.encodeDataURI(JSON.stringify({ code: data })))
+        const id = nanoid()
+        const url = origin.concat("/print/qr?id=", id)
+        localStorage.setItem(id, qr)
 
         window.open(
             url,
             'popup',
             'width=+width+'
         )
-    }, [data, qr])
+    }, [qr])
+
 
     if (isUndefined(qr)) {
         return (
@@ -100,7 +95,7 @@ const QRCode: FC<QRCodeProps> = ({ data, showAction = true }) => {
                         >
                             <Link
                                 to={qr}
-                                download={getFileName()}
+                                download="qr.png"
                             >
                                 <DownloadIcon />
                                 <span>
