@@ -66,7 +66,7 @@ const PrintQR = () => {
                         style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
                     >
                         {
-                            Array(columns * rows).fill(localStorage.getItem(id)!).map(
+                            Array(columns * rows).fill(localStorage.getItem(id!)).map(
                                 (data, index) => (
                                     <div
                                         key={index}
