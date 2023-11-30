@@ -8,12 +8,13 @@ import Loading from "modules/Common/Loading"
 import Modal from "modules/Common/Modal/Modal"
 import showToast from "modules/Common/Toast"
 import StoreSelect from "modules/Manager/components/Product/components/StoreSelect"
+import VoucherDateTimeInput from "modules/Voucher/components/VoucherDateTimeInput"
 import { FC, useCallback } from "react"
 import VoucherService from "services/VoucherService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 import { VOUCHER_TYPE, Voucher } from "types/voucher"
-import { parseAndPlusGMT7 } from "utils/date"
+import { parseAndPlusGMT7, toGMT7 } from "utils/date"
 import { date, number, object, string } from "yup"
 
 type VoucherModalProps = {
@@ -73,13 +74,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
             >
                 <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Chi tiết mã giảm giá</p>
                 <Formik
-                    initialValues={
-                        {
-                            ...voucher,
-                            endDate: isString(voucher.endDate) ? voucher.endDate.replace("+07:00", "") : null,
-                            startDate: isString(voucher.startDate) ? voucher.startDate.replace("+07:00", "") : null,
-                        }
-                    }
+                    initialValues={voucher}
                     validationSchema={
                         object().shape(
                             {
@@ -153,8 +148,8 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
 
                             const payload = {
                                 ...values,
-                                startDate: isEmpty(values.startDate) ? null : isDate(values.startDate) ? values.startDate.toISOString().replace(".000Z", "+07:00") : values.startDate?.concat("+07:00"),
-                                endDate: isEmpty(values.endDate) ? null : isDate(values.endDate) ? values.endDate.toISOString().replace(".000Z", "+07:00") : values.endDate?.concat("+07:00")
+                                startDate: isDate(values.startDate) ? toGMT7(values.startDate) : isEmpty(values.startDate) ? null : values.startDate,
+                                endDate: isDate(values.endDate) ? toGMT7(values.endDate) : isEmpty(values.endDate) ? null : values.endDate
                             }
 
                             const { status, body } = await VoucherService.update(payload.id, payload)
@@ -293,9 +288,8 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         <label className="text-main-secondary space-x-1 font-medium">
                                             <span>Ngày bắt đầu áp dụng</span>
                                         </label>
-                                        <FormikTextField.DateTimeInput
+                                        <VoucherDateTimeInput
                                             name="startDate"
-                                            plusGMT7={true}
                                             placeholder="Chọn ngày bắt đầu"
                                             disabled={
                                                 {
@@ -308,8 +302,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         <label className="text-main-secondary space-x-1 font-medium">
                                             <span>Thời gian kết thúc</span>
                                         </label>
-                                        <FormikTextField.DateTimeInput
-                                            plusGMT7={true}
+                                        <VoucherDateTimeInput
                                             name="endDate"
                                             placeholder="Chọn ngày kết thúc"
                                             disabled={

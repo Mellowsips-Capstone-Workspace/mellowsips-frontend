@@ -13,6 +13,7 @@ const AboutUsPage = lazy(() => import('modules/Home/pages/AboutUsPage'));
 const ContactPage = lazy(() => import('modules/Home/pages/ContactPage'));
 const FAQPage = lazy(() => import('modules/Home/pages/FAQPage'));
 const HomePage = lazy(() => import('modules/Home/pages/HomePage'));
+const SetPasswordPage = lazy(() => import('modules/Auth/pages/SetPasswordPage'));
 
 type PublicRoutesProps = {
     isLoading: boolean
@@ -94,6 +95,14 @@ const PublicRoutes: FC<PublicRoutesProps> = ({ isLoading }) => {
                     element={
                         <Suspense fallback={<Waiting />}>
                             <VerifyPage />
+                        </Suspense>
+                    }
+                />
+                <Route
+                    path="set-password"
+                    element={
+                        <Suspense fallback={<Waiting />}>
+                            <SetPasswordPage />
                         </Suspense>
                     }
                 />

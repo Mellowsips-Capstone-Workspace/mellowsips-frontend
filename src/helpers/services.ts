@@ -63,6 +63,23 @@ class AuthenticateServiceHelper {
             return
         }
 
+        if (status === 400 && response.errorCode === AuthenticateService.ERROR_CODE.REQUIRED_SET_PASSWORD) {
+            showToast(
+                {
+                    type: "info",
+                    title: "Đăng nhập thành công",
+                    message: "Bạn cần thay đổi mật khẩu đang nhập."
+                }
+            )
+            navigate(
+                "/set-password",
+                {
+                    state: { username, password }
+                }
+            )
+            return
+        }
+
         if (status === 500 || isEmpty(response.body)) {
             showToast(
                 {

@@ -8,11 +8,13 @@ import Loading from "modules/Common/Loading"
 import Modal from "modules/Common/Modal/Modal"
 import showToast from "modules/Common/Toast"
 import StoreSelect from "modules/Manager/components/Product/components/StoreSelect"
+import VoucherDateTimeInput from "modules/Voucher/components/VoucherDateTimeInput"
 import { FC, useId } from "react"
 import VoucherService from "services/VoucherService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 import { VOUCHER_TYPE } from "types/voucher"
+import { toGMT7 } from "utils/date"
 import { boolean, date, number, object, string } from "yup"
 
 const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
@@ -125,8 +127,8 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                         async (values) => {
                             const payload = {
                                 ...values,
-                                startDate: isDate(values.startDate) ? values.startDate.toISOString().replace(".000Z", "+07:00") : null,
-                                endDate: isDate(values.endDate) ? values.endDate.toISOString().replace(".000Z", "+07:00") : null
+                                startDate: isDate(values.startDate) ? toGMT7(values.startDate) : null,
+                                endDate: isDate(values.endDate) ? toGMT7(values.endDate) : null
                             }
 
                             const { status, body } = await VoucherService.create(payload)
@@ -278,7 +280,7 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                                         <label className="text-main-secondary space-x-1 font-medium">
                                             <span>Ngày bắt đầu áp dụng</span>
                                         </label>
-                                        <FormikTextField.DateTimeInput
+                                        <VoucherDateTimeInput
                                             name="startDate"
                                             placeholder="Chọn ngày bắt đầu"
                                             disabled={
@@ -292,7 +294,7 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                                         <label className="text-main-secondary space-x-1 font-medium">
                                             <span>Thời gian kết thúc</span>
                                         </label>
-                                        <FormikTextField.DateTimeInput
+                                        <VoucherDateTimeInput
                                             name="endDate"
                                             placeholder="Chọn ngày kết thúc"
                                             disabled={

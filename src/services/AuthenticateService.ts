@@ -8,7 +8,8 @@ class AuthenticateService {
         INVALID_CREDENTIAL: "auth/invalid-credentials",
         UN_CONFIRMED: "auth/user-not-confirmed",
         CODE_MISMATCH: "auth/code-mismatch",
-        CODE_EXPIRED: "auth/code-expired"
+        CODE_EXPIRED: "auth/code-expired",
+        REQUIRED_SET_PASSWORD: "auth/change-temp-password"
     }
 
     static resendConfirmationCode(username: string) {
@@ -64,6 +65,22 @@ class AuthenticateService {
             interceptor.post(
                 "auth/verify",
                 { username, confirmationCode }
+            )
+        )
+    }
+
+    static setPassword(payload: any) {
+        type body = {
+            message: null | string
+            statusCode: number
+            errorCode: string
+            data: Credential
+        }
+
+        return requestApiHelper<body>(
+            interceptor.post(
+                "auth/reset-password",
+                payload
             )
         )
     }

@@ -53,14 +53,7 @@ const ApplicationManage = () => {
                             >
                                 Đăng ký doanh nghiệp
                             </Link>
-                        ) : (
-                            <Link
-                                to="create?ref=update"
-                                className="flex-none bg-main-primary text-white px-5 py-2 rounded outline-none"
-                            >
-                                Yêu cầu cập nhật thông tin
-                            </Link>
-                        )
+                        ) : null
                     }
                 </div>
             </div>

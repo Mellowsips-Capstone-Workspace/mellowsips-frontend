@@ -5,7 +5,6 @@ import { isEmpty } from "lodash"
 import ApplicationBadge from "modules/Common/ApplicationBadge"
 import Pagination from "modules/Common/Pagination/Pagination"
 import { TableSkeleton } from "modules/Common/Skeleton"
-import Tab from "modules/Common/Tab"
 import Table from "modules/Common/Table"
 import { FC, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
@@ -109,7 +108,7 @@ const columns = [
 const Applications: FC = () => {
     const [loading, setLoading] = useState(false)
     const [applications, setApplications] = useState<Application[]>([])
-    const [type, setType] = useState("CREATE_ORGANIZATION")
+    // const [type, setType] = useState("CREATE_ORGANIZATION")
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
@@ -130,67 +129,63 @@ const Applications: FC = () => {
         refetch(page, offset)
     }, [refetch, page, offset])
 
+    {/* <div className="w-full px-5 bg-white rounded shadow">
+        <Tab.Container
+            defaultValue={type}
+            onTabChange={setType}
+            className="flex overflow-x-auto scrollbar-none space-x-5"
+        >
+            <Tab.Item
+                displayValue="Đăng ký doanh nghiệp"
+                value="CREATE_ORGANIZATION"
+                className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
+            />
+            <Tab.Item
+                displayValue="Yêu cầu cập nhật thông tin"
+                value=""
+                className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
+            />
+        </Tab.Container>
+    </div> */}
     return (
-        <div className="space-y-5">
-            <div className="w-full px-5 bg-white rounded shadow">
-                <Tab.Container
-                    defaultValue={type}
-                    onTabChange={setType}
-                    className="flex overflow-x-auto scrollbar-none space-x-5"
-                >
-                    <Tab.Item
-                        displayValue="Đăng ký doanh nghiệp"
-                        value="CREATE_ORGANIZATION"
-                        className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
-                    />
-                    <Tab.Item
-                        displayValue="Yêu cầu cập nhật thông tin"
-                        value=""
-                        className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
-                    />
-                </Tab.Container>
-            </div>
-
-            <div className="w-full p-5 space-y-5 bg-white rounded shadow">
-                {
-                    loading ? (
-                        <TableSkeleton column={5} />
-                    ) : (
-                        <>
-                            <Table<Application>
-                                columns={columns}
-                                data={applications}
-                                refetch={refetch}
-                                columnVisibility={
-                                    {
-                                        createdAt: false,
-                                        "jsonData_merchant": false,
-                                        "jsonData_organization.phone": false,
-                                        "jsonData_organization.email": false,
-                                    }
+        <div className="w-full p-5 space-y-5 bg-white rounded shadow">
+            {
+                loading ? (
+                    <TableSkeleton column={5} />
+                ) : (
+                    <>
+                        <Table<Application>
+                            columns={columns}
+                            data={applications}
+                            refetch={refetch}
+                            columnVisibility={
+                                {
+                                    createdAt: false,
+                                    "jsonData_merchant": false,
+                                    "jsonData_organization.phone": false,
+                                    "jsonData_organization.email": false,
                                 }
-
-                            />
-                            {
-                                maxPage > 0 ? (
-                                    <div className="flex justify-between items-center font-medium">
-                                        <p>{`Trang ${page} trên ${maxPage}`}</p>
-
-                                        <Pagination
-                                            page={page}
-                                            maxPage={maxPage}
-                                            setPage={setPage}
-                                        />
-                                    </div>
-                                ) : null
                             }
 
-                        </>
-                    )
-                }
-            </div>
-        </div>
+                        />
+                        {
+                            maxPage > 0 ? (
+                                <div className="flex justify-between items-center font-medium">
+                                    <p>{`Trang ${page} trên ${maxPage}`}</p>
 
+                                    <Pagination
+                                        page={page}
+                                        maxPage={maxPage}
+                                        setPage={setPage}
+                                    />
+                                </div>
+                            ) : null
+                        }
+
+                    </>
+                )
+            }
+        </div>
     )
 }
 
