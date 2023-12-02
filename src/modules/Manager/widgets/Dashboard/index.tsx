@@ -31,7 +31,7 @@ const Dashboard = () => {
 
             <div className="col-span-2 bg-white rounded shadow p-5 h-fit">
                 <div className="flex justify-between items-center">
-                    <h2 className="font-medium text-main-primary text-lg">Tổng quan doanh thu</h2>
+                    <h2 className="font-medium text-main-primary text-lg">Tổng quan</h2>
                     <div className="flex space-x-4 border rounded px-2 py-0.5">
 
                         <div className="flex space-x-1 text-gray-500">
