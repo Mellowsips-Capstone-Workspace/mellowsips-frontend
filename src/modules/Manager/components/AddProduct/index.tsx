@@ -1,3 +1,4 @@
+import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import { isArray, isEmpty } from "lodash"
 import showToast from "modules/Common/Toast"
@@ -6,10 +7,14 @@ import ProductOptionSections from "modules/Manager/components/Product/components
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
 import ProductService from "services/ProductService"
+import { useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
 import { array, boolean, number, object, string } from "yup"
 
 const AddProduct: FC = () => {
     const navigate = useNavigate()
+    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
+
 
     return (
         <Formik
@@ -34,7 +39,7 @@ const AddProduct: FC = () => {
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: string().required("Trường này không được để trống."),
+                        storeId: principle.type !== ROLE.OWNER ? string().required("Trường này không được để trống.") : string(),
                         productOptionSections: array(
                             object(
                                 {

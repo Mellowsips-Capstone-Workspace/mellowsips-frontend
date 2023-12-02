@@ -15,13 +15,14 @@ const EssentialInfo: FC = () => {
                             placeholder="Ví dụ: Trà đào"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-gray-500 font-medium">Giá</label>
-                        <FormikTextField.NumberInput
-                            name="price"
-                            placeholder="Ví dụ: 1000đ"
-                        />
-                    </div>
+
+                    <FormikTextField.CurrencyVNDInput
+                        className="space-y-1"
+                        label="Giá"
+                        labelClassName="text-gray-500 font-medium"
+                        name="price"
+                        placeholder="Ví dụ: 1000đ"
+                    />
                 </div>
                 <div className="flex gap-5">
                     <div className="flex-none h-40 aspect-square rounded border">

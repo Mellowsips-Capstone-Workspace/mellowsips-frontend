@@ -47,7 +47,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 {
                     type: "error",
                     title: "Thất bại",
-                    message: "Huỷ bỏ đơn hàng thât bại."
+                    message: "Huỷ bỏ đơn hàng thất bại."
                 }
             )
             return
@@ -74,7 +74,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 {
                     type: "error",
                     title: "Thất bại",
-                    message: "Chuyển trạng thái đơn hàng thât bại."
+                    message: "Chuyển trạng thái đơn hàng thất bại."
                 }
             )
             return
@@ -101,7 +101,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 {
                     type: "error",
                     title: "Thất bại",
-                    message: "Chuyển trạng thái đơn hàng thât bại."
+                    message: "Chuyển trạng thái đơn hàng thất bại."
                 }
             )
             return
@@ -128,7 +128,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 {
                     type: "error",
                     title: "Thất bại",
-                    message: "Chuyển trạng thái đơn hàng thât bại."
+                    message: "Chuyển trạng thái đơn hàng thất bại."
                 }
             )
             return
@@ -146,7 +146,6 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
     }, [id, offConfirm, updateOrder])
 
     return (
-
         <div className='min-w-full space-x-2 px-5 text-left'>
             <span
                 className="hover:text-main-primary cursor-pointer"
@@ -182,8 +181,12 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 <div className='p-5 space-y-5'>
                     <div className='space-y-2'>
                         <div className='flex items-center space-x-2'>
+                            <p>Quán:</p>
+                            <span>{order.details.store.name}</span>
+                        </div>
+                        <div className='flex items-center space-x-2'>
                             <p>Vị trí:</p>
-                            <span>{order.details.store.name} ({order.qrCode.name})</span>
+                            <span>{order.qrCode.name}</span>
                         </div>
                         <div className='flex items-center space-x-2'>
                             <p>Hình thức:</p>
@@ -207,6 +210,31 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                                     </div>
                                 )
                             }
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                            <p>Tạm tính:</p>
+                            <span className='text-gray-500'>{order.details.tempPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
+                        </div>
+
+                        {
+                            order.details.vouchers.length ? (
+                                <div className='flex items-start space-x-2'>
+                                    <p>Khuyến mãi:</p>
+                                    <div>
+                                        {
+                                            order.details.vouchers.map(
+                                                voucher => (
+                                                    <p className='text-gray-500'> -{voucher.discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                                )
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            ) : null
+                        }
+                        <div className='flex items-center space-x-2'>
+                            <p>Tổng:</p>
+                            <span className='text-main-primary font-medium'>{order.details.finalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
                         </div>
 
                     </div>

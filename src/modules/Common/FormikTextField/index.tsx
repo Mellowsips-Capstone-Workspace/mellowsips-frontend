@@ -1,6 +1,7 @@
 import AddressInput from "modules/Common/FormikTextField/AddressInput";
 import AutocompleteInput from "modules/Common/FormikTextField/AutocompleteInput";
 import Checkbox from "modules/Common/FormikTextField/CheckBox";
+import CurrencyVNDInput from "modules/Common/FormikTextField/CurrencyVNDInput";
 import DateInput from "modules/Common/FormikTextField/DateInput";
 import DateTimeInput from "modules/Common/FormikTextField/DateTimeInput";
 import DropdownInput from "modules/Common/FormikTextField/Dropdown";
@@ -29,7 +30,8 @@ const FormikTextField = {
     AddressInput,
     DateTimeInput,
     AutocompleteInput,
-    ToggleCheckbox
+    ToggleCheckbox,
+    CurrencyVNDInput
 }
 
 export default FormikTextField;

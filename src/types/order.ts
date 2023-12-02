@@ -1,5 +1,6 @@
 import { Product, ProductAddon } from "types/product"
 import Store, { QRCode } from "types/store"
+import { Voucher } from "types/voucher"
 
 export type CartItem = {
     id: string
@@ -33,9 +34,10 @@ export type Order = {
         cartItems: CartItem[]
         tempPrice: number
         finalPrice: number
+        vouchers: (Voucher & { discountAmount: number })[]
     }
     qrCode: QRCode
-    latestTransaction: any | null // Bạn có thể thay "any" bằng kiểu dữ liệu phù hợp
+    latestTransaction: any | null
 }
 
 export const OrderStatus = {

@@ -1,3 +1,4 @@
+import { isNumber } from "lodash"
 import showToast from "modules/Common/Toast"
 
 export const copyToClipboard = async (text: string, successMessage?: string) => {
@@ -31,4 +32,4 @@ export const copyToClipboard = async (text: string, successMessage?: string) => 
     }
 }
 
-export const toCurrency = (price: number | string) => price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+export const toCurrency = (price: number | string) => isNumber(price) ? price.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : Number(price).toLocaleString("vi-VN", { style: "currency", currency: "VND" })
