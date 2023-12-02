@@ -12,7 +12,7 @@ const OrderBadge: FC<OrderBadgeProps> = ({ status }) => {
         <Badge
             className='capitalize px-1 text-xs print:bg-transparent print:text-black print:p-0 print:border-none'
             intent={
-                (status === OrderStatus.RECEIVED || status === OrderStatus.COMPLETED) ? "greenBold" : status === OrderStatus.REJECTED ? "redBold" : status === OrderStatus.PROCESSING ? "blue" : "secondaryBold"
+                status === OrderStatus.RECEIVED ? "greenBold" : status === OrderStatus.COMPLETED ? "green" : status === OrderStatus.REJECTED ? "redBold" : status === OrderStatus.PROCESSING ? "blue" : "secondaryBold"
             }
         >
             {

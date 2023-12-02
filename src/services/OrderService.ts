@@ -73,6 +73,41 @@ class OrderService {
             )
         )
     }
+
+    static requestTransaction(
+        orderId: string
+    ) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: {
+                id: string
+            }
+        }
+
+        return requestApiHelper<body>(
+            interceptor.post(
+                "orders/".concat(orderId).concat("/transactions")
+            )
+        )
+    }
+
+    static completeTransaction(
+        transactionId: string
+    ) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+        }
+
+        return requestApiHelper<body>(
+            interceptor.put(
+                "transactions/".concat(transactionId).concat("/pay")
+            )
+        )
+    }
 }
 
 export default OrderService

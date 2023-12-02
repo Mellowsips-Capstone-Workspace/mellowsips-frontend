@@ -22,13 +22,6 @@ const { accessor, display } = createColumnHelper<OrderItem>()
 const columns = [
     display(
         {
-            header: "Hành động",
-            cell: ({ row: { original } }) => <OrderDetail order={original} />,
-            minSize: 100
-        }
-    ),
-    display(
-        {
             header: "Sản phẩm",
             cell: ({ row: { original } }) => (
                 <CartItem cartItems={original.details.cartItems}>
@@ -97,7 +90,7 @@ const columns = [
                     <>
                         <span className='text-main-primary font-medium'>{toCurrency(original.finalPrice)}</span>
                         {
-                            original.details.vouchers.length ? (
+                            Array.isArray(original.details.vouchers) && original.details.vouchers.length ? (
                                 <span className='px-1 text-gray-400'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4 inline-block">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
@@ -117,6 +110,13 @@ const columns = [
             header: "Thời gian tạo",
             cell: ({ getValue }) => format(parseISO(getValue()), 'HH:mm:ss dd-MM-yyyy'),
             minSize: 150,
+        }
+    ),
+    display(
+        {
+            header: "Hành động",
+            cell: ({ row: { original } }) => <OrderDetail order={original} />,
+            minSize: 100
         }
     )
 ]
