@@ -36,7 +36,7 @@ const StoreSelect = () => {
                     </div>
                 ) : stores ? (
                     <FormikTextField.DropdownInput
-                        options={stores.map(({ id, name }) => ({ label: name, value: id }))}
+                        options={[{ label: "Tất cả cửa hàng", value: null }, ...stores.map(({ id, name }) => ({ label: name, value: id }))]}
                         name="storeId"
                         placeholder="Chon cửa hàng"
                     />

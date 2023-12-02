@@ -6,14 +6,14 @@ import Store from "types/store"
 type Return = {
     loading: boolean
     stores: Store[]
-    storeId: string | undefined
-    setStoreId: (storeId: string) => void
+    storeId: string | undefined | null
+    setStoreId: (storeId: string | null) => void
 }
 
 const useSelectStore = (): Return => {
     const [loading, setLoading] = useState(false)
     const [stores, setStores] = useState<Store[]>([])
-    const [storeId, setStoreId] = useState<string>()
+    const [storeId, setStoreId] = useState<string | null | undefined>()
 
     useEffect(() => {
         (

@@ -224,7 +224,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                                         {
                                             order.details.vouchers.map(
                                                 voucher => (
-                                                    <p className='text-gray-500'> -{voucher.discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                                    <p key={voucher.id} className='text-gray-500'> -{voucher.discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                                 )
                                             )
                                         }

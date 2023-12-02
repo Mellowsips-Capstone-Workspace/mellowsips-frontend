@@ -1,28 +1,19 @@
 
-import { format, parseISO } from "date-fns";
-import { isEmpty, isNull, isUndefined } from "lodash";
+import { isEmpty, isNull } from "lodash";
 import CircleProgressBar from "modules/Common/Chart/CircleProgressbar";
-import DateRangeSelect from "modules/Common/DateRangeSelect";
 import Loading from "modules/Common/Loading";
 import WidgetCard from "modules/Common/WidgetCard";
-import { FC, useCallback, useEffect, useState } from "react";
-import { DateRange } from "react-day-picker";
+import { FC, useEffect, useState } from "react";
 import DashboardService from "services/DashboardService";
-import { subtractDate } from "utils/date";
 import { calculatePercentage } from "utils/number";
 
 type OrderStatusStatisticProps = {
     className?: string
+    range: { startDate: string | null, endDate: string | null }
 }
 
-const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className }) => {
+const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className, range }) => {
 
-    const [range, setRange] = useState<{ startDate: string | null, endDate: string | null }>(
-        {
-            startDate: format(subtractDate(new Date(), 7), "yyyy-MM-dd"),
-            endDate: format(new Date(), "yyyy-MM-dd")
-        }
-    )
 
     const [data, setData] = useState(
         [
@@ -49,19 +40,12 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className }) => {
 
     const [loading, setLoading] = useState(true)
 
-    const handleSetRange = useCallback(({ from, to }: DateRange) => {
-        const range = {
-            startDate: isUndefined(from) ? null : format(from, "yyyy-MM-dd"),
-            endDate: isUndefined(to) ? null : format(to, "yyyy-MM-dd")
-        }
-        setRange(range)
-    }, [])
+
 
     useEffect(() => {
         (
             async () => {
                 setLoading(true)
-
 
                 const { body, status } = await DashboardService.getBusinessStatistics(range)
 
@@ -105,18 +89,7 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className }) => {
         <WidgetCard
             title={
                 (
-                    <div className="flex justify-between">
-                        <h2 className="font-medium text-main-primary text-lg">Tổng quan doanh thu đơn hàng</h2>
-                        <DateRangeSelect
-                            initial={
-                                {
-                                    from: isNull(range.startDate) ? undefined : parseISO(range.startDate),
-                                    to: isNull(range.endDate) ? undefined : parseISO(range.endDate)
-                                }
-                            }
-                            onSelect={handleSetRange}
-                        />
-                    </div>
+                    <h2 className="font-medium text-main-primary text-lg">Tổng quan doanh thu đơn hàng</h2>
                 )
             }
             className={className}

@@ -1,12 +1,10 @@
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { isArray, isEmpty, isNull, isUndefined } from 'lodash';
 import { CustomTooltip } from 'modules/Common/Chart/CustomTooltip';
-import DateRangeSelect from 'modules/Common/DateRangeSelect';
 import Loading from 'modules/Common/Loading';
 import showToast from 'modules/Common/Toast';
 import WidgetCard from 'modules/Common/WidgetCard';
-import { FC, useCallback, useEffect, useState } from 'react';
-import { DateRange } from 'react-day-picker';
+import { FC, useEffect, useState } from 'react';
 import {
     Area,
     AreaChart,
@@ -18,11 +16,11 @@ import {
 } from 'recharts';
 import OrderService from 'services/OrderService';
 import { OrderStatus } from 'types/order';
-import { subtractDate } from 'utils/date';
 
 
 type OrderRateProps = {
     className?: string
+    range: { startDate: string | null, endDate: string | null }
 }
 
 type OrderData = {
@@ -52,25 +50,11 @@ const colorSchema = {
     fake: "#FF0000"
 }
 
-const OrderRate: FC<OrderRateProps> = ({ className }) => {
+const OrderRate: FC<OrderRateProps> = ({ className, range }) => {
     const [data, setData] = useState<RootData>()
     const [dataSet, setDataSet] = useState<DataVisualize[]>([])
     const [loading, setLoading] = useState(true)
     const [processing, setProcessing] = useState(true)
-    const [range, setRange] = useState<{ startDate: string | null, endDate: string | null }>(
-        {
-            startDate: format(subtractDate(new Date(), 7), "yyyy-MM-dd"),
-            endDate: format(new Date(), "yyyy-MM-dd")
-        }
-    )
-
-    const handleSetRange = useCallback(({ from, to }: DateRange) => {
-        const range = {
-            startDate: isUndefined(from) ? null : format(from, "yyyy-MM-dd"),
-            endDate: isUndefined(to) ? null : format(to, "yyyy-MM-dd")
-        }
-        setRange(range)
-    }, [])
 
 
     useEffect(() => {
@@ -189,24 +173,7 @@ const OrderRate: FC<OrderRateProps> = ({ className }) => {
         <WidgetCard
             title={
                 (
-                    <div className="flex justify-between">
-                        <h2 className="font-medium text-main-primary text-lg">Tổng quan đơn hàng</h2>
-                        <div
-                            aria-disabled={loading}
-                            className="aria-disabled:opacity-0 aria-disabled:pointer-events-none"
-                        >
-                            <DateRangeSelect
-                                initial={
-                                    {
-                                        from: isNull(range.startDate) ? undefined : parseISO(range.startDate),
-                                        to: isNull(range.endDate) ? undefined : parseISO(range.endDate)
-                                    }
-                                }
-                                onSelect={handleSetRange}
-                            />
-
-                        </div>
-                    </div>
+                    <h2 className="font-medium text-main-primary text-lg">Tổng quan đơn hàng</h2>
                 )
             }
             descriptionClassName="text-xl font-semibold text-gray-900 mt-1.5 2xl:text-2xl"

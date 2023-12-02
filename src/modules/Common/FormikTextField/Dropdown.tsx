@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Popover from '@radix-ui/react-popover';
 import { useField } from "formik";
-import { isEmpty, isObject } from "lodash";
+import { isEmpty, isObject, isUndefined } from "lodash";
 import { FC, MouseEvent, useCallback, useEffect, useRef } from "react";
 
 type DropdownProps = {
@@ -9,16 +9,23 @@ type DropdownProps = {
     placeholder?: string,
     options: {
         label: string
-        value: string
+        value: string | null
     }[]
 }
 
 const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", options }) => {
-    const [{ value }, { error, touched, }, { setValue, setTouched }] = useField<string>(name)
+    const [{ value }, { error, touched, }, { setValue, setTouched }] = useField<string | null>(name)
     const trigger = useRef<HTMLButtonElement>(null)
 
     const handleSelectValue = useCallback((event: MouseEvent<HTMLLIElement>) => {
-        setValue(event.currentTarget.dataset.value!, true)
+        const { value } = event.currentTarget.dataset
+
+        if (isUndefined(value)) {
+            setValue(null, true)
+            return
+        }
+
+        setValue(value, true)
     }, [setValue])
 
 
@@ -26,7 +33,7 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
         setTouched(false)
     }, [setTouched])
 
-    const currentValue = (isEmpty(value) || options.length === 0) ? placeholder : options.find((item) => item.value === value)
+    const currentValue = (options.length === 0) ? placeholder : options.find((item) => item.value === value)
 
     return (
         <Popover.Root >

@@ -22,6 +22,13 @@ const { accessor, display } = createColumnHelper<OrderItem>()
 const columns = [
     display(
         {
+            header: "Hành động",
+            cell: ({ row: { original } }) => <OrderDetail order={original} />,
+            minSize: 100
+        }
+    ),
+    display(
+        {
             header: "Sản phẩm",
             cell: ({ row: { original } }) => (
                 <CartItem cartItems={original.details.cartItems}>
@@ -110,13 +117,6 @@ const columns = [
             header: "Thời gian tạo",
             cell: ({ getValue }) => format(parseISO(getValue()), 'HH:mm:ss dd-MM-yyyy'),
             minSize: 150,
-        }
-    ),
-    display(
-        {
-            header: "Hành động",
-            cell: ({ row: { original } }) => <OrderDetail order={original} />,
-            minSize: 100
         }
     )
 ]

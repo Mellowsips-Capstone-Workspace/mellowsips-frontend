@@ -1,5 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { Product } from "types/product"
 
 class DashboardService {
     static getBusinessStatistics(payload: any) {
@@ -27,6 +28,44 @@ class DashboardService {
             interceptor.post(
                 "dashboard/business/statistics",
                 payload
+            )
+        )
+    }
+
+    static getTopProduct(
+        options: {
+            pagination: { page: number, offset: number }
+            filter: any,
+
+        }
+    ) {
+        const { pagination, filter } = options
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: {
+                results: (
+                    Product & {
+                        numberOfPurchases: number
+                    }
+                )[]
+            }
+        }
+
+        return requestApiHelper<body>(
+            interceptor.post(
+                "products/purchases",
+                {
+                    pagination: {
+                        page: pagination.page,
+                        itemsPerPage: pagination.offset
+                    },
+                    criteria: {
+                        filter,
+                        order: "DESC"
+                    }
+                }
             )
         )
     }

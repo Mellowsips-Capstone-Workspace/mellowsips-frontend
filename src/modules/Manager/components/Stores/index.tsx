@@ -13,6 +13,24 @@ import Store from 'types/store'
 const { accessor, display } = createColumnHelper<Store>()
 
 const columns = [
+    display(
+        {
+            header: "Hành động",
+            cell: ({ row: { original } }) => {
+                return (
+                    <Link
+                        state={{ id: original.id }}
+                        to={original.id}
+                        relative="path"
+                        className="hover:text-main-primary"
+                    >
+                        Chi tiết
+                    </Link>
+                )
+            },
+            minSize: 150
+        }
+    ),
     accessor(
         "name",
         {
@@ -54,24 +72,6 @@ const columns = [
             ) : (
                 <Badge intent="secondary" className='text-xs px-1 py-0.5'>Chưa sẵn sàng</Badge>
             ),
-            minSize: 150
-        }
-    ),
-    display(
-        {
-            header: "Hành động",
-            cell: ({ row: { original } }) => {
-                return (
-                    <Link
-                        state={{ id: original.id }}
-                        to={original.id}
-                        relative="path"
-                        className="hover:text-main-primary"
-                    >
-                        Chi tiết
-                    </Link>
-                )
-            },
             minSize: 150
         }
     )

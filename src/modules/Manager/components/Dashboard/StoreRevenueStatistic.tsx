@@ -1,14 +1,10 @@
 
-import { format, parseISO } from "date-fns";
-import { isEmpty, isNull, isUndefined } from "lodash";
-import DateRangeSelect from "modules/Common/DateRangeSelect";
+import { isEmpty, isNull } from "lodash";
 import Loading from "modules/Common/Loading";
 import WidgetCard from "modules/Common/WidgetCard";
-import { FC, useCallback, useEffect, useState } from "react";
-import { DateRange } from "react-day-picker";
+import { FC, useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import DashboardService from "services/DashboardService";
-import { subtractDate } from "utils/date";
 
 const colors = [
     "#3872fa",
@@ -57,28 +53,15 @@ const renderCustomizedLabel = ({
 
 type StoreRevenueStatisticProps = {
     className?: string
+    range: { startDate: string | null, endDate: string | null }
 }
 
-const StoreRevenueStatistic: FC<StoreRevenueStatisticProps> = ({ className }) => {
+const StoreRevenueStatistic: FC<StoreRevenueStatisticProps> = ({ className, range }) => {
 
     const [loading, setLoading] = useState(true)
-    const [range, setRange] = useState<{ startDate: string | null, endDate: string | null }>(
-        {
-            startDate: format(subtractDate(new Date(), 7), "yyyy-MM-dd"),
-            endDate: format(new Date(), "yyyy-MM-dd")
-        }
-    )
 
     const [data, setData] = useState<{ name: string, value: number, color: string }[]>()
 
-
-    const handleSetRange = useCallback(({ from, to }: DateRange) => {
-        const range = {
-            startDate: isUndefined(from) ? null : format(from, "yyyy-MM-dd"),
-            endDate: isUndefined(to) ? null : format(to, "yyyy-MM-dd")
-        }
-        setRange(range)
-    }, [])
 
     useEffect(() => {
         (
@@ -116,18 +99,8 @@ const StoreRevenueStatistic: FC<StoreRevenueStatisticProps> = ({ className }) =>
         <WidgetCard
             title={
                 (
-                    <div className="flex justify-between">
-                        <h2 className="font-medium text-main-primary text-lg">Biểu đồ doanh thu các cửa hàng</h2>
-                        <DateRangeSelect
-                            initial={
-                                {
-                                    from: isNull(range.startDate) ? undefined : parseISO(range.startDate),
-                                    to: isNull(range.endDate) ? undefined : parseISO(range.endDate)
-                                }
-                            }
-                            onSelect={handleSetRange}
-                        />
-                    </div>
+                    <h2 className="font-medium text-main-primary text-lg">Biểu đồ doanh thu các cửa hàng</h2>
+
                 )
             }
             className={className}

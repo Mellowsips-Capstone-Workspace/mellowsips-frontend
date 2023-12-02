@@ -67,7 +67,11 @@ const StoreQRCodeManage: FC = () => {
     const [loading, setLoading] = useState(false)
     const [codes, setCodes] = useState<QRCode[]>([])
 
-    const fetchData = useCallback(async (storeId: string) => {
+    const fetchData = useCallback(async (storeId: string | null) => {
+        if (isEmpty(storeId)) {
+            setCodes([])
+            return
+        }
         setLoading(true)
 
         const { status, body } = await QRService.getByStoreId(storeId)
@@ -139,7 +143,7 @@ const StoreQRCodeManage: FC = () => {
                             (
                                 <div className='flex space-x-5'>
                                     <AddQRCode
-                                        storeId={storeId}
+                                        storeId={storeId!}
                                         addQRCode={addQRCode}
                                     />
                                     <div className="w-60">
