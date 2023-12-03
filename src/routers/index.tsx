@@ -3,8 +3,9 @@ import CryptoLocalStorageHelper, { CRYPTO_STORAGE_KEY } from "helpers/storage.ts
 import useComponentWillMount from "hooks/useComponentWillMount"
 import { isUndefined } from "lodash"
 import AdminRoutes from "routers/AdminRoutes"
-import ManageRoutes from "routers/ManageRoutes"
+import OwnerRoutes from "routers/OwnerRoutes"
 import PublicRoutes from "routers/PublicRoutes"
+import StaffRoutes from "routers/StaffRoutes"
 import { loadAuthenticate } from "stores/authenticate"
 import { useAppDispatch, useAppSelector } from "stores/root.ts"
 import { AuthenticateStore } from "types/authenticate"
@@ -30,15 +31,25 @@ const AppRouter = () => {
     if (!logged || isLoading) {
         return <PublicRoutes isLoading={isLoading} />
     }
+    console.log(principle.type);
+
 
     return (
         <>
             {
-                principle && principle.type === ROLE.ADMIN ? (
+                principle.type === ROLE.ADMIN ? (
                     <AdminRoutes />
-                ) : (
-                    <ManageRoutes />
-                )
+                ) : null
+            }
+            {
+                principle.type === ROLE.OWNER ? (
+                    <OwnerRoutes />
+                ) : null
+            }
+            {
+                principle.type === ROLE.STAFF ? (
+                    <StaffRoutes />
+                ) : null
             }
         </>
     )

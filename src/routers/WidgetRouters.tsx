@@ -1,15 +1,9 @@
-import { isEmpty } from "lodash"
 import { WidgetLoading } from "modules/Common/WaitingPage"
-import DashboardLayout from "modules/Layout/Dashboard"
 import AddMenu from "modules/Manager/widgets/AddMenu"
 import MenuManage from "modules/Manager/widgets/MenuManage"
 import UpdateMenu from "modules/Manager/widgets/UpdateMenu"
-import { FC, Suspense, lazy } from "react"
-import { Navigate, Route, Routes } from "react-router-dom"
-import PrintRoutes from "routers/PrintRoutes"
-import VoucherRoute from "routers/VoucherRoutes"
-import { useAppSelector } from "stores/root"
-import { Principle } from "types/authenticate"
+import { Suspense, lazy } from "react"
+import { Navigate, Route } from "react-router-dom"
 
 const ApplicationManage = lazy(() => import("modules/Manager/widgets/ApplicationManage"))
 const CreateApplicationWidget = lazy(() => import("modules/Manager/widgets/CreateApplication"))
@@ -25,7 +19,7 @@ const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
 
-const ApplicationRoute = (
+export const ApplicationRoute = (
     <Route path="applications">
         <Route
             path="*"
@@ -62,7 +56,7 @@ const ApplicationRoute = (
     </Route>
 )
 
-const StoreRoute = (
+export const StoreRoute = (
     <Route path="stores">
         <Route
             path="*"
@@ -83,7 +77,7 @@ const StoreRoute = (
     </Route>
 )
 
-const ProductRoute = (
+export const ProductRoute = (
     <Route path="products">
         <Route
             path="*"
@@ -112,7 +106,7 @@ const ProductRoute = (
     </Route>
 )
 
-const OrderRoute = (
+export const OrderRoute = (
     <Route path="orders">
         <Route
             path="*"
@@ -125,7 +119,7 @@ const OrderRoute = (
     </Route>
 )
 
-const QRRoute = (
+export const QRRoute = (
     <Route path="qr">
         <Route
             path="*"
@@ -138,7 +132,7 @@ const QRRoute = (
     </Route>
 )
 
-const MenuRoute = (
+export const MenuRoute = (
     <Route path="menus">
         <Route
             path="*"
@@ -168,7 +162,7 @@ const MenuRoute = (
     </Route>
 )
 
-const StoreAccountRoute = (
+export const StoreAccountRoute = (
     <Route path="accounts">
         <Route
             path="*"
@@ -181,7 +175,7 @@ const StoreAccountRoute = (
     </Route>
 )
 
-const DashboardRoute = (
+export const DashboardRoute = (
     <>
         <Route
             path="dashboard"
@@ -200,34 +194,3 @@ const DashboardRoute = (
         />
     </>
 )
-
-const ManageRoutes: FC = () => {
-    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
-    const pending = isEmpty(principle.partnerId)
-
-    return (
-        <Routes>
-            {
-                PrintRoutes
-            }
-            <Route
-                path="*"
-                element={<DashboardLayout />}
-            >
-                {
-                    ApplicationRoute
-                }
-                {pending ? null : DashboardRoute}
-                {pending ? null : StoreRoute}
-                {pending ? null : ProductRoute}
-                {pending ? null : QRRoute}
-                {pending ? null : OrderRoute}
-                {pending ? null : VoucherRoute}
-                {pending ? null : MenuRoute}
-                {pending ? null : StoreAccountRoute}
-            </Route>
-        </Routes>
-    )
-}
-
-export default ManageRoutes
