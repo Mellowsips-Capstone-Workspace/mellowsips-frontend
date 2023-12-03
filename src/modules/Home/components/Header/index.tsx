@@ -60,6 +60,13 @@ const Header: FC = () => {
                                         Trở Thành Đối Tác
                                     </button>
                                 </Link>
+                                <Link to="/login" className="block px-2 py-2 text-white transition-colors">
+                                    <button
+                                        className="w-full px-4 py-3 font-bold bg-main-secondary rounded"
+                                    >
+                                        Đăng nhập
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ) : (
