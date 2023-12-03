@@ -121,7 +121,7 @@ const Sidebar: FC<SidebarProps> = ({ onSidebarClick }) => {
         {
             disable: false,
             path: "stores",
-            label: "Chi nhánh",
+            label: "Cửa hàng",
             pattern: "/stores/*",
             icon: <HomeIcon className="h-full w-full" />
 

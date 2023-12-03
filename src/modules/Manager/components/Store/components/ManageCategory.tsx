@@ -27,7 +27,7 @@ const ManageCategory: FC = () => {
     }
 
     return (
-        <div className='space-y-5 bg-white p-5 w-full rounded'>
+        <div className='space-y-5 bg-white p-5 w-full rounded hidden'>
             <div className='flex space-x-2 justify-between'>
                 <h2 className='text-main-primary font-medium text-lg'>Danh mục nổi bật</h2>
                 <div className="space-x-2">

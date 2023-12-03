@@ -1,3 +1,4 @@
+import ROLE from "enums/role"
 import { isEmpty } from "lodash"
 import Button from "modules/Common/Button"
 import showToast from "modules/Common/Toast"
@@ -5,11 +6,14 @@ import HoursOfOperation from "modules/Manager/components/OpenTimeManage/componen
 import { StoreContext, StoreContextType } from "modules/Manager/components/Store/contexts/StoreContext"
 import { HTMLAttributes, forwardRef, useCallback, useContext, useRef, useState } from "react"
 import StoreService from "services/StoreService"
+import { useAppSelector } from "stores/root"
 import { DaySchedule, OperationalHours } from "types/store"
 
 const OpenTimeManage = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ ...props }, ref) => {
         const { store, updateStore } = useContext<StoreContextType>(StoreContext)!
+        const { type } = useAppSelector(state => state.authenticate.principle!)
+
 
         const initOperationalHours = useRef<OperationalHours>(
             store.operationalHours ? store.operationalHours : {
@@ -120,28 +124,35 @@ const OpenTimeManage = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>
             )
         }
 
+
+
         return (
             <div ref={ref} {...props}>
                 <div className="flex justify-between items-center">
                     <h3 className="font-medium text-main-primary">Giờ hoạt động</h3>
-                    <div className="space-x-2">
-                        <Button
-                            type="button"
-                            variant="default"
-                            className="text-xs"
-                            onClick={reset}
-                        >
-                            Đặt lại
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="orange"
-                            className="text-xs"
-                            onClick={saveChange}
-                        >
-                            Lưu thay đổi
-                        </Button>
-                    </div>
+                    {
+                        [ROLE.OWNER, ROLE.STORE_MANAGER].includes(type) ? (
+                            <div className="space-x-2">
+                                <Button
+                                    type="button"
+                                    variant="default"
+                                    className="text-xs"
+                                    onClick={reset}
+                                >
+                                    Đặt lại
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="orange"
+                                    className="text-xs"
+                                    onClick={saveChange}
+                                >
+                                    Lưu thay đổi
+                                </Button>
+                            </div>
+
+                        ) : null
+                    }
                 </div>
 
                 <div className="space-y-2 mt-5">

@@ -20,8 +20,6 @@ const StoreDetail: FC<StoreDetailProps> = ({ storeId }) => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    // console.log(store.isActive);
-
     useEffect(() => {
         (
             async () => {
@@ -76,7 +74,6 @@ const StoreDetail: FC<StoreDetailProps> = ({ storeId }) => {
                                 <ManageCategory />
                             </div>
                             <div className="space-y-5">
-
                                 <OpenTimeManage className="py-2 px-5 bg-white rounded" />
                             </div>
                         </div>

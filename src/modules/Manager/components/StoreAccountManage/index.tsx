@@ -2,6 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
 import { isEmpty } from 'lodash'
 import Badge from 'modules/Common/Badge'
+import RoleBadge from 'modules/Common/RoleBadge'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import AccountDetail from 'modules/Manager/components/AccountDetail'
@@ -54,18 +55,10 @@ const columns = [
         }
     ),
     accessor(
-        "provider",
-        {
-            header: "Loại",
-            cell: ({ getValue }) => getValue(),
-            minSize: 150,
-        }
-    ),
-    accessor(
         "type",
         {
-            header: "Role",
-            cell: ({ getValue }) => getValue(),
+            header: "Quyền",
+            cell: ({ getValue }) => <RoleBadge role={getValue()} />,
             minSize: 150,
         }
     ),

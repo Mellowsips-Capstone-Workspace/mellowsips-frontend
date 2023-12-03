@@ -1,5 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
+import ROLE from 'enums/role'
 import { isEmpty, isString } from 'lodash'
 import Loading from 'modules/Common/Loading'
 import SelectStoreManage from 'modules/Common/SelectStoreManage'
@@ -10,6 +11,8 @@ import AddQRCode from 'modules/Manager/components/AddQRCode'
 import QRCodeModel from 'modules/Manager/components/QRCode'
 import { FC, useCallback, useEffect, useState } from 'react'
 import QRService from 'services/QRService'
+import { useAppSelector } from 'stores/root'
+import { Principle } from 'types/authenticate'
 import { QRCode } from 'types/store'
 
 type QRCodeItem = QRCode & {
@@ -63,6 +66,7 @@ const columns = [
 ]
 
 const StoreQRCodeManage: FC = () => {
+    const { type, storeId: accountStoreId } = useAppSelector<Principle>(state => state.authenticate.principle!)
     const { loading: storeLoading, stores, storeId, setStoreId } = useSelectStore()
     const [loading, setLoading] = useState(false)
     const [codes, setCodes] = useState<QRCode[]>([])
@@ -85,10 +89,13 @@ const StoreQRCodeManage: FC = () => {
     }, [])
 
     useEffect(() => {
-        if (isString(storeId)) {
-            fetchData(storeId)
+        if (!isString(storeId) && !isString(accountStoreId)) {
+            return
         }
-    }, [storeId, fetchData])
+        const id = [ROLE.STAFF, ROLE.STORE_MANAGER].includes(type) ? accountStoreId : storeId
+
+        fetchData(id!)
+    }, [storeId, fetchData, type, accountStoreId])
 
     const updateQRCode = useCallback((id: string, qr: QRCode) => {
         setCodes(
@@ -110,8 +117,8 @@ const StoreQRCodeManage: FC = () => {
             return
         }
         setLoading(true)
-
-        const { status, body } = await QRService.getByStoreId(storeId)
+        const id = [ROLE.STAFF, ROLE.STORE_MANAGER].includes(type) ? accountStoreId : storeId
+        const { status, body } = await QRService.getByStoreId(id)
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data)) {
@@ -119,7 +126,7 @@ const StoreQRCodeManage: FC = () => {
         } else {
             setCodes([])
         }
-    }, [storeId])
+    }, [storeId, type, accountStoreId])
 
     if (storeLoading) {
         return (
@@ -142,19 +149,34 @@ const StoreQRCodeManage: FC = () => {
                         actions={
                             (
                                 <div className='flex space-x-5'>
-                                    <AddQRCode
-                                        storeId={storeId!}
-                                        addQRCode={addQRCode}
-                                    />
-                                    <div className="w-60">
-                                        <SelectStoreManage
-                                            stores={stores}
-                                            loading={false}
-                                            storeId={storeId}
-                                            setStoreId={setStoreId}
-                                            onStoreChange={fetchData}
-                                        />
-                                    </div>
+                                    {
+                                        type === ROLE.OWNER ? (
+                                            <AddQRCode
+                                                storeId={storeId!}
+                                                addQRCode={addQRCode}
+                                            />
+                                        ) : (
+                                            <AddQRCode
+                                                storeId={accountStoreId}
+                                                addQRCode={addQRCode}
+                                            />
+                                        )
+                                    }
+
+                                    {
+                                        type === ROLE.OWNER ? (
+                                            <div className="w-60">
+                                                <SelectStoreManage
+                                                    stores={stores}
+                                                    loading={false}
+                                                    storeId={storeId}
+                                                    setStoreId={setStoreId}
+                                                    onStoreChange={fetchData}
+                                                />
+                                            </div>
+                                        ) : null
+                                    }
+
                                 </div>
                             )
                         }

@@ -259,7 +259,6 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                                         ) : null
                                     }
 
-
                                     {
                                         discountType === VOUCHER_TYPE.PERCENT ? (
                                             <div className="space-y-2">
@@ -328,7 +327,6 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                             </>
                         )
                     }
-
                 </Formik>
             </Modal >
         </div>

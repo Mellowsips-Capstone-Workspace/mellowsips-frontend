@@ -1,3 +1,4 @@
+import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import useBoolean from "hooks/useBoolean"
 import { isEmpty } from "lodash"
@@ -9,6 +10,7 @@ import showToast from "modules/Common/Toast"
 import { StoreContext, StoreContextType } from "modules/Manager/components/Store/contexts/StoreContext"
 import { FC, useContext } from "react"
 import StoreService from "services/StoreService"
+import { useAppSelector } from "stores/root"
 import { object, string } from "yup"
 
 const CoverImage: FC = () => {
@@ -336,10 +338,13 @@ const AvatarImage: FC = () => {
 
 const BasicInfo: FC = () => {
     const { store } = useContext<StoreContextType>(StoreContext)!
-
+    const { type } = useAppSelector(state => state.authenticate.principle!)
 
     return (
-        <div className="shadow rounded">
+        <div
+            aria-disabled={type === ROLE.STAFF}
+            className="shadow rounded aria-disabled:pointer-events-none"
+        >
             <CoverImage />
 
             <div className="bg-white rounded-b px-5 py-2 space-y-3">

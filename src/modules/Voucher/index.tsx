@@ -62,7 +62,7 @@ const columns = [
     display(
         {
             header: "Hành động",
-            cell: ({ row: { original, index } }) => <VoucherModal voucher={original} />,
+            cell: ({ row: { original } }) => <VoucherModal voucher={original} />,
             minSize: 150
         }
     )
