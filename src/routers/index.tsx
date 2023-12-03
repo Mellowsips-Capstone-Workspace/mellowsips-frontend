@@ -6,6 +6,7 @@ import AdminRoutes from "routers/AdminRoutes"
 import OwnerRoutes from "routers/OwnerRoutes"
 import PublicRoutes from "routers/PublicRoutes"
 import StaffRoutes from "routers/StaffRoutes"
+import StoreManageRoutes from "routers/StoreManageRoutes"
 import { loadAuthenticate } from "stores/authenticate"
 import { useAppDispatch, useAppSelector } from "stores/root.ts"
 import { AuthenticateStore } from "types/authenticate"
@@ -31,8 +32,6 @@ const AppRouter = () => {
     if (!logged || isLoading) {
         return <PublicRoutes isLoading={isLoading} />
     }
-    console.log(principle.type);
-
 
     return (
         <>
@@ -44,6 +43,11 @@ const AppRouter = () => {
             {
                 principle.type === ROLE.OWNER ? (
                     <OwnerRoutes />
+                ) : null
+            }
+            {
+                principle.type === ROLE.STORE_MANAGER ? (
+                    <StoreManageRoutes />
                 ) : null
             }
             {
