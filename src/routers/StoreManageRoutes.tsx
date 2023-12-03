@@ -1,9 +1,9 @@
 import DashboardLayout from "modules/Layout/Dashboard"
 import { FC } from "react"
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import PrintRoutes from "routers/PrintRoutes"
 import VoucherRoute from "routers/VoucherRoutes"
-import { DashboardRoute, MenuRoute, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
+import { MenuRoute, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
 
 const StoreManageRoutes: FC = () => {
 
@@ -16,7 +16,6 @@ const StoreManageRoutes: FC = () => {
                 path="*"
                 element={<DashboardLayout />}
             >
-                {DashboardRoute}
                 {StoreRoute}
                 {ProductRoute}
                 {QRRoute}
@@ -24,6 +23,10 @@ const StoreManageRoutes: FC = () => {
                 {VoucherRoute}
                 {MenuRoute}
                 {StoreAccountRoute}
+                <Route
+                    path="*"
+                    element={<Navigate to="/orders" replace={true} />}
+                />
             </Route>
         </Routes>
     )
