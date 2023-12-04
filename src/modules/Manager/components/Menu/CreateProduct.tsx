@@ -104,7 +104,9 @@ const CreateProduct: FC<CreateProductProps> = ({ menuId }) => {
         >
             <Form className="space-y-5">
                 <EssentialInfo />
-                <ProductOptionSections />
+                <div className='border rounded shadow'>
+                    <ProductOptionSections />
+                </div>
             </Form>
         </Formik>
 

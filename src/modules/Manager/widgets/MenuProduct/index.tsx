@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import LogoFull from 'modules/Common/LogoFull';
 import CloneProduct from 'modules/Manager/components/Menu/CloneProduct';
 import CreateProduct from 'modules/Manager/components/Menu/CreateProduct';
 import { FC } from 'react';
@@ -14,7 +15,10 @@ const MenuProduct: FC = () => {
     }
 
     return (
-        <div>
+        <div className='px-5'>
+            <div className='py-5 flex justify-center'>
+                <LogoFull height={20} />
+            </div>
             {
                 isEmpty(parentId) ? <CreateProduct menuId={menuId!} /> : <CloneProduct menuId={menuId!} parentId={parentId!} />
             }

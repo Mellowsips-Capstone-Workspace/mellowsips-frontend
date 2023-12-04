@@ -187,7 +187,9 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId }) => {
                                     <ProductAction />
                                 </div>
                             </div>
-                            <ProductOptionSections />
+                            <div className='border rounded shadow'>
+                                <ProductOptionSections />
+                            </div>
                         </Form>
                     </Formik>
                 ) : null

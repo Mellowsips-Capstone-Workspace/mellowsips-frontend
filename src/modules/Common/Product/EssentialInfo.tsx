@@ -7,7 +7,7 @@ import { FC } from "react"
 const EssentialInfo: FC = () => {
     return (
         <div className="grid grid-cols-4 gap-5">
-            <div className="col-span-3 bg-white p-5 space-y-5 shadow rounded">
+            <div className="col-span-3 bg-white p-5 space-y-5 shadow rounded border">
                 <div className="grid grid-cols-2 gap-5">
                     <div className="space-y-1">
                         <label className="text-gray-500 font-medium">Tên sản phẩm</label>
@@ -38,7 +38,7 @@ const EssentialInfo: FC = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-white p-5 space-y-5 shadow rounded">
+            <div className="bg-white p-5 space-y-5 shadow rounded border">
                 <ProductAction />
             </div>
         </div>
