@@ -4,7 +4,7 @@ import { FC } from "react"
 import { Route, Routes } from "react-router-dom"
 import PrintRoutes from "routers/PrintRoutes"
 import VoucherRoute from "routers/VoucherRoutes"
-import { ApplicationRoute, DashboardRoute, MenuRoutes, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
+import { ApplicationRoute, DashboardRoute, MenuProductRoutes, MenuRoutes, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 
@@ -14,9 +14,8 @@ const OwnerRoutes: FC = () => {
 
     return (
         <Routes>
-            {
-                PrintRoutes
-            }
+            {PrintRoutes}
+            {MenuProductRoutes}
             <Route
                 path="*"
                 element={<DashboardLayout />}
