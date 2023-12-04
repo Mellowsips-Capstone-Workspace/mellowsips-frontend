@@ -91,8 +91,8 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ refetchProducts }) => {
                 className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 p-5 flex items-center"
                 innerClassName="w-220 space-y-5 flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
-                <p className="px-5 py-2 shadow border-b truncate font-medium">Thêm sản phẩm vào menu</p>
-                <div className='px-5 space-y-5'>
+                <p className="flex-none px-5 py-2 shadow border-b truncate font-medium">Thêm sản phẩm vào menu</p>
+                <div className='px-5 space-y-5 grow overflow-y-auto'>
                     <Button
                         variant="primary"
                         type='button'
@@ -102,7 +102,6 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ refetchProducts }) => {
                         Tạo mới sản phẩm
                     </Button>
                     <div className='space-y-2'>
-
                         <p className="font-medium text-gray-500">Tạo mới sản phẩm từ mẫu</p>
                         <ul className="grid grid-cols-2 gap-2">
                             {
@@ -140,7 +139,7 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ refetchProducts }) => {
                         </ul>
                     </div>
                 </div>
-                <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                <div className="flex-none border-t py-2 px-5 flex justify-end space-x-5">
                     <Button
                         type="button"
                         variant="default"
