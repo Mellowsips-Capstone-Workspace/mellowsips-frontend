@@ -35,7 +35,7 @@ const ProductDetail = () => {
                             message: "Tải dữ liệu sản phẩm thất bại."
                         }
                     )
-                    navigate("/applications")
+                    navigate("/")
                     return
                 }
                 setProduct(body.data)

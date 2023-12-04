@@ -1,6 +1,6 @@
 import { DragHandleDots2Icon } from '@radix-ui/react-icons'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
-import { isNull, isUndefined } from 'lodash'
+import { isArray, isNull, isUndefined } from 'lodash'
 import Button from 'modules/Common/Button'
 import FormikTextField from 'modules/Common/FormikTextField'
 import SelectProducts from 'modules/Common/Menu/SelectProducts'
@@ -9,11 +9,17 @@ import { FC, useCallback, useEffect, useRef } from 'react'
 import { Menu, MenuSection } from 'types/menus'
 import { Product } from 'types/product'
 
-const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = ({ products, ...props }) => {
+type SectionProps = (void | FieldArrayRenderProps) & {
+    products: Product[],
+    refetch: () => void
+}
+
+const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
     const currentMenuSections = useRef<MenuSection[] | null>(null)
     const { form, swap, push, name, remove } = props as FieldArrayRenderProps
     const { menuSections, storeId } = form.values as Menu
     currentMenuSections.current = menuSections
+
     const { setFieldValue } = form
     const position = useRef({ pick: -1, target: -1 })
     const handleSwap = useCallback((index: number, targetIndex: number) => {
@@ -49,7 +55,16 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
             return
         }
 
-        setFieldValue(name, currentMenuSections.current.map(section => ({ ...section, productIds: [] })), true)
+        const menuSections = currentMenuSections.current.map(
+            ({ productIds, ...section }) => (
+                {
+                    ...section,
+                    productIds: isArray(productIds) ? productIds : []
+                }
+            )
+        )
+
+        setFieldValue(name, menuSections, true)
     }, [setFieldValue, name, storeId])
 
     if (isNull(props) || isUndefined(props)) {
@@ -92,7 +107,14 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
                                             <FormikTextField.Input name={`${name}.${index}.name`} />
                                         </div>
 
-                                        <SelectProducts index={index} originalName={name} key={nanoid()} products={products} name={`${name}.${index}.productIds`} />
+                                        <SelectProducts
+                                            index={index}
+                                            key={nanoid()}
+                                            products={products}
+                                            originalName={name}
+                                            refetch={refetch}
+                                            name={`${name}.${index}.productIds`}
+                                        />
                                     </div>
                                     <DragHandleDots2Icon className="cursor-move" />
                                 </div>
@@ -134,12 +156,13 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
 
 type MenuOptionSectionsProps = {
     products: Product[]
+    refetch: () => void
 }
-const MenuOptionSections: FC<MenuOptionSectionsProps> = ({ products }) => (
+const MenuOptionSections: FC<MenuOptionSectionsProps> = ({ products, refetch }) => (
     <FieldArray
         name="menuSections"
         key="menuSections"
-        render={(props) => <Sections {...props} products={products} />}
+        render={(props) => <Sections {...props} products={products} refetch={refetch} />}
     />
 )
 

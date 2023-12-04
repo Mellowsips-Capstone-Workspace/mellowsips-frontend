@@ -18,7 +18,7 @@ const ProductCreateWidget = lazy(() => import("modules/Manager/widgets/CreatePro
 const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage"))
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
-const MenuProductManageWidget = lazy(() => import("modules/Manager/widgets/MenuProduct"))
+const MenuProductWidget = lazy(() => import("modules/Manager/widgets/MenuProduct"))
 
 export const ApplicationRoute = (
     <Route path="applications">
@@ -133,7 +133,7 @@ export const QRRoute = (
     </Route>
 )
 
-export const MenuRoute = (
+export const MenuRoutes = (
     <Route path="menus">
         <Route
             path="*"
@@ -162,12 +162,13 @@ export const MenuRoute = (
 
     </Route>
 )
-export const MenuProductRoute = (
+
+export const MenuProductRoutes = (
     <Route
-        path="menu-product"
+        path="menu/product"
         element={
             <Suspense fallback={<Waiting />}>
-                <MenuProductManageWidget />
+                <MenuProductWidget />
             </Suspense>
         }
     />

@@ -6,7 +6,7 @@ import Loading from "modules/Common/Loading"
 import MenuOptionSections from "modules/Common/Menu/MenuOptionSections"
 import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
-import { FC, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import MenuService from "services/MenuService"
 import ProductService from "services/ProductService"
@@ -19,51 +19,23 @@ const AddMenu: FC = () => {
     const [loading, setLoading] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
 
-    useEffect(() => {
-        (
-            async () => {
-                setLoading(true)
+    const refetch = useCallback(async () => {
+        setLoading(true)
 
-                const { status, body } = await ProductService.search({ pagination: { page: 1, offset: 1000 } })
-                setLoading(false)
+        const { status, body } = await ProductService.search({ pagination: { page: 1, offset: 1000 } })
+        setLoading(false)
 
-                if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
-                    setProducts(body.data.results)
-                } else {
-                    setProducts([])
-                }
-            }
-        )()
-    }, [])
-
-    useEffect(() => {
-        const onMessage = (message: MessageEvent) => {
-            const { data } = message
-            console.log(data);
+        if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
+            setProducts(body.data.results)
+        } else {
+            setProducts([])
         }
-
-        window.addEventListener("message", onMessage)
-        return () => window.removeEventListener("message", onMessage)
-
     }, [])
 
-    if (loading) {
-        return (
-            <div className="mx-auto space-y-4 p-5">
-                <Loading.Circle className="mx-auto text-main-primary" />
-                <p className="text-gray-500 text-center">Đang chuẩn bị tài nguyên. Vui lòng đợi trong giây lát!</p>
-            </div>
-        )
-    }
+    useEffect(() => {
+        refetch()
+    }, [refetch])
 
-
-    const add = () => {
-        window.open(
-            window.location.origin.concat("/menu-product"),
-            'popup',
-            'width=+width+'
-        )
-    }
     return (
 
         <Formik
@@ -134,8 +106,6 @@ const AddMenu: FC = () => {
         >
             <Form className="w-full space-y-5">
                 <div className="grid grid-cols-4 gap-5">
-                    <div onClick={add}>ADD</div>
-
                     <div className="col-span-3 p-5 bg-white rounded shadow grid grid-cols-2 gap-5">
 
                         <div className="space-y-2">
@@ -176,7 +146,14 @@ const AddMenu: FC = () => {
                         </div>
                     </div>
                 </div>
-                <MenuOptionSections products={products} />
+                {
+                    loading ? (
+                        <div className="mx-auto space-y-4 p-5">
+                            <Loading.Circle className="mx-auto text-main-primary" />
+                            <p className="text-gray-500 text-center">Đang danh sách sản phẩm. Vui lòng đợi trong giây lát!</p>
+                        </div>
+                    ) : <MenuOptionSections refetch={refetch} products={products} />
+                }
             </Form>
         </Formik>
     )

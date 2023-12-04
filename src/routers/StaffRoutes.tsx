@@ -2,7 +2,7 @@ import DashboardLayout from "modules/Layout/Dashboard"
 import { FC } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import PrintRoutes from "routers/PrintRoutes"
-import { MenuRoute, OrderRoute, StoreRoute } from "routers/WidgetRouters"
+import { MenuRoutes, OrderRoute, StoreRoute } from "routers/WidgetRouters"
 
 
 const StaffRoutes: FC = () => {
@@ -16,7 +16,7 @@ const StaffRoutes: FC = () => {
                 element={<DashboardLayout />}
             >
                 {OrderRoute}
-                {MenuRoute}
+                {MenuRoutes}
                 {StoreRoute}
                 <Route
                     path="*"

@@ -1,16 +1,18 @@
+import { isEmpty } from 'lodash';
+import CloneProduct from 'modules/Manager/components/Menu/CloneProduct';
 import { FC } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const MenuProduct: FC = () => {
-    function sendMessageToParent() {
-        // Send a message to the parent window
-        window.opener.postMessage({ name: 'Hello from child' }, window.origin);
-    }
-
-    // Example of sending a message after some interaction or event
-
+    const [params] = useSearchParams()
+    const parentId = params.get("parentId")
 
     return (
-        <div onClick={sendMessageToParent}>MenuProduct jjs</div>
+        <div>
+            {
+                isEmpty(parentId) ? null : <CloneProduct parentId={parentId!} />
+            }
+        </div>
     )
 }
 

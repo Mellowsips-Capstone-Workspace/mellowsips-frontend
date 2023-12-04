@@ -1,7 +1,9 @@
+import { ReloadIcon } from '@radix-ui/react-icons'
 import { useFormikContext } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
+import MenuProductAdd from 'modules/Common/Menu/MenuProductAdd'
 import Modal from 'modules/Common/Modal/Modal'
 import { FC, MouseEvent, memo, useCallback, useMemo, useState } from 'react'
 import { Menu } from 'types/menus'
@@ -12,9 +14,10 @@ type SelectProductsProps = {
     products: Product[]
     originalName: string
     index: number
+    refetch: () => void
 }
 
-const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName, index }) => {
+const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName, index, refetch }) => {
     const [display, setDisplay] = useBoolean(false)
     const { values, setFieldValue } = useFormikContext<Menu>()
     const { storeId } = values
@@ -58,23 +61,38 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
     }
 
     const selectedProducts = useMemo(() => {
-
         return items.filter(({ id }) => productIds.includes(id))
     }, [items, productIds])
 
     return (
-        <div key={name}>
+        <div className='space-y-2' key={name}>
             <div className="space-y-1 flex justify-between">
                 <label className='text-gray-500 font-medium'>Sản phẩm</label>
-                <Button
-                    variant="indigo"
-                    base="none"
-                    type='button'
-                    onClick={setDisplay.on}
-                    className='px-2 py-0.5 text-xs rounded font-medium'
-                >
-                    Thêm
-                </Button>
+                <div className='flex space-x-4'>
+                    <Button
+                        variant="default"
+                        base="none"
+                        type='button'
+                        onClick={refetch}
+                        className='px-2 py-0.5 text-xs rounded font-medium'
+                    >
+                        <ReloadIcon className='mr-1 h-3 w-3' />
+                        <span>Sản phẩm</span>
+                    </Button>
+                    <Button
+                        variant="indigo"
+                        base="none"
+                        type='button'
+                        onClick={setDisplay.on}
+                        className='px-2 py-0.5 text-xs rounded font-medium'
+                    >
+                        Chọn
+                    </Button>
+                    <MenuProductAdd
+                        refetch={refetch}
+                        products={products}
+                    />
+                </div>
             </div>
             <ul className="py-2 grid grid-cols-2 gap-2">
                 {
@@ -173,7 +191,6 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                             )
                         }
                     </ul>
-
                 </div>
                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
                     <Button
@@ -192,7 +209,6 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                         Huỷ
                     </Button>
                 </div>
-
             </Modal >
         </div>
     )
