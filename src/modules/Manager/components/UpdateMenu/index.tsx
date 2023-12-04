@@ -2,9 +2,9 @@ import { Form, Formik } from "formik"
 import { isArray, isEmpty } from "lodash"
 import Button from "modules/Common/Button"
 import FormikTextField from "modules/Common/FormikTextField"
+import UpdateMenuOptionSections from "modules/Common/Menu/UpdateMenuOptionSections"
+import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
-import UpdateMenuOptionSections from "modules/Manager/components/Menu/components/UpdateMenuOptionSections"
-import StoreSelect from "modules/Manager/components/Product/components/StoreSelect"
 import { FC } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import MenuService from "services/MenuService"
@@ -20,9 +20,7 @@ type UpdateMenuProps = {
 
 const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products }) => {
     const navigate = useNavigate()
-
     return (
-
         <Formik
             initialValues={menu}
             validationSchema={

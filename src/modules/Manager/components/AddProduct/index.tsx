@@ -1,9 +1,9 @@
 import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import { isArray, isEmpty } from "lodash"
+import EssentialInfo from "modules/Common/Product/EssentialInfo"
+import ProductOptionSections from "modules/Common/Product/ProductOptionSections"
 import showToast from "modules/Common/Toast"
-import EssentialInfo from "modules/Manager/components/Product/components/EssentialInfo"
-import ProductOptionSections from "modules/Manager/components/Product/components/ProductOptionSections"
 import { FC } from "react"
 import { useNavigate } from "react-router-dom"
 import ProductService from "services/ProductService"
@@ -14,7 +14,6 @@ import { array, boolean, number, object, string } from "yup"
 const AddProduct: FC = () => {
     const navigate = useNavigate()
     const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
-
 
     return (
         <Formik
@@ -33,19 +32,19 @@ const AddProduct: FC = () => {
             validationSchema={
                 object(
                     {
-                        name: string().required("Trường này không được để trống."),
-                        price: number().required("Trường này không được để trống."),
-                        coverImage: string().required("Trường này không được để trống."),
+                        name: string().required("Tên không được để trống."),
+                        price: number().required("Giá không được để trống."),
+                        coverImage: string().required("Ảnh không được để trống."),
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: principle.type !== ROLE.OWNER ? string().required("Trường này không được để trống.") : string().nullable(),
+                        storeId: principle.type !== ROLE.OWNER ? string().nullable() : string().required("Vui lòng chọn cửa hàng."),
                         productOptionSections: array(
                             object(
                                 {
-                                    name: string().required("Trường này không được để trống."),
+                                    name: string().required("Tên nhóm tuỳ chọn không được để trống."),
                                     isRequired: boolean().required("Trường này không được để trống."),
-                                    maxAllowedChoices: number().typeError("Vui lòng nhập giá trị là số").min(1, "Tuỳ chọn không hợp lệ.").required("Trường này không được để trống."),
+                                    maxAllowedChoices: number().typeError("Tối đa lựa chọn phải là một số.").min(1, "Tuỳ chọn không hợp lệ.").required("Trường này không được để trống."),
                                     productAddons: array(
                                         object(
                                             {
@@ -94,7 +93,6 @@ const AddProduct: FC = () => {
                         }
                     )
                     navigate("/products")
-
                 }
             }
         >

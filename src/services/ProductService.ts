@@ -25,7 +25,7 @@ class ProductService {
 
         return requestApiHelper<body>(
             interceptor.post(
-                "products/search",
+                "products/templates/search",
                 {
                     pagination: {
                         page: pagination.page,

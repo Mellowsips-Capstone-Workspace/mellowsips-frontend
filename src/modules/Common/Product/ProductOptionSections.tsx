@@ -3,18 +3,14 @@ import { FieldArray, FieldArrayRenderProps } from 'formik'
 import { isNull, isUndefined } from 'lodash'
 import Button from 'modules/Common/Button'
 import FormikTextField from 'modules/Common/FormikTextField'
-import SelectProducts from 'modules/Manager/components/Menu/components/SelectProducts'
-import { nanoid } from 'nanoid'
-import { FC, useCallback, useEffect, useRef } from 'react'
-import { Menu, MenuSection } from 'types/menus'
-import { Product } from 'types/product'
+import AddOns from 'modules/Common/Product/AddOns'
+import { FC, useCallback, useRef } from 'react'
+import { Product, ProductOptionSection } from 'types/product'
 
-const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = ({ products, ...props }) => {
-    const currentMenuSections = useRef<MenuSection[] | null>(null)
+const Sections: FC<void | FieldArrayRenderProps> = (props) => {
+
     const { form, swap, push, name, remove } = props as FieldArrayRenderProps
-    const { menuSections, storeId } = form.values as Menu
-    currentMenuSections.current = menuSections
-    const { setFieldValue } = form
+    const { productOptionSections } = form.values as Product
     const position = useRef({ pick: -1, target: -1 })
     const handleSwap = useCallback((index: number, targetIndex: number) => {
         if (position.current.pick === -1 || position.current.target === -1 || index === targetIndex) {
@@ -44,37 +40,18 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
         position.current = { pick: -1, target: -1 }
     }, [handleSwap])
 
-    useEffect(() => {
-        if (isNull(currentMenuSections.current)) {
-            return
-        }
-
-        setFieldValue(name, currentMenuSections.current.map(section => ({ ...section, productIds: [] })), true)
-    }, [setFieldValue, name, storeId])
-
     if (isNull(props) || isUndefined(props)) {
         return
     }
 
     return (
-        <div
-            key={name}
-            className="bg-white p-5 rounded space-y-5"
-        >
-
-            <h2 className='font-medium text-lg text-main-primary space-x-1'>
-                <span>Danh mục sản phẩm</span>
-                {
-                    menuSections.length === 0 ? (
-                        <span>(Thêm ít nhất 1 danh mục)</span>
-                    ) : null
-                }
-            </h2>
+        <div className="bg-white p-5 rounded space-y-5">
+            <h2 className='font-medium text-lg text-main-primary'>Nhóm sản phẩm tuỳ chọn</h2>
 
             <ul className="grid grid-cols-2 gap-x-10 gap-y-5">
                 {
-                    menuSections.map(
-                        (item: MenuSection, index) => (
+                    productOptionSections.map(
+                        (item: ProductOptionSection, index) => (
                             <li
                                 draggable
                                 key={index}
@@ -87,15 +64,33 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
                                 <div className='flex p-5 space-x-5 justify-between items-start'>
                                     <div className='grow space-y-5'>
 
-                                        <div className="space-y-1">
-                                            <label className='text-gray-500 font-medium'>Tên danh mục</label>
-                                            <FormikTextField.Input name={`${name}.${index}.name`} />
+                                        <div className='grid gap-5 grid-cols-2 items-start'>
+                                            <div className="space-y-1">
+                                                <label className='text-gray-500 font-medium'>Tên nhóm sản phẩm tuỳ chọn</label>
+                                                <FormikTextField.Input name={`${name}.${index}.name`} />
+                                            </div>
+                                            <div
+                                                className="space-y-1"
+                                            >
+                                                <label className='text-gray-500 font-medium'>Tối đa lựa chọn</label>
+                                                <FormikTextField.Input name={`${name}.${index}.maxAllowedChoices`} />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className='text-gray-500 font-medium'>Tuỳ chọn bắt buộc</label>
+                                                <div className='flex space-x-2'>
+                                                    <FormikTextField.ToggleCheckbox name={`${name}.${index}.isRequired`} />
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <SelectProducts index={index} originalName={name} key={nanoid()} products={products} name={`${name}.${index}.productIds`} />
                                     </div>
                                     <DragHandleDots2Icon className="cursor-move" />
                                 </div>
+
+                                <FieldArray
+                                    name={`${name}.${index}.productAddons`}
+                                    component={AddOns}
+                                />
                                 <hr></hr>
                                 <div className='p-5'>
                                     <Button
@@ -121,26 +116,26 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
                     () => push(
                         {
                             name: "",
-                            productIds: []
+                            priority: productOptionSections.length,
+                            isRequired: false,
+                            maxAllowedChoices: 1,
+                            productAddons: []
                         }
                     )
                 }
             >
-                Thêm danh mục mới
+                Thêm nhóm mới
             </button>
         </div>
     )
+
 }
 
-type MenuOptionSectionsProps = {
-    products: Product[]
-}
-const MenuOptionSections: FC<MenuOptionSectionsProps> = ({ products }) => (
+const ProductOptionSections: FC = () => (
     <FieldArray
-        name="menuSections"
-        key="menuSections"
-        render={(props) => <Sections {...props} products={products} />}
+        name="productOptionSections"
+        component={Sections}
     />
 )
 
-export default MenuOptionSections
+export default ProductOptionSections

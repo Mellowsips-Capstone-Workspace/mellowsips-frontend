@@ -3,9 +3,9 @@ import { isArray, isEmpty } from "lodash"
 import Button from "modules/Common/Button"
 import FormikTextField from "modules/Common/FormikTextField"
 import Loading from "modules/Common/Loading"
+import MenuOptionSections from "modules/Common/Menu/MenuOptionSections"
+import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
-import MenuOptionSections from "modules/Manager/components/Menu/components/MenuOptionSections"
-import StoreSelect from "modules/Manager/components/Product/components/StoreSelect"
 import { FC, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import MenuService from "services/MenuService"
@@ -36,6 +36,17 @@ const AddMenu: FC = () => {
         )()
     }, [])
 
+    useEffect(() => {
+        const onMessage = (message: MessageEvent) => {
+            const { data } = message
+            console.log(data);
+        }
+
+        window.addEventListener("message", onMessage)
+        return () => window.removeEventListener("message", onMessage)
+
+    }, [])
+
     if (loading) {
         return (
             <div className="mx-auto space-y-4 p-5">
@@ -45,6 +56,14 @@ const AddMenu: FC = () => {
         )
     }
 
+
+    const add = () => {
+        window.open(
+            window.location.origin.concat("/menu-product"),
+            'popup',
+            'width=+width+'
+        )
+    }
     return (
 
         <Formik
@@ -115,6 +134,7 @@ const AddMenu: FC = () => {
         >
             <Form className="w-full space-y-5">
                 <div className="grid grid-cols-4 gap-5">
+                    <div onClick={add}>ADD</div>
 
                     <div className="col-span-3 p-5 bg-white rounded shadow grid grid-cols-2 gap-5">
 
@@ -127,6 +147,7 @@ const AddMenu: FC = () => {
                         </div>
                         <StoreSelect />
                     </div>
+
                     <div className="col-span-1 p-5 grid grid-cols-2 gap-5 bg-white rounded shadow">
 
                         <div className="space-y-2">

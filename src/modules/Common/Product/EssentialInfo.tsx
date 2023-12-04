@@ -1,6 +1,7 @@
 import FormikTextField from "modules/Common/FormikTextField"
-import CoverImage from "modules/Manager/components/Product/components/CoverImage"
-import ProductAction from "modules/Manager/components/Product/components/ProductAction"
+import CoverImage from "modules/Common/Product/CoverImage"
+import ProductAction from "modules/Common/Product/ProductAction"
+
 import { FC } from "react"
 
 const EssentialInfo: FC = () => {
@@ -37,7 +38,6 @@ const EssentialInfo: FC = () => {
                     </div>
                 </div>
             </div>
-
             <div className="bg-white p-5 space-y-5 shadow rounded">
                 <ProductAction />
             </div>

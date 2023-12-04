@@ -3,15 +3,14 @@ import { FC } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import PrintRoutes from "routers/PrintRoutes"
 import VoucherRoute from "routers/VoucherRoutes"
-import { MenuRoute, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
+import { MenuProductRoute, MenuRoute, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
 
 const StoreManageRoutes: FC = () => {
 
     return (
         <Routes>
-            {
-                PrintRoutes
-            }
+            {PrintRoutes}
+            {MenuProductRoute}
             <Route
                 path="*"
                 element={<DashboardLayout />}

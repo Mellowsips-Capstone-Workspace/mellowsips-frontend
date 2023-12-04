@@ -1,4 +1,4 @@
-import { WidgetLoading } from "modules/Common/WaitingPage"
+import { Waiting, WidgetLoading } from "modules/Common/WaitingPage"
 import AddMenu from "modules/Manager/widgets/AddMenu"
 import MenuManage from "modules/Manager/widgets/MenuManage"
 import UpdateMenu from "modules/Manager/widgets/UpdateMenu"
@@ -18,6 +18,7 @@ const ProductCreateWidget = lazy(() => import("modules/Manager/widgets/CreatePro
 const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage"))
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
+const MenuProductManageWidget = lazy(() => import("modules/Manager/widgets/MenuProduct"))
 
 export const ApplicationRoute = (
     <Route path="applications">
@@ -160,6 +161,16 @@ export const MenuRoute = (
         />
 
     </Route>
+)
+export const MenuProductRoute = (
+    <Route
+        path="menu-product"
+        element={
+            <Suspense fallback={<Waiting />}>
+                <MenuProductManageWidget />
+            </Suspense>
+        }
+    />
 )
 
 export const StoreAccountRoute = (

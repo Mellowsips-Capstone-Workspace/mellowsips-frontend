@@ -1,4 +1,4 @@
-import ProductDetail from 'modules/Manager/components/Product/components/ProductDetail'
+import ProductDetail from 'modules/Common/Product/ProductDetail'
 import { FC } from 'react'
 import { Product as ProductType } from "types/product"
 
