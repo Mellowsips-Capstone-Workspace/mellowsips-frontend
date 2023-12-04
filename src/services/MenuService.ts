@@ -1,7 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
 import { Menu } from "types/menus"
-import { Product } from "types/product"
 
 class MenuService {
 
@@ -59,7 +58,7 @@ class MenuService {
             statusCode: number
             message: string | undefined
             errorCode: null | string
-            data: Product
+            data: Menu
         }
 
         return requestApiHelper<body>(

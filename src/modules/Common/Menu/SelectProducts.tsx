@@ -14,10 +14,10 @@ type SelectProductsProps = {
     products: Product[]
     originalName: string
     index: number
-    refetch: () => void
+    refetchProducts: () => void
 }
 
-const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName, index, refetch }) => {
+const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName, index, refetchProducts }) => {
     const [display, setDisplay] = useBoolean(false)
     const { values, setFieldValue } = useFormikContext<Menu>()
     const { storeId } = values
@@ -73,7 +73,7 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                         variant="default"
                         base="none"
                         type='button'
-                        onClick={refetch}
+                        onClick={refetchProducts}
                         className='px-2 py-0.5 text-xs rounded font-medium'
                     >
                         <ReloadIcon className='mr-1 h-3 w-3' />
@@ -89,8 +89,7 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                         Chọn
                     </Button>
                     <MenuProductAdd
-                        refetch={refetch}
-                        products={products}
+                        refetchProducts={refetchProducts}
                     />
                 </div>
             </div>

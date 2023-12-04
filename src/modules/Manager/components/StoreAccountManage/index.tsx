@@ -27,6 +27,14 @@ const columns = [
         }
     ),
     accessor(
+        "username",
+        {
+            header: "Tên đăng nhập",
+            cell: ({ getValue }) => getValue(),
+            minSize: 150,
+        }
+    ),
+    accessor(
         "email",
         {
             header: "Email",

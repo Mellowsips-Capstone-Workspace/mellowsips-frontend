@@ -112,7 +112,7 @@ const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
                                             key={nanoid()}
                                             products={products}
                                             originalName={name}
-                                            refetch={refetch}
+                                            refetchProducts={refetch}
                                             name={`${name}.${index}.productIds`}
                                         />
                                     </div>

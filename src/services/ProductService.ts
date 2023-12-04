@@ -4,7 +4,7 @@ import { Product } from "types/product"
 
 class ProductService {
 
-    static search(
+    static searchTemplates(
         options: {
             pagination: { page: number, offset: number },
 
@@ -38,6 +38,19 @@ class ProductService {
                     }
                 }
             )
+        )
+    }
+
+    static getMenuProducts(menuId: string) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: Product[]
+        }
+
+        return requestApiHelper<body>(
+            interceptor.get(`menus/${menuId}/products`)
         )
     }
 

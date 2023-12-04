@@ -5,34 +5,59 @@ import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
 import Modal from 'modules/Common/Modal/Modal'
 import showToast from 'modules/Common/Toast'
-import { FC, MouseEvent, useCallback, useEffect } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import ProductService from 'services/ProductService'
 import { Product } from 'types/product'
 
 type MenuProductAddProps = {
-    products: Product[]
-    refetch: () => void
+    refetchProducts: () => void
 }
 
-const MenuProductAdd: FC<MenuProductAddProps> = ({ products, refetch }) => {
+const MenuProductAdd: FC<MenuProductAddProps> = ({ refetchProducts }) => {
     const [display, setDisplay] = useBoolean(false)
     const { off } = setDisplay
+    const [products, setProducts] = useState<Product[]>([])
+    const { id: menuId } = useParams()
+
+    const fetchProductTemplates = useCallback(async () => {
+        const { status, body } = await ProductService.searchTemplates({ pagination: { page: 1, offset: 1000 } })
+        if (status !== 200 || isEmpty(body) || isEmpty(body.data.results)) {
+            setProducts([])
+            showToast(
+                {
+                    type: "warning",
+                    title: "Chú ý",
+                    message: "Hiện tại không thể tải được các sản phẩm mẫu."
+                }
+            )
+        } else {
+            setProducts(body.data.results)
+        }
+    }, [])
 
     const addProduct = useCallback((event: MouseEvent<HTMLButtonElement>) => {
         const { parentId } = event.currentTarget.dataset
+        const url = window.location.origin.concat("/menu/product?menuId=").concat(menuId!)
         window.open(
-            window.location.origin.concat(isEmpty(parentId) ? "/menu/product" : `/menu/product?parentId=${parentId}`),
-            'popup',
-            'width=+width+'
+            isEmpty(parentId) ? url : url.concat(`&parentId=${parentId}`),
+            "popup",
+            "width=+width+"
         )
         off()
-    }, [off])
+    }, [off, menuId])
+
+
+    useEffect(() => {
+        fetchProductTemplates()
+    }, [fetchProductTemplates])
 
     useEffect(() => {
         const onMessage = (message: MessageEvent) => {
             const { data } = message
             if (data === "PRODUCT_CREATED") {
                 off()
-                refetch()
+                refetchProducts()
                 showToast(
                     {
                         type: "success",
@@ -45,7 +70,7 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ products, refetch }) => {
 
         window.addEventListener("message", onMessage)
         return () => window.removeEventListener("message", onMessage)
-    }, [refetch, off])
+    }, [refetchProducts, off])
 
     return (
         <>
@@ -67,7 +92,6 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ products, refetch }) => {
                 innerClassName="w-220 space-y-5 flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <p className="px-5 py-2 shadow border-b truncate font-medium">Thêm sản phẩm vào menu</p>
-
                 <div className='px-5 space-y-5'>
                     <Button
                         variant="primary"

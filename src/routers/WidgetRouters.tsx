@@ -1,7 +1,4 @@
 import { Waiting, WidgetLoading } from "modules/Common/WaitingPage"
-import AddMenu from "modules/Manager/widgets/AddMenu"
-import MenuManage from "modules/Manager/widgets/MenuManage"
-import UpdateMenu from "modules/Manager/widgets/UpdateMenu"
 import { Suspense, lazy } from "react"
 import { Navigate, Route } from "react-router-dom"
 
@@ -19,6 +16,9 @@ const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
 const MenuProductWidget = lazy(() => import("modules/Manager/widgets/MenuProduct"))
+const MenuManageWidget = lazy(() => import("modules/Manager/widgets/MenuManage"))
+const UpdateMenuWidget = lazy(() => import("modules/Manager/widgets/UpdateMenu"))
+
 
 export const ApplicationRoute = (
     <Route path="applications">
@@ -139,15 +139,7 @@ export const MenuRoutes = (
             path="*"
             element={
                 <Suspense fallback={<WidgetLoading />}>
-                    <MenuManage />
-                </Suspense>
-            }
-        />
-        <Route
-            path="create"
-            element={
-                <Suspense fallback={<WidgetLoading />}>
-                    <AddMenu />
+                    <MenuManageWidget />
                 </Suspense>
             }
         />
@@ -155,7 +147,7 @@ export const MenuRoutes = (
             path=":id"
             element={
                 <Suspense fallback={<WidgetLoading />}>
-                    <UpdateMenu />
+                    <UpdateMenuWidget />
                 </Suspense>
             }
         />

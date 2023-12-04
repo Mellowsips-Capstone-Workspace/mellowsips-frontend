@@ -9,7 +9,12 @@ import { FC, useCallback, useRef } from 'react'
 import { Menu, MenuSection } from 'types/menus'
 import { Product } from 'types/product'
 
-const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = ({ products, ...props }) => {
+type SectionProps = (void | FieldArrayRenderProps) & {
+    products: Product[],
+    refetchProducts: () => void
+}
+
+const Sections: FC<SectionProps> = ({ products, refetchProducts, ...props }) => {
     const currentMenuSections = useRef<MenuSection[] | null>(null)
     const { form, swap, push, name, remove } = props as FieldArrayRenderProps
     const { menuSections } = form.values as Menu
@@ -83,7 +88,14 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
                                             <FormikTextField.Input name={`${name}.${index}.name`} />
                                         </div>
 
-                                        <SelectProducts index={index} originalName={name} key={nanoid()} products={products} name={`${name}.${index}.productIds`} />
+                                        <SelectProducts
+                                            index={index}
+                                            originalName={name}
+                                            key={nanoid()}
+                                            products={products}
+                                            name={`${name}.${index}.productIds`}
+                                            refetchProducts={refetchProducts}
+                                        />
                                     </div>
                                     <DragHandleDots2Icon className="cursor-move" />
                                 </div>
@@ -125,12 +137,21 @@ const Sections: FC<(void | FieldArrayRenderProps) & { products: Product[] }> = (
 
 type UpdateMenuOptionSectionsProps = {
     products: Product[]
+    refetchProducts: () => void
 }
-const UpdateMenuOptionSections: FC<UpdateMenuOptionSectionsProps> = ({ products }) => (
+const UpdateMenuOptionSections: FC<UpdateMenuOptionSectionsProps> = ({ products, refetchProducts }) => (
     <FieldArray
         name="menuSections"
         key="menuSections"
-        render={(props) => <Sections {...props} products={products} />}
+        render={
+            (props) => (
+                <Sections
+                    {...props}
+                    products={products}
+                    refetchProducts={refetchProducts}
+                />
+            )
+        }
     />
 )
 

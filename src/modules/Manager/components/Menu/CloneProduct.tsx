@@ -16,9 +16,10 @@ import { array, boolean, number, object, string } from 'yup';
 
 type CloneProductProps = {
     parentId: string
+    menuId: string
 }
 
-const CloneProduct: FC<CloneProductProps> = ({ parentId }) => {
+const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId }) => {
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState<Product>()
 
@@ -78,6 +79,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId }) => {
                                 description: isEmpty(product.description) ? "" : product.description,
                                 productOptionSections: isArray(product.productOptionSections) ? product.productOptionSections : [],
                                 parentId,
+                                menuId
                             }
                         }
                         validationSchema={

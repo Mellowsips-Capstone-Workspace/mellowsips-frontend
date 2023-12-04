@@ -16,13 +16,19 @@ import { array, object, string } from "yup"
 type UpdateMenuProps = {
     products: Product[]
     menu: Menu
+    refetchProducts: () => void
 }
 
-const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products }) => {
+const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts }) => {
     const navigate = useNavigate()
     return (
         <Formik
-            initialValues={menu}
+            initialValues={
+                {
+                    ...menu,
+                    isActive: menu.isActive ? true : false
+                }
+            }
             validationSchema={
                 object(
                     {
@@ -121,7 +127,10 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products }) => {
                         </div>
                     </div>
                 </div>
-                <UpdateMenuOptionSections products={products} />
+                <UpdateMenuOptionSections
+                    products={products}
+                    refetchProducts={refetchProducts}
+                />
             </Form>
         </Formik>
     )

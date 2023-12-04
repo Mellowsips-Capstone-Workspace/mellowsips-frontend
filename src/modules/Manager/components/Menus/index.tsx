@@ -6,6 +6,7 @@ import Badge from "modules/Common/Badge"
 import Pagination from "modules/Common/Pagination/Pagination"
 import { TableSkeleton } from "modules/Common/Skeleton"
 import Table from "modules/Common/Table"
+import AddMenu from "modules/Manager/components/AddMenu"
 import { FC, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import MenuService from "services/MenuService"
@@ -90,11 +91,7 @@ const Menus: FC = () => {
                 ) : (
                     <>
                         <Table<Menu>
-                            actions={
-                                (
-                                    <Link className="px-5 py-1.5 rounded bg-main-primary text-white" to="create">Thêm mới </Link>
-                                )
-                            }
+                            actions={<AddMenu refetch={refetch} />}
                             columns={columns}
                             data={menus}
                             refetch={refetch}

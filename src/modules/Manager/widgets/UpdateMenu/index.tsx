@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash'
 import Loading from 'modules/Common/Loading'
 import { Widget } from 'modules/Layout/Dashboard'
 import Update from 'modules/Manager/components/UpdateMenu'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import MenuService from 'services/MenuService'
 import ProductService from 'services/ProductService'
@@ -17,6 +17,18 @@ const UpdateMenu = () => {
     const { id: menuId } = useParams()
     const navigate = useNavigate()
 
+
+    const refetchProducts = useCallback(async () => {
+        const { status, body } = await ProductService.getMenuProducts(menuId!)
+        if (status === 200 && !isEmpty(body) && Array.isArray(body.data)) {
+            setProducts(body.data)
+        } else {
+            setProducts([])
+            return
+        }
+
+    }, [menuId])
+
     useEffect(() => {
 
         if (isEmpty(menuId)) {
@@ -30,17 +42,17 @@ const UpdateMenu = () => {
 
                 const [requestProducts, requestMenu] = await Promise.all(
                     [
-                        ProductService.search({ pagination: { page: 1, offset: 1000 } }),
+                        ProductService.getMenuProducts(menuId!),
                         MenuService.getById(menuId!)
                     ]
                 )
 
                 setLoading(false)
 
-                if (requestProducts.status === 200 && !isEmpty(requestProducts.body) && Array.isArray(requestProducts.body.data.results)) {
-                    setProducts(requestProducts.body.data.results)
+                if (requestProducts.status === 200 && !isEmpty(requestProducts.body) && Array.isArray(requestProducts.body.data)) {
+                    setProducts(requestProducts.body.data)
                 } else {
-                    navigate("/menus")
+                    setProducts([])
                     return
                 }
 
@@ -55,7 +67,6 @@ const UpdateMenu = () => {
         )()
     }, [menuId, navigate])
 
-
     return (
         <Widget>
             {
@@ -66,6 +77,7 @@ const UpdateMenu = () => {
                     </div>
                 ) : (menu && products) ? (
                     <Update
+                        products={products}
                         menu={
                             {
                                 ...menu,
@@ -86,7 +98,7 @@ const UpdateMenu = () => {
                                 ) : []
                             }
                         }
-                        products={products}
+                        refetchProducts={refetchProducts}
                     />
                 ) : null
             }

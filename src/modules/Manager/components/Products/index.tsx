@@ -96,7 +96,7 @@ const Products: FC = () => {
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
 
-        const { status, body } = await ProductService.search({ pagination: { page, offset } })
+        const { status, body } = await ProductService.searchTemplates({ pagination: { page, offset } })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {

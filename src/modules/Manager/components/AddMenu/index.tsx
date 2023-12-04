@@ -1,161 +1,151 @@
+import ROLE from "enums/role"
 import { Form, Formik } from "formik"
-import { isArray, isEmpty } from "lodash"
+import useBoolean from "hooks/useBoolean"
+import { isEmpty } from "lodash"
 import Button from "modules/Common/Button"
 import FormikTextField from "modules/Common/FormikTextField"
 import Loading from "modules/Common/Loading"
-import MenuOptionSections from "modules/Common/Menu/MenuOptionSections"
+import Modal from "modules/Common/Modal/Modal"
 import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
-import { FC, useCallback, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { FC, useId } from "react"
+import { useNavigate } from "react-router-dom"
 import MenuService from "services/MenuService"
-import ProductService from "services/ProductService"
-import { Product } from "types/product"
+import { useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
+import { MenuSection } from "types/menus"
 import REGEX from "validations/regex"
-import { array, object, string } from "yup"
+import { object, string } from "yup"
 
-const AddMenu: FC = () => {
+type AddMenuProps = {
+    refetch: () => void
+}
+
+const AddMenu: FC<AddMenuProps> = () => {
+    const [display, setDisplay] = useBoolean(false)
+    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
+    const id = useId()
+
+
     const navigate = useNavigate()
-    const [loading, setLoading] = useState(false)
-    const [products, setProducts] = useState<Product[]>([])
-
-    const refetch = useCallback(async () => {
-        setLoading(true)
-
-        const { status, body } = await ProductService.search({ pagination: { page: 1, offset: 1000 } })
-        setLoading(false)
-
-        if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
-            setProducts(body.data.results)
-        } else {
-            setProducts([])
-        }
-    }, [])
-
-    useEffect(() => {
-        refetch()
-    }, [refetch])
 
     return (
+        <>
+            <Button type="button" variant="primary" onClick={setDisplay.on}>Thêm mới </Button>
+            <Modal
+                flag={display}
+                closeModal={setDisplay.off}
+                closeOutside={false}
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
+                innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
+            >
 
-        <Formik
-            initialValues={
-                {
-                    name: "",
-                    isActive: false,
-                    menuSections: [
+                <Formik
+                    initialValues={
                         {
                             name: "",
-                            productIds: []
+                            isActive: false,
+                            menuSections: null,
+                            storeId: principle.type === ROLE.OWNER ? null : principle.storeId,
                         }
-                    ],
-                    storeId: null,
-                }
-            }
-            validationSchema={
-                object(
-                    {
-                        name: string().matches(REGEX.notBlank, "Tên menu không hợp lệ.").required("Trường này không được để trống."),
-                        storeId: string().required("Vui lòng chọn cửa hàng"),
-                        menuSections: array(
-                            object(
-                                {
-                                    name: string().matches(REGEX.notBlank, "Tên chưa hợp lệ.").required("Tên là bắt buộc"),
-                                    productIds: array(string().required()).min(1, "Thêm ít nhất 1 sản phẩm vào danh mục")
-                                }
-                            )
-                        ).min(1)
                     }
-                )
-            }
-            onSubmit={
-                async ({ menuSections, ...values }) => {
-                    const payload = {
-                        ...values,
-                        menuSections: isArray(menuSections) ? menuSections.map(
-                            (section: object, index) => (
-                                {
-                                    ...section,
-                                    priority: index + 1
-                                }
-                            )
-                        ) : []
-                    }
-
-                    const { body, status } = await MenuService.create(payload)
-                    if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
-                        showToast(
+                    validationSchema={
+                        object(
                             {
-                                type: "error",
-                                title: "Thất bại",
-                                message: "Tạo menu thất bại."
+                                name: string().matches(REGEX.notBlank, "Tên menu không hợp lệ.").required("Trường này không được để trống."),
+                                storeId: principle.type !== ROLE.OWNER ? string().nullable() : string().required("Vui lòng chọn cửa hàng.")
                             }
                         )
-                        return
                     }
-                    showToast(
-                        {
-                            type: "success",
-                            title: "Thành công",
-                            message: "Tạo menu thành công."
+                    onSubmit={
+                        async (values) => {
+                            const menuSections = values.menuSections! as MenuSection[]
+                            const payload = {
+                                ...values,
+                                menuSections: Array.isArray(menuSections) ? menuSections.map(
+                                    (section: any, index) => (
+                                        {
+                                            ...section,
+                                            priority: index + 1
+                                        } as MenuSection
+                                    )
+                                ) : []
+                            }
+
+                            const { body, status } = await MenuService.create(payload)
+                            if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
+                                showToast(
+                                    {
+                                        type: "error",
+                                        title: "Thất bại",
+                                        message: "Tạo menu thất bại."
+                                    }
+                                )
+                                return
+                            }
+                            showToast(
+                                {
+                                    type: "success",
+                                    title: "Thành công",
+                                    message: "Tạo menu thành công."
+                                }
+                            )
+                            navigate("/menus/".concat(body.data.id!))
                         }
-                    )
-                    navigate("/menus")
-                }
-            }
-        >
-            <Form className="w-full space-y-5">
-                <div className="grid grid-cols-4 gap-5">
-                    <div className="col-span-3 p-5 bg-white rounded shadow grid grid-cols-2 gap-5">
+                    }
+                >
+                    {
+                        ({ isSubmitting }) => (
+                            <>
+                                <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Tạo mới menu</p>
 
-                        <div className="space-y-2">
-                            <label className="text-gray-500 font-medium">Tên menu</label>
-                            <FormikTextField.Input
-                                name="name"
-                                placeholder="Tên menu"
-                            />
-                        </div>
-                        <StoreSelect />
-                    </div>
-
-                    <div className="col-span-1 p-5 grid grid-cols-2 gap-5 bg-white rounded shadow">
-
-                        <div className="space-y-2">
-                            <label className='text-gray-500 font-medium'>Hiển thị</label>
-                            <FormikTextField.ToggleCheckbox name="isActive" />
-                        </div>
-                        <div className="space-y-2">
-                            <Button
-                                type="submit"
-                                variant="indigo"
-                                className="h-fit min-w-full"
-                            >
-                                Tạo Menu
-                            </Button>
-                            <Link
-                                to="/menus"
-                                className="block"
-                            >
-                                <Button
-                                    className="min-w-full h-fit"
-                                    type="button"
+                                <Form
+                                    id={id}
+                                    className="p-5 grow overflow-y-auto w-220  space-y-5"
                                 >
-                                    Quay về
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-                {
-                    loading ? (
-                        <div className="mx-auto space-y-4 p-5">
-                            <Loading.Circle className="mx-auto text-main-primary" />
-                            <p className="text-gray-500 text-center">Đang danh sách sản phẩm. Vui lòng đợi trong giây lát!</p>
-                        </div>
-                    ) : <MenuOptionSections refetch={refetch} products={products} />
-                }
-            </Form>
-        </Formik>
+                                    <div className="grid grid-cols-3 gap-5">
+                                        <div className="space-y-2 col-span-2">
+                                            <label className="text-gray-500 font-medium">Tên menu</label>
+                                            <FormikTextField.Input
+                                                name="name"
+                                                placeholder="Tên menu"
+                                            />
+                                        </div>
+                                        <div className="space-y-2 col-span-1">
+                                            <label className='text-gray-500 font-medium'>Hiển thị</label>
+                                            <FormikTextField.ToggleCheckbox name="isActive" />
+                                        </div>
+                                    </div>
+                                    {
+                                        principle.type !== ROLE.OWNER ? null : <StoreSelect />
+                                    }
+                                </Form>
+                                <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                                    <Button
+                                        disabled={isSubmitting}
+                                        form={id}
+                                        type="submit"
+                                        variant="primary"
+                                        className="space-x-2"
+                                    >
+                                        {isSubmitting ? <Loading.Circle size={12} /> : null}
+                                        <span>Tạo menu</span>
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="default"
+                                        onClick={setDisplay.off}
+                                    >
+                                        Huỷ
+                                    </Button>
+                                </div>
+                            </>
+                        )
+                    }
+                </Formik>
+            </Modal>
+        </>
+
     )
 }
 
