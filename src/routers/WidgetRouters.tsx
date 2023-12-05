@@ -1,4 +1,4 @@
-import { Waiting, WidgetLoading } from "modules/Common/WaitingPage"
+import { WidgetLoading } from "modules/Common/WaitingPage"
 import { Suspense, lazy } from "react"
 import { Navigate, Route } from "react-router-dom"
 
@@ -15,7 +15,6 @@ const ProductCreateWidget = lazy(() => import("modules/Manager/widgets/CreatePro
 const OrderManageWidget = lazy(() => import("modules/Manager/widgets/OrderManage"))
 const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
-const MenuProductWidget = lazy(() => import("modules/Manager/widgets/MenuProduct"))
 const MenuManageWidget = lazy(() => import("modules/Manager/widgets/MenuManage"))
 const UpdateMenuWidget = lazy(() => import("modules/Manager/widgets/UpdateMenu"))
 
@@ -153,17 +152,6 @@ export const MenuRoutes = (
         />
 
     </Route>
-)
-
-export const MenuProductRoutes = (
-    <Route
-        path="menu/product"
-        element={
-            <Suspense fallback={<Waiting />}>
-                <MenuProductWidget />
-            </Suspense>
-        }
-    />
 )
 
 export const StoreAccountRoute = (

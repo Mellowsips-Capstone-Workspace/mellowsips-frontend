@@ -338,6 +338,7 @@ const AvatarImage: FC = () => {
 
 const BasicInfo: FC = () => {
     const { store } = useContext<StoreContextType>(StoreContext)!
+    const { isActive, isOpen } = store
     const { type } = useAppSelector(state => state.authenticate.principle!)
 
     return (
@@ -354,7 +355,13 @@ const BasicInfo: FC = () => {
                         <div className="grow">
 
                             <h2 className="text-lg font-semibold">{store.name}</h2>
-                            <span className="text-xs px-1 py-0.5 rounded text-white bg-green-500">Đang mở cửa</span>
+                            {
+                                isActive && isOpen ? (
+                                    <span className="text-xs px-1 py-0.5 rounded text-white bg-green-500">Đang mở cửa</span>
+                                ) : (
+                                    <span className="text-xs px-1 py-0.5 rounded text-white bg-red-500">Đóng cửa</span>
+                                )
+                            }
 
                         </div>
                     </div>

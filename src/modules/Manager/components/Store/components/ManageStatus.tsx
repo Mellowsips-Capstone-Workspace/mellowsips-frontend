@@ -10,6 +10,7 @@ import { useAppSelector } from "stores/root";
 
 const StoreAction: FC = () => {
     const navigate = useNavigate()
+
     const { store: { id, isActive }, updateStore } = useContext<StoreContextType>(StoreContext)!
     const handleInactiveStore = useCallback(async () => {
         const { status, body } = await StoreService.inactiveStore(id)

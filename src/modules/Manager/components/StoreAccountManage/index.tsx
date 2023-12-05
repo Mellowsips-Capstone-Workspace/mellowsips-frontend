@@ -22,7 +22,7 @@ const columns = [
         "displayName",
         {
             header: "Tên",
-            cell: ({ getValue }) => getValue(),
+            cell: ({ getValue }) => <p className='truncate'>{getValue()}</p>,
             minSize: 150,
         }
     ),
@@ -65,7 +65,7 @@ const columns = [
     accessor(
         "type",
         {
-            header: "Quyền",
+            header: "Vai trò",
             cell: ({ getValue }) => <RoleBadge role={getValue()} />,
             minSize: 150,
         }

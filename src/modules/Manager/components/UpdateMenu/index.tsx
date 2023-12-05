@@ -5,6 +5,7 @@ import FormikTextField from "modules/Common/FormikTextField"
 import UpdateMenuOptionSections from "modules/Common/Menu/UpdateMenuOptionSections"
 import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
+import MenuProducts from "modules/Manager/components/UpdateMenu/MenuProducts"
 import { FC } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import MenuService from "services/MenuService"
@@ -22,6 +23,7 @@ type UpdateMenuProps = {
 const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts }) => {
     const navigate = useNavigate()
     return (
+
         <Formik
             initialValues={
                 {
@@ -127,10 +129,19 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts }) =>
                         </div>
                     </div>
                 </div>
-                <UpdateMenuOptionSections
-                    products={products}
-                    refetchProducts={refetchProducts}
-                />
+                <div className="bg-white p-5 space-y-5 rounded border">
+                    <MenuProducts
+                        products={products}
+                        refetchProducts={refetchProducts}
+                    />
+                </div>
+                <div className="rounded border">
+                    <UpdateMenuOptionSections
+                        products={products}
+                        refetchProducts={refetchProducts}
+                    />
+                </div>
+
             </Form>
         </Formik>
     )

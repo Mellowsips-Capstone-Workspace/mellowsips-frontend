@@ -38,7 +38,7 @@ const AddProduct: FC = () => {
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: principle.type !== ROLE.OWNER ? string().nullable() : string().required("Vui lòng chọn cửa hàng."),
+                        storeId: principle.type === ROLE.OWNER ? string().nullable() : string().required("Vui lòng chọn cửa hàng."),
                         productOptionSections: array(
                             object(
                                 {

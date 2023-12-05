@@ -3,7 +3,6 @@ import { useFormikContext } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
-import MenuProductAdd from 'modules/Common/Menu/MenuProductAdd'
 import Modal from 'modules/Common/Modal/Modal'
 import { FC, MouseEvent, memo, useCallback, useMemo, useState } from 'react'
 import { Menu } from 'types/menus'
@@ -18,9 +17,10 @@ type SelectProductsProps = {
 }
 
 const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName, index, refetchProducts }) => {
-    const [display, setDisplay] = useBoolean(false)
     const { values, setFieldValue } = useFormikContext<Menu>()
+    const [display, setDisplay] = useBoolean(false)
     const { storeId } = values
+    const productIds = values[originalName].at(index).productIds as string[]
 
     const [items, setItems] = useState<(Product & { selected: boolean })[]>(
         () => {
@@ -28,10 +28,16 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
             if (storeId) {
                 items = items.filter(product => product.storeId === storeId)
             }
-            return items
+            return items.map(
+                product => (
+                    {
+                        ...product,
+                        selected: productIds.includes(product.id!)
+                    }
+                )
+            )
         }
     )
-    const productIds = values[originalName].at(index).productIds
 
     const setStateItem = useCallback((event: MouseEvent<HTMLLIElement | HTMLButtonElement>) => {
         const { id, state } = event.currentTarget.dataset
@@ -61,8 +67,9 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
     }
 
     const selectedProducts = useMemo(() => {
-        return items.filter(({ id }) => productIds.includes(id))
+        return items.filter(({ id }) => productIds.includes(id!))
     }, [items, productIds])
+
 
     return (
         <div className='space-y-2' key={name}>
@@ -88,9 +95,6 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                     >
                         Chọn
                     </Button>
-                    <MenuProductAdd
-                        refetchProducts={refetchProducts}
-                    />
                 </div>
             </div>
             <ul className="py-2 grid grid-cols-2 gap-2">

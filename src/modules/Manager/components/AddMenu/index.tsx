@@ -44,7 +44,6 @@ const AddMenu: FC<AddMenuProps> = () => {
                     initialValues={
                         {
                             name: "",
-                            isActive: false,
                             menuSections: null,
                             storeId: principle.type === ROLE.OWNER ? null : principle.storeId,
                         }
@@ -101,20 +100,14 @@ const AddMenu: FC<AddMenuProps> = () => {
 
                                 <Form
                                     id={id}
-                                    className="p-5 grow overflow-y-auto w-220  space-y-5"
+                                    className="p-5 grid grid-cols-2 gap-5 grow overflow-y-auto w-220"
                                 >
-                                    <div className="grid grid-cols-3 gap-5">
-                                        <div className="space-y-2 col-span-2">
-                                            <label className="text-gray-500 font-medium">Tên menu</label>
-                                            <FormikTextField.Input
-                                                name="name"
-                                                placeholder="Tên menu"
-                                            />
-                                        </div>
-                                        <div className="space-y-2 col-span-1">
-                                            <label className='text-gray-500 font-medium'>Hiển thị</label>
-                                            <FormikTextField.ToggleCheckbox name="isActive" />
-                                        </div>
+                                    <div className="space-y-2">
+                                        <label className="text-gray-500 font-medium">Tên menu</label>
+                                        <FormikTextField.Input
+                                            name="name"
+                                            placeholder="Tên menu"
+                                        />
                                     </div>
                                     {
                                         principle.type !== ROLE.OWNER ? null : <StoreSelect />

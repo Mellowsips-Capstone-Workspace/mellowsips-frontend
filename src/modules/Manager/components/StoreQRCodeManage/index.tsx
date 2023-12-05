@@ -165,13 +165,12 @@ const StoreQRCodeManage: FC = () => {
 
                                     {
                                         type === ROLE.OWNER ? (
-                                            <div className="w-60">
+                                            <div className="w-80">
                                                 <SelectStoreManage
                                                     stores={stores}
                                                     loading={false}
                                                     storeId={storeId}
                                                     setStoreId={setStoreId}
-                                                    onStoreChange={fetchData}
                                                 />
                                             </div>
                                         ) : null

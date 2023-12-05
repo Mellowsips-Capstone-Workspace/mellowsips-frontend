@@ -1,3 +1,4 @@
+import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import { isArray, isEmpty } from "lodash"
 import EssentialInfo from "modules/Common/Product/EssentialInfo"
@@ -5,13 +6,14 @@ import ProductOptionSections from "modules/Common/Product/ProductOptionSections"
 import showToast from "modules/Common/Toast"
 import { FC } from "react"
 import ProductService from "services/ProductService"
+import { useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
 import { Product as ProductType } from "types/product"
 import { array, boolean, number, object, string } from "yup"
 
 const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
-
     const { id } = product
-    //
+    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
     return (
         <Formik
             initialValues={product}
@@ -24,7 +26,7 @@ const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: string().required("Trường này không được để trống."),
+                        storeId: principle.type === ROLE.OWNER ? string().nullable() : string().required("Trường này không được để trống."),
                         productOptionSections: array(
                             object(
                                 {

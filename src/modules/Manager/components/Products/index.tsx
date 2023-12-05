@@ -21,12 +21,12 @@ const columns = [
             cell: ({ row: { original } }) => {
                 return (
                     (
-                        <div className="h-14 flex space-x-2 items-center">
+                        <div className="h-14 flex space-x-2 items-center max-w-full overflow-hidden">
 
                             <div className="h-14 w-14 flex-none">
                                 <DocumentPreview displayFileName={false} loadingMessage={false} documentId={original.coverImage} />
                             </div>
-                            <p>{original.name}</p>
+                            <p className="truncate">{original.name}</p>
 
                         </div>
                     )
