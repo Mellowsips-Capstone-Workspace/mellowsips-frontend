@@ -52,7 +52,7 @@ class StoreService {
 
         return requestApiHelper<body>(
             interceptor.put(
-                `stores/${id}`,
+                `stores/${id}/update`,
                 data
             )
         )
