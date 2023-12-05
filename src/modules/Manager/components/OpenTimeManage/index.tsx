@@ -91,9 +91,8 @@ const OpenTimeManage = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>
                 return
             }
 
-            const { status, body } = await StoreService.updateFieldStore(
+            const { status, body } = await StoreService.updateStore(
                 store.id,
-                "operational-hours",
                 {
                     operationalHours
                 }

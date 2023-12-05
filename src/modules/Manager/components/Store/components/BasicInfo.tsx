@@ -71,9 +71,8 @@ const CoverImage: FC = () => {
                     onSubmit={
                         async (values) => {
 
-                            const { status, body } = await StoreService.updateFieldStore(
+                            const { status, body } = await StoreService.updateStore(
                                 store.id,
-                                "cover-image",
                                 {
                                     coverImage: values.coverImage
                                 }
@@ -233,14 +232,12 @@ const AvatarImage: FC = () => {
                     onSubmit={
                         async (values) => {
 
-                            const { status, body } = await StoreService.updateFieldStore(
+                            const { status, body } = await StoreService.updateStore(
                                 store.id,
-                                "profile-image",
                                 {
                                     profileImage: values.profileImage
                                 }
                             )
-
 
                             if (status === 200 && !isEmpty(body)) {
                                 off()

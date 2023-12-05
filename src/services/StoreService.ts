@@ -42,7 +42,7 @@ class StoreService {
         )
     }
 
-    static updateFieldStore(id: string, field: string, data: any) {
+    static updateStore(id: string, data: any) {
         type body = {
             statusCode: number
             message: string | undefined
@@ -52,7 +52,7 @@ class StoreService {
 
         return requestApiHelper<body>(
             interceptor.put(
-                `stores/${id}/${field}`,
+                `stores/${id}`,
                 data
             )
         )
