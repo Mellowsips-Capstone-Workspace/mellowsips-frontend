@@ -42,7 +42,7 @@ const StoreAction: FC = () => {
                 {
                     type: "success",
                     title: "Thành công",
-                    message: "Tạm dừng cửa hàng thành công."
+                    message: "Thay đổi trạng thái cửa hàng thành công."
                 }
             )
             updateStore("isActive", true)

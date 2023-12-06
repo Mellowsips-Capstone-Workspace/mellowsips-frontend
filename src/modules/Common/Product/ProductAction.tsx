@@ -5,11 +5,16 @@ import Button from "modules/Common/Button"
 import Loading from "modules/Common/Loading"
 import ProductCategory from "modules/Common/Product/ProductCategory"
 import StoreSelect from "modules/Common/Store/StoreSelect"
+import { FC } from "react"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 import { Product } from "types/product"
 
-const ProductAction = () => {
+type ProductActionProps = {
+    selectStore: boolean
+}
+
+const ProductAction: FC<ProductActionProps> = ({ selectStore }) => {
     const { isSubmitting, errors, isValid, values } = useFormikContext<Product>()
     const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
@@ -42,7 +47,7 @@ const ProductAction = () => {
 
             <ProductCategory />
             {
-                type === ROLE.OWNER ? (
+                (type === ROLE.OWNER && selectStore) ? (
                     <StoreSelect />
                 ) : null
             }

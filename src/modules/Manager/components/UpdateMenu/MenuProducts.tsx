@@ -3,28 +3,33 @@ import useBoolean from 'hooks/useBoolean'
 import { isEmpty, isUndefined } from 'lodash'
 import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
+import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import showToast from 'modules/Common/Toast'
 import CloneProduct from 'modules/Manager/components/UpdateMenu/CloneProduct'
 import CreateProduct from 'modules/Manager/components/UpdateMenu/CreateProduct'
+import UpdateProduct from 'modules/Manager/components/UpdateMenu/UpdateProduct'
 import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from "react"
 import { useParams } from 'react-router-dom'
 import ProductService from 'services/ProductService'
 import { Product } from "types/product"
 
 type MenuProductProps = {
+    loading: boolean
     products: Product[]
     refetchProducts: () => void
 }
 
-const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
+const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading }) => {
     const { id: menuId } = useParams()
-    const currentParentId = useRef<string | undefined>(undefined)
+    const currentProductId = useRef<string | undefined>(undefined)
     const [displayCreateMode, setDisplayCreateMode] = useBoolean(false)
     const [displayClone, setDisplayClone] = useBoolean(false)
-    const [displayCreateNew, setDisplayCreateNew] = useBoolean(false)
-    const { on: onClone } = setDisplayClone
-    const { on: onCreateNew } = setDisplayCreateNew
+    const [displayUpdate, setDisplayUpdate] = useBoolean(false)
+    const [displayCreate, setDisplayCreate] = useBoolean(false)
+    const { on: openCloneModal } = setDisplayClone
+    const { on: openUpdateModal } = setDisplayUpdate
+    const { on: openCreateModal } = setDisplayCreate
     const { off: offDisplayCreateMode } = setDisplayCreateMode
     const [templates, setTemplates] = useState<Product[]>([])
 
@@ -45,16 +50,22 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
     }, [])
 
     const addProduct = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-        const { parentId } = event.currentTarget.dataset
-        if (isEmpty(parentId) || isUndefined(parentId)) {
-            currentParentId.current = undefined
-            onCreateNew()
+        const { productId } = event.currentTarget.dataset
+        if (isEmpty(productId) || isUndefined(productId)) {
+            currentProductId.current = undefined
+            openCreateModal()
         } else {
-            currentParentId.current = parentId
-            onClone()
+            currentProductId.current = productId
+            openCloneModal()
         }
         offDisplayCreateMode()
-    }, [offDisplayCreateMode, onClone, onCreateNew])
+    }, [offDisplayCreateMode, openCloneModal, openCreateModal])
+
+    const updateProduct = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const { productId } = event.currentTarget.dataset
+        currentProductId.current = productId
+        openUpdateModal()
+    }, [openUpdateModal])
 
     useEffect(() => {
         fetchProductTemplates()
@@ -68,9 +79,18 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                     <Button
                         variant="default"
                         type='button'
+                        disabled={loading}
                         onClick={refetchProducts}
+                        className='disabled:opacity-50'
                     >
-                        <ReloadIcon className='mr-1 h-4 w-4' />
+                        {
+                            loading ? (
+                                <Loading.Circle className='mr-1' size={16} />
+
+                            ) : (
+                                <ReloadIcon className='mr-1 h-4 w-4' />
+                            )
+                        }
                         <span>Sản phẩm</span>
                     </Button>
                     <Button
@@ -89,9 +109,9 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                         (item, index) => (
                             <li
                                 key={index}
-                                className="h-16 p-1 flex items-center space-x-2 rounded border px-2 flex-none group overflow-x-hidden"
+                                className="h-20 p-2 flex items-center space-x-2 rounded border px-2 flex-none group overflow-x-hidden"
                             >
-                                <div className='h-full aspect-square flex items-center flex-none'>
+                                <div className='h-full aspect-square overflow-hidden flex items-center flex-none'>
                                     <DocumentPreview
                                         documentId={item.coverImage}
                                         displayFileName={false}
@@ -102,16 +122,14 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                                     <p className='truncate'>{item.name}</p>
                                     <p className='text-main-primary font-medium text-sm'>{item.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                 </div>
-                                {/* <button
+                                <button
                                     type='button'
-                                    data-id={item.id}
-                                    onClick={remove}
-                                    className='block w-fit flex-none'
+                                    data-product-id={item.id}
+                                    onClick={updateProduct}
+                                    className='block w-fit flex-none text-xs font-medium text-gray-500'
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:text-red-500 cursor-pointer">
-                                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                                    </svg>
-                                </button> */}
+                                    Chi tiết
+                                </button>
                             </li>
                         )
                     ) : (
@@ -132,7 +150,7 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                         variant="primary"
                         type='button'
                         onClick={addProduct}
-                        data-parent-id={null}
+                        data-product-id={null}
                     >
                         Tạo mới sản phẩm
                     </Button>
@@ -162,7 +180,7 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                                                 base="none"
                                                 type='button'
                                                 onClick={addProduct}
-                                                data-parent-id={product.id}
+                                                data-product-id={product.id}
                                                 className='block w-fit px-1 rounded text-xs flex-none'
                                             >
                                                 Sao chép
@@ -184,19 +202,23 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products }) => {
                     </Button>
                 </div>
             </Modal >
-
             <CloneProduct
                 menuId={menuId!}
                 display={displayClone}
                 setDisplay={setDisplayClone}
-                parentId={currentParentId.current!}
+                parentId={currentProductId.current!}
                 refetchProducts={refetchProducts}
             />
-
             <CreateProduct
                 menuId={menuId!}
-                display={displayCreateNew}
-                setDisplay={setDisplayCreateNew}
+                display={displayCreate}
+                setDisplay={setDisplayCreate}
+                refetchProducts={refetchProducts}
+            />
+            <UpdateProduct
+                productId={currentProductId.current!}
+                display={displayUpdate}
+                setDisplay={setDisplayUpdate}
                 refetchProducts={refetchProducts}
             />
         </>

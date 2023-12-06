@@ -11,6 +11,7 @@ import { Product } from 'types/product'
 
 const UpdateMenu = () => {
     const [loading, setLoading] = useState(false)
+    const [fetching, setFetching] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
     const [menu, setMenu] = useState<Menu>()
 
@@ -19,7 +20,10 @@ const UpdateMenu = () => {
 
 
     const refetchProducts = useCallback(async () => {
+        setFetching(true)
         const { status, body } = await ProductService.getMenuProducts(menuId!)
+        setFetching(false)
+
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data)) {
             setProducts(body.data)
         } else {
@@ -77,6 +81,7 @@ const UpdateMenu = () => {
                     </div>
                 ) : (menu && products) ? (
                     <Update
+                        loading={fetching}
                         products={products}
                         menu={
                             {

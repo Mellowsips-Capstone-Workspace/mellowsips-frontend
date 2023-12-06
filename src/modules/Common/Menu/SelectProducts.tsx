@@ -105,7 +105,7 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                                 key={index}
                                 className="h-16 p-1 flex items-center space-x-2 rounded border px-2 flex-none group overflow-x-hidden"
                             >
-                                <div className='h-full aspect-square flex items-center flex-none'>
+                                <div className='h-full aspect-square flex items-center flex-none overflow-hidden'>
                                     <DocumentPreview
                                         documentId={item.coverImage}
                                         displayFileName={false}
@@ -151,7 +151,7 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                                         key={index}
                                         className="h-16 p-1 flex items-center space-x-2 rounded border px-2 flex-none group overflow-x-hidden"
                                     >
-                                        <div className='h-full aspect-square flex items-center flex-none'>
+                                        <div className='h-full aspect-square flex items-center flex-none overflow-hidden'>
                                             <DocumentPreview
                                                 documentId={item.coverImage}
                                                 displayFileName={false}

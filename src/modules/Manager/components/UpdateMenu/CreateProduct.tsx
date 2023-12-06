@@ -1,4 +1,3 @@
-import ROLE from 'enums/role';
 import { Form, Formik } from 'formik';
 import { isArray, isEmpty } from 'lodash';
 import Modal from 'modules/Common/Modal/Modal';
@@ -7,8 +6,6 @@ import ProductOptionSections from 'modules/Common/Product/ProductOptionSections'
 import showToast from 'modules/Common/Toast';
 import { FC } from 'react';
 import ProductService from 'services/ProductService';
-import { useAppSelector } from 'stores/root';
-import { Principle } from 'types/authenticate';
 import { array, boolean, number, object, string } from 'yup';
 
 type CreateProductProps = {
@@ -23,8 +20,6 @@ type CreateProductProps = {
 }
 
 const CreateProduct: FC<CreateProductProps> = ({ menuId, display, setDisplay, refetchProducts }) => {
-    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
-
     return (
         <Modal
             flag={display}
@@ -56,7 +51,6 @@ const CreateProduct: FC<CreateProductProps> = ({ menuId, display, setDisplay, re
                             description: "",
                             categories: [],
                             isSoldOut: false,
-                            storeId: "",
                             productOptionSections: [],
                             menuId
                         }
@@ -70,7 +64,6 @@ const CreateProduct: FC<CreateProductProps> = ({ menuId, display, setDisplay, re
                                 description: string().nullable(),
                                 categories: array(string()),
                                 isSoldOut: boolean().required("Trường này không được để trống."),
-                                storeId: principle.type === ROLE.OWNER ? string().nullable() : string().required("Vui lòng chọn cửa hàng."),
                                 productOptionSections: array(
                                     object(
                                         {
@@ -130,7 +123,9 @@ const CreateProduct: FC<CreateProductProps> = ({ menuId, display, setDisplay, re
                     }
                 >
                     <Form className="space-y-5">
-                        <EssentialInfo />
+                        <EssentialInfo
+                            selectStore={false}
+                        />
                         <div className='border rounded shadow'>
                             <ProductOptionSections />
                         </div>

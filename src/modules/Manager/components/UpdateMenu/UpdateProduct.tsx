@@ -12,9 +12,8 @@ import ProductService from 'services/ProductService';
 import { Product } from 'types/product';
 import { array, boolean, number, object, string } from 'yup';
 
-type CloneProductProps = {
-    parentId: string
-    menuId: string
+type UpdateProductProps = {
+    productId: string
     display: boolean
     setDisplay: {
         on: () => void
@@ -24,10 +23,9 @@ type CloneProductProps = {
     refetchProducts: () => void
 }
 
-const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDisplay, refetchProducts }) => {
+const UpdateProduct: FC<UpdateProductProps> = ({ productId, display, setDisplay, refetchProducts }) => {
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState<Product>()
-    // const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     useEffect(() => {
         if (!display) {
@@ -37,7 +35,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
         (
             async () => {
                 setLoading(true)
-                const { status, body } = await ProductService.getById(parentId!)
+                const { status, body } = await ProductService.getById(productId!)
                 setLoading(false)
 
                 if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
@@ -53,7 +51,8 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                 setProduct(body.data)
             }
         )()
-    }, [parentId, display])
+    }, [productId, display])
+
 
     return (
         <Modal
@@ -64,7 +63,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
             innerClassName="w-full flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
         >
             <div className='px-5 py-2 flex justify-between items-center shadow border-b'>
-                <p className="flex-none truncate font-medium">Thêm sản phẩm vào menu</p>
+                <p className="flex-none truncate font-medium">Thông tin sản phẩm</p>
                 <button
                     type='button'
                     className='block h-6 w-6 p-0.5 cursor-pointer rounded-full hover:bg-red-500 hover:text-white transition-colors'
@@ -89,6 +88,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                         <Formik
                             initialValues={
                                 {
+                                    id: product.id,
                                     name: product.name,
                                     price: product.price,
                                     coverImage: product.coverImage,
@@ -96,9 +96,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                                     isSoldOut: product.isSoldOut,
                                     storeId: product.storeId || null,
                                     description: isEmpty(product.description) ? "" : product.description,
-                                    productOptionSections: isArray(product.productOptionSections) ? product.productOptionSections : [],
-                                    parentId,
-                                    menuId
+                                    productOptionSections: isArray(product.productOptionSections) ? product.productOptionSections : []
                                 }
                             }
                             validationSchema={
@@ -145,13 +143,13 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                                         ) : []
                                     }
 
-                                    const { body, status } = await ProductService.create(payload)
+                                    const { body, status } = await ProductService.update(productId, payload)
                                     if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
                                         showToast(
                                             {
                                                 type: "error",
                                                 title: "Thất bại",
-                                                message: "Tạo sản phẩm thất bại."
+                                                message: "Cập nhật sản phẩm thất bại."
                                             }
                                         )
                                         return
@@ -160,7 +158,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                                         {
                                             type: "success",
                                             title: "Thành công",
-                                            message: "Tạo sản phẩm thành công."
+                                            message: "Cập nhật sản phẩm thành công."
                                         }
                                     )
                                     setDisplay.off()
@@ -170,19 +168,24 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                         >
                             <Form className="space-y-5">
                                 <div className="grid grid-cols-4 gap-5">
-                                    <div className="col-span-3 bg-white p-5 space-y-5 shadow rounded">
+                                    <div className="col-span-3 bg-white p-5 space-y-5 border rounded">
                                         <div className="grid grid-cols-2 gap-5">
-                                            <div className="space-y-1">
+                                            <div className="space-y-1" >
                                                 <label className="text-gray-500 font-medium">Tên sản phẩm</label>
-                                                <div className='cursor-not-allowed opacity-50'>
-                                                    <div className='pointer-events-none'>
+                                                <div
+                                                    aria-disabled={!isEmpty(product.partnerId)}
+                                                    className='aria-disabled:cursor-not-allowed opacity-80'
+                                                >
+                                                    <div
+                                                        aria-disabled={!isEmpty(product.partnerId)}
+                                                        className='aria-disabled:pointer-events-none'
+                                                    >
                                                         <FormikTextField.Input
                                                             name="name"
                                                             placeholder="Ví dụ: Trà đào"
                                                         />
                                                     </div>
                                                 </div>
-
                                             </div>
 
                                             <FormikTextField.CurrencyVNDInput
@@ -198,8 +201,14 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                                                 <CoverImage />
                                             </div>
                                             <div className="grow">
-                                                <div className='cursor-not-allowed opacity-50'>
-                                                    <div className='pointer-events-none'>
+                                                <div
+                                                    aria-disabled={!isEmpty(product.partnerId)}
+                                                    className='aria-disabled:cursor-not-allowed opacity-80'
+                                                >
+                                                    <div
+                                                        aria-disabled={!isEmpty(product.partnerId)}
+                                                        className='aria-disabled:pointer-events-none'
+                                                    >
                                                         <FormikTextField.Textarea
                                                             row={6}
                                                             name="description"
@@ -210,7 +219,7 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="bg-white p-5 space-y-5 shadow rounded">
+                                    <div className="bg-white p-5 space-y-5 border rounded">
                                         <ProductAction
                                             selectStore={false}
                                         />
@@ -223,12 +232,9 @@ const CloneProduct: FC<CloneProductProps> = ({ parentId, menuId, display, setDis
                         </Formik>
                     ) : null
                 }
-
             </div>
-
         </Modal>
-
     )
 }
 
-export default CloneProduct
+export default UpdateProduct

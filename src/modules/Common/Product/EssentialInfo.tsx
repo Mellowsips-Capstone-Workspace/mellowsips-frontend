@@ -4,7 +4,11 @@ import ProductAction from "modules/Common/Product/ProductAction"
 
 import { FC } from "react"
 
-const EssentialInfo: FC = () => {
+type EssentialInfoProps = {
+    selectStore?: boolean
+}
+
+const EssentialInfo: FC<EssentialInfoProps> = ({ selectStore = true }) => {
     return (
         <div className="grid grid-cols-4 gap-5">
             <div className="col-span-3 bg-white p-5 space-y-5 shadow rounded border">
@@ -39,7 +43,9 @@ const EssentialInfo: FC = () => {
                 </div>
             </div>
             <div className="bg-white p-5 space-y-5 shadow rounded border">
-                <ProductAction />
+                <ProductAction
+                    selectStore={selectStore}
+                />
             </div>
         </div>
     )

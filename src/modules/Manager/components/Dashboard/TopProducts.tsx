@@ -27,6 +27,9 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
     const { loading: loadingStore, setStoreId, storeId, stores } = useSelectStore()
 
     useEffect(() => {
+        if (isEmpty(storeId)) {
+            return
+        }
         (
             async () => {
                 const { endDate, startDate } = range
@@ -58,13 +61,13 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
 
     return (
         <WidgetCard
+            className={className}
+            descriptionClassName="text-xl font-semibold text-gray-900 mt-1.5 2xl:text-2xl"
             title={
                 (
                     <div className='flex justify-between'>
                         <h2 className="font-medium text-main-primary text-lg">Các sản phẩm bán chạy</h2>
-
-                        <div className='w-56 flex-none'>
-
+                        <div className='w-80 flex-none'>
                             <SelectStoreManage
                                 stores={stores}
                                 storeId={storeId}
@@ -76,8 +79,6 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
                     </div>
                 )
             }
-            descriptionClassName="text-xl font-semibold text-gray-900 mt-1.5 2xl:text-2xl"
-            className={className}
         >
             {
                 (loading || loadingStore) ? (
