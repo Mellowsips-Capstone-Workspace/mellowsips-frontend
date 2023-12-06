@@ -1,5 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { isEmpty } from "lodash"
 import { Product } from "types/product"
 
 class ProductService {
@@ -7,10 +8,10 @@ class ProductService {
     static searchTemplates(
         options: {
             pagination: { page: number, offset: number },
-
+            filter?: object
         }
     ) {
-        const { pagination } = options
+        const { pagination, filter } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -23,6 +24,19 @@ class ProductService {
             }
         }
 
+        let criteria: object = {
+            order: {
+                createdAt: "DESC"
+            }
+        }
+
+        if (!isEmpty(filter)) {
+            criteria = {
+                ...criteria,
+                filter
+            }
+        }
+
         return requestApiHelper<body>(
             interceptor.post(
                 "products/templates/search",
@@ -31,11 +45,7 @@ class ProductService {
                         page: pagination.page,
                         itemsPerPage: pagination.offset
                     },
-                    criteria: {
-                        order: {
-                            createdAt: "DESC"
-                        }
-                    }
+                    criteria
                 }
             )
         )

@@ -67,7 +67,7 @@ const columns = [
 
 const StoreQRCodeManage: FC = () => {
     const { type, storeId: accountStoreId } = useAppSelector<Principle>(state => state.authenticate.principle!)
-    const { loading: storeLoading, stores, storeId, setStoreId } = useSelectStore()
+    const { loading: storeLoading, stores, storeId, setStoreId } = useSelectStore(null, true)
     const [loading, setLoading] = useState(false)
     const [codes, setCodes] = useState<QRCode[]>([])
 

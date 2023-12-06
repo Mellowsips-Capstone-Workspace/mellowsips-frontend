@@ -9,6 +9,7 @@ class OrderService {
             pagination: { page: number, offset: number },
             status?: string[]
             order?: string
+            filter?: object
         }
     ) {
         const {
@@ -20,7 +21,8 @@ class OrderService {
                 OrderStatus.ORDERED,
                 OrderStatus.COMPLETED
             ],
-            order = "DESC"
+            order = "DESC",
+            filter = {}
         } = options
 
         type body = {
@@ -45,7 +47,8 @@ class OrderService {
                     },
                     criteria: {
                         filter: {
-                            status
+                            status,
+                            ...filter
                         },
                         order: {
                             createdAt: order

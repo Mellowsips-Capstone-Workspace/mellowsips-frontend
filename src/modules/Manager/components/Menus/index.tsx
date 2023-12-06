@@ -1,15 +1,20 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { format, parseISO } from "date-fns"
+import ROLE from "enums/role"
 import usePagination from "hooks/usePagination"
 import { isEmpty } from "lodash"
 import Badge from "modules/Common/Badge"
 import Pagination from "modules/Common/Pagination/Pagination"
+import SelectStoreManage from "modules/Common/SelectStoreManage"
+import useSelectStore from "modules/Common/SelectStoreManage/hooks/useSelectStore"
 import { TableSkeleton } from "modules/Common/Skeleton"
 import Table from "modules/Common/Table"
 import AddMenu from "modules/Manager/components/AddMenu"
 import { FC, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import MenuService from "services/MenuService"
+import { useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
 import { Menu } from "types/menus"
 
 const { accessor, display } = createColumnHelper<Menu>()
@@ -61,13 +66,14 @@ const columns = [
 const Menus: FC = () => {
     const [loading, setLoading] = useState(false)
     const [menus, setMenus] = useState<Menu[]>([])
-
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
+    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
 
-        const { status, body } = await MenuService.search({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await MenuService.search({ pagination: { page, offset }, filter: { storeId } }) : await MenuService.search({ pagination: { page, offset } })
 
         setLoading(false)
 
@@ -77,7 +83,7 @@ const Menus: FC = () => {
         } else {
             setMenus([])
         }
-    }, [setPagination])
+    }, [setPagination, type, storeId])
 
     useEffect(() => {
         refetch(page, offset)
@@ -91,10 +97,29 @@ const Menus: FC = () => {
                 ) : (
                     <>
                         <Table<Menu>
-                            actions={<AddMenu refetch={refetch} />}
-                            columns={columns}
                             data={menus}
+                            columns={columns}
                             refetch={refetch}
+                            actions={
+                                (
+                                    <div className="flex space-x-5">
+                                        <AddMenu refetch={refetch} />
+                                        {
+                                            type === ROLE.OWNER ? (
+                                                <div className='w-80'>
+                                                    <SelectStoreManage
+                                                        stores={stores}
+                                                        storeId={storeId}
+                                                        loading={loadingStores}
+                                                        setStoreId={setStoreId}
+                                                        showSelectAll={true}
+                                                    />
+                                                </div>
+                                            ) : null
+                                        }
+                                    </div>
+                                )
+                            }
                         />
                         {
                             maxPage > 0 ? (

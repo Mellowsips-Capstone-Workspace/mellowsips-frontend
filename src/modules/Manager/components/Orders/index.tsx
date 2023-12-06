@@ -1,15 +1,20 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
+import ROLE from 'enums/role'
 import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
 import OrderBadge from 'modules/Common/OrderBadge'
 import Pagination from 'modules/Common/Pagination/Pagination'
+import SelectStoreManage from 'modules/Common/SelectStoreManage'
+import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import CartItem from 'modules/Manager/components/Orders/components/CartItem'
 import OrderDetail from 'modules/Manager/components/Orders/components/OrderDetail'
 import { FC, useCallback, useEffect, useState } from 'react'
 import OrderService from 'services/OrderService'
+import { useAppSelector } from 'stores/root'
+import { Principle } from 'types/authenticate'
 import { Order } from 'types/order'
 import { toCurrency } from 'utils/text'
 
@@ -125,11 +130,12 @@ const Orders: FC = () => {
     const [loading, setLoading] = useState(false)
     const [orders, setOrders] = useState<Order[]>([])
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
+    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
-
-        const { status, body } = await await OrderService.search({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await OrderService.search({ pagination: { page, offset }, filter: { storeId } }) : await OrderService.search({ pagination: { page, offset } })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
@@ -138,7 +144,7 @@ const Orders: FC = () => {
         } else {
             setOrders([])
         }
-    }, [setPagination])
+    }, [setPagination, type, storeId])
 
     useEffect(() => {
         refetch(page, offset)
@@ -163,6 +169,19 @@ const Orders: FC = () => {
                 ) : (
                     <Table<OrderItem>
                         columns={columns}
+                        actions={
+                            type === ROLE.OWNER ? (
+                                <div className='w-80'>
+                                    <SelectStoreManage
+                                        stores={stores}
+                                        storeId={storeId}
+                                        loading={loadingStores}
+                                        setStoreId={setStoreId}
+                                        showSelectAll={true}
+                                    />
+                                </div>
+                            ) : null
+                        }
                         data={orders.map(order => ({ ...order, updateOrder }))}
                         refetch={refetch}
                     />

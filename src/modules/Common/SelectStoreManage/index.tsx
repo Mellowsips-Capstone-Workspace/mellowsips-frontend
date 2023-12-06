@@ -69,6 +69,24 @@ const SelectStoreManage: FC<SelectStoreManageProps> = ({ loading, stores, onStor
                                     stores.length ? (
                                         <>
                                             {
+                                                showSelectAll ? (
+                                                    <Popover.Close
+                                                        key={nanoid()}
+                                                        asChild
+                                                    >
+                                                        <li
+                                                            key={nanoid()}
+                                                            data-value={null}
+                                                            onClick={handleSelectValue}
+                                                            aria-current={null === storeId}
+                                                            className="px-2 py-0.5 aria-current:bg-slate-200 hover:bg-slate-300 cursor-pointer transition-all"
+                                                        >
+                                                            Tất cả cửa hàng
+                                                        </li>
+                                                    </Popover.Close>
+                                                ) : null
+                                            }
+                                            {
                                                 stores.map(
                                                     ({ name, id }) => (
                                                         <Popover.Close
@@ -87,24 +105,6 @@ const SelectStoreManage: FC<SelectStoreManageProps> = ({ loading, stores, onStor
                                                         </Popover.Close>
                                                     )
                                                 )
-                                            }
-                                            {
-                                                showSelectAll ? (
-                                                    <Popover.Close
-                                                        key={nanoid()}
-                                                        asChild
-                                                    >
-                                                        <li
-                                                            key={nanoid()}
-                                                            data-value={null}
-                                                            onClick={handleSelectValue}
-                                                            aria-current={null === storeId}
-                                                            className="px-2 py-0.5 aria-current:bg-slate-200 hover:bg-slate-300 cursor-pointer transition-all"
-                                                        >
-                                                            Tất cả cửa hàng
-                                                        </li>
-                                                    </Popover.Close>
-                                                ) : null
                                             }
                                         </>
                                     ) : (

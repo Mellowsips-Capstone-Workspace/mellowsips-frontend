@@ -10,10 +10,10 @@ type Return = {
     setStoreId: (storeId: string | null) => void
 }
 
-const useSelectStore = (): Return => {
+const useSelectStore = (initValue?: string | null, selectAfterLoaded: boolean = true): Return => {
     const [loading, setLoading] = useState(false)
     const [stores, setStores] = useState<Store[]>([])
-    const [storeId, setStoreId] = useState<string | null | undefined>()
+    const [storeId, setStoreId] = useState<string | null | undefined>(initValue)
 
     useEffect(() => {
         (
@@ -23,14 +23,14 @@ const useSelectStore = (): Return => {
 
                 if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results) && body.data.results.length > 0) {
                     setStores(body.data.results)
-                    setStoreId(body.data.results.at(0)!.id)
+                    selectAfterLoaded && setStoreId(body.data.results.at(0)!.id)
                 } else {
                     setStores([])
                 }
                 setLoading(false)
             }
         )()
-    }, [])
+    }, [selectAfterLoaded])
 
     return {
         loading,

@@ -1,19 +1,21 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
+import ROLE from 'enums/role'
 import { isEmpty } from 'lodash'
 import Badge from 'modules/Common/Badge'
 import RoleBadge from 'modules/Common/RoleBadge'
+import SelectStoreManage from 'modules/Common/SelectStoreManage'
+import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import AccountDetail from 'modules/Manager/components/AccountDetail'
 import AddAccount from 'modules/Manager/components/AddAccount'
 import { FC, useCallback, useEffect, useState } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
+import { useAppSelector } from 'stores/root'
 import { Account } from 'types/account'
+import { Principle } from 'types/authenticate'
 
-// type QRCodeItem = QRCode & {
-//     updateQRCode: (id: string, qr: QRCode) => void
-// }
 
 const { accessor, display } = createColumnHelper<Account>()
 
@@ -99,11 +101,14 @@ const columns = [
 const StoreAccount: FC = () => {
     const [loading, setLoading] = useState(false)
     const [accounts, setAccounts] = useState<Account[]>([])
+    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore()
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
+
 
     const fetchData = useCallback(async (page = 1, offset = 100) => {
         setLoading(true)
 
-        const { status, body } = await ManageAccountService.search({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await ManageAccountService.search({ pagination: { page, offset }, filter: { storeId } }) : await ManageAccountService.search({ pagination: { page, offset } })
 
         setLoading(false)
 
@@ -112,7 +117,7 @@ const StoreAccount: FC = () => {
         } else {
             setAccounts([])
         }
-    }, [])
+    }, [storeId, type])
     const refetch = useCallback(async () => {
         fetchData()
     }, [fetchData])
@@ -122,47 +127,6 @@ const StoreAccount: FC = () => {
         refetch()
     }, [refetch])
 
-    // const updateQRCode = useCallback((id: string, qr: QRCode) => {
-    //     setCodes(
-    //         codes => {
-    //             const updated = [...codes]
-    //             const index = updated.findIndex((qr) => qr.id === id)
-    //             updated.splice(index, 1, qr)
-    //             return updated
-    //         }
-    //     )
-    // }, [])
-
-    // const addQRCode = useCallback((qr: QRCode) => {
-    //     setCodes(codes => [...codes, qr])
-    // }, [])
-
-    // const refetch = useCallback(async () => {
-    //     if (isEmpty(storeId)) {
-    //         return
-    //     }
-    //     setLoading(true)
-
-    //     const { status, body } = await QRService.getByStoreId(storeId)
-    //     setLoading(false)
-
-    //     if (status === 200 && !isEmpty(body) && Array.isArray(body.data)) {
-    //         setCodes(body.data)
-    //     } else {
-    //         setCodes([])
-    //     }
-    // }, [storeId])
-
-    // if (loading) {
-    //     return (
-    //         <div className='bg-white p-5 shadow rounded'>
-    //             <div className="flex justify-center items-center space-x-1 p-2 text-xs">
-    //                 <Loading.Circle className="text-main-primary" size={14} />
-    //                 <span className="text-gray-400">Đang tải danh sách cửa hàng</span>
-    //             </div>
-    //         </div>
-    //     )
-    // }
 
     return (
         <div className="bg-white p-5 shadow rounded">
@@ -175,6 +139,19 @@ const StoreAccount: FC = () => {
                             (
                                 <div className='flex space-x-5'>
                                     <AddAccount />
+                                    {
+                                        type === ROLE.OWNER ? (
+                                            <div className='w-80'>
+                                                <SelectStoreManage
+                                                    stores={stores}
+                                                    storeId={storeId}
+                                                    loading={loadingStores}
+                                                    setStoreId={setStoreId}
+                                                    showSelectAll={true}
+                                                />
+                                            </div>
+                                        ) : null
+                                    }
                                 </div>
                             )
                         }

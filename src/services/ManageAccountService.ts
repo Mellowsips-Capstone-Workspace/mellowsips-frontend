@@ -1,14 +1,16 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { isEmpty } from "lodash"
 import { Account } from "types/account"
 
 class ManageAccountService {
     static search(
         options: {
             pagination: { page: number, offset: number }
+            filter?: object
         }
     ) {
-        const { pagination } = options
+        const { pagination, filter } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -20,6 +22,18 @@ class ManageAccountService {
                 totalItems: number
             }
         }
+        let criteria: object = {
+            order: {
+                createdAt: "DESC"
+            }
+        }
+
+        if (!isEmpty(filter)) {
+            criteria = {
+                ...criteria,
+                filter
+            }
+        }
 
         return requestApiHelper<body>(
             interceptor.post(
@@ -29,11 +43,7 @@ class ManageAccountService {
                         page: pagination.page,
                         itemsPerPage: pagination.offset
                     },
-                    criteria: {
-                        order: {
-                            createdAt: "DESC"
-                        }
-                    }
+                    criteria
                 }
             )
         )

@@ -5,6 +5,7 @@ import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
 import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
+import NoResult from 'modules/Common/NoResult'
 import showToast from 'modules/Common/Toast'
 import CloneProduct from 'modules/Manager/components/UpdateMenu/CloneProduct'
 import CreateProduct from 'modules/Manager/components/UpdateMenu/CreateProduct'
@@ -133,7 +134,14 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                             </li>
                         )
                     ) : (
-                        <p className='col-span-2 text-main-primary text-xs italic text-center'>Vui lòng thêm sản phẩm cho danh mục!</p>
+                        <NoResult
+                            className='col-span-2 space-y-2'
+                            message={
+                                (
+                                    <p className='text-main-primary text-xs italic text-center'>Vui lòng thêm sản phẩm cho danh mục!</p>
+                                )
+                            }
+                        />
                     )
                 }
             </ul>
@@ -152,7 +160,7 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                         onClick={addProduct}
                         data-product-id={null}
                     >
-                        Tạo mới sản phẩm
+                        Hoặc tạo mới sản phẩm
                     </Button>
                     <div className='space-y-2'>
                         <p className="font-medium text-gray-500">Tạo mới sản phẩm từ mẫu</p>
@@ -183,7 +191,7 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                                                 data-product-id={product.id}
                                                 className='block w-fit px-1 rounded text-xs flex-none'
                                             >
-                                                Sao chép
+                                                Chọn
                                             </Button>
                                         </li>
                                     )

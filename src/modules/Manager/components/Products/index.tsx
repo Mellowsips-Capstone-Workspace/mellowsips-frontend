@@ -1,15 +1,20 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { format, parseISO } from "date-fns"
+import ROLE from "enums/role"
 import usePagination from "hooks/usePagination"
 import { isEmpty } from "lodash"
 import Badge from "modules/Common/Badge"
 import DocumentPreview from "modules/Common/Document"
 import Pagination from "modules/Common/Pagination/Pagination"
+import SelectStoreManage from "modules/Common/SelectStoreManage"
+import useSelectStore from "modules/Common/SelectStoreManage/hooks/useSelectStore"
 import { TableSkeleton } from "modules/Common/Skeleton"
 import Table from "modules/Common/Table"
 import { FC, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import ProductService from "services/ProductService"
+import { useAppSelector } from "stores/root"
+import { Principle } from "types/authenticate"
 import { Product } from "types/product"
 
 const { accessor, display } = createColumnHelper<Product>()
@@ -22,12 +27,10 @@ const columns = [
                 return (
                     (
                         <div className="h-14 flex space-x-2 items-center max-w-full overflow-hidden">
-
                             <div className="h-14 w-14 flex-none">
                                 <DocumentPreview displayFileName={false} loadingMessage={false} documentId={original.coverImage} />
                             </div>
                             <p className="truncate">{original.name}</p>
-
                         </div>
                     )
                 )
@@ -90,13 +93,14 @@ const columns = [
 const Products: FC = () => {
     const [loading, setLoading] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
-
+    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
 
-        const { status, body } = await ProductService.searchTemplates({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await ProductService.searchTemplates({ pagination: { page, offset }, filter: { storeId } }) : await ProductService.searchTemplates({ pagination: { page, offset } })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
@@ -105,7 +109,7 @@ const Products: FC = () => {
         } else {
             setProducts([])
         }
-    }, [setPagination])
+    }, [setPagination, type, storeId])
 
     useEffect(() => {
         refetch(page, offset)
@@ -121,7 +125,22 @@ const Products: FC = () => {
                         <Table<Product>
                             actions={
                                 (
-                                    <Link className="px-5 py-1.5 rounded bg-main-primary text-white" to="create">Thêm mới </Link>
+                                    <div className="flex space-x-5">
+                                        <Link className="px-5 py-1.5 rounded bg-main-primary text-white" to="create">Thêm mới </Link>
+                                        {
+                                            type === ROLE.OWNER ? (
+                                                <div className='w-80'>
+                                                    <SelectStoreManage
+                                                        stores={stores}
+                                                        storeId={storeId}
+                                                        showSelectAll={true}
+                                                        loading={loadingStores}
+                                                        setStoreId={setStoreId}
+                                                    />
+                                                </div>
+                                            ) : null
+                                        }
+                                    </div>
                                 )
                             }
                             columns={columns}

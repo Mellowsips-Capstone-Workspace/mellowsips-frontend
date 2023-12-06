@@ -1,14 +1,14 @@
 import { isArray, isEmpty, isNull } from 'lodash';
-import Document from 'modules/Common/Document';
+import TrophyIcon from 'modules/Common/Icons/trophy';
 import Loading from 'modules/Common/Loading';
+import NoResult from 'modules/Common/NoResult';
 import SelectStoreManage from 'modules/Common/SelectStoreManage';
 import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore';
 import showToast from 'modules/Common/Toast';
 import WidgetCard from 'modules/Common/WidgetCard';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import DashboardService from 'services/DashboardService';
 import { Product } from 'types/product';
-import { toCurrency } from 'utils/text';
 
 type ProductItem = Product & {
     numberOfPurchases: number
@@ -19,17 +19,21 @@ type TopProductProps = {
     range: { startDate: string | null, endDate: string | null }
 }
 
+const colors = [
+    "text-[#ff5630] bg-[#ffeeea]",
+    "text-[#00a76f] bg-[#e5f6f0]",
+    "text-[#00b8d9] bg-[#e5f8fb]"
+]
+
 const TopProduct: FC<TopProductProps> = ({ className, range }) => {
 
     const [loading, setLoading] = useState(true)
     const [products, setProducts] = useState<ProductItem[]>([])
 
-    const { loading: loadingStore, setStoreId, storeId, stores } = useSelectStore()
+    const { loading: loadingStore, setStoreId, storeId, stores } = useSelectStore(null, false)
 
     useEffect(() => {
-        if (isEmpty(storeId)) {
-            return
-        }
+
         (
             async () => {
                 const { endDate, startDate } = range
@@ -58,6 +62,10 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
             }
         )()
     }, [range, storeId])
+
+    const getColor = useCallback((index: number): string => {
+        return index < colors.length ? colors.at(index)! : colors.at(-1)!
+    }, [])
 
     return (
         <WidgetCard
@@ -88,32 +96,34 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
                     </div>
                 ) : (
                     <div className='h-64 py-2'>
-                        <ul className='max-h-full overflow-y-auto border p-2 rounded space-y-2'>
-                            {
-                                products.map(
-                                    (product) => (
-                                        <li key={product.id}>
-                                            <div className='flex space-x-4'>
-                                                <div className='h-14 w-14 rounded overflow-hidden border flex-none'>
-                                                    <Document
-                                                        documentId={product.coverImage}
-                                                        displayFileName={false}
-                                                        loadingMessage={false}
-                                                    />
-                                                </div>
-                                                <div className='grow'>
-                                                    <p>{product.name}</p>
-                                                    <p className='space-x-1'>
-                                                        <span>{toCurrency(product.price)}</span>
-                                                        <span className='text-xs italic'>Đã bán: {product.numberOfPurchases}</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    )
-                                )
-                            }
-                        </ul>
+                        {
+                            products.length ? (
+                                <ul className='max-h-full overflow-y-auto border p-2 rounded space-y-2'>
+                                    {
+                                        products.map(
+                                            (product, index) => (
+                                                <li key={index}>
+                                                    <div
+                                                        className='flex space-x-4'
+
+                                                    >
+                                                        <TrophyIcon className={'h-12 w-12 p-2 border rounded-full '.concat(getColor(index))} />
+                                                        <div className='grow'>
+                                                            <p>{product.name}</p>
+                                                            <p className='space-x-1'>
+                                                                <span className='text-xs italic'>Đã bán: {product.numberOfPurchases}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            )
+                                        )
+                                    }
+                                </ul>
+                            ) : (
+                                <NoResult className='flex flex-col min-h-full justify-center' />
+                            )
+                        }
                     </div>
                 )
             }

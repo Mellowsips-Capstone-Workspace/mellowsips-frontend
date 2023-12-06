@@ -1,5 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { isEmpty } from "lodash"
 import { Menu } from "types/menus"
 
 class MenuService {
@@ -7,9 +8,10 @@ class MenuService {
     static search(
         options: {
             pagination: { page: number, offset: number }
+            filter?: object
         }
     ) {
-        const { pagination } = options
+        const { pagination, filter } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -22,6 +24,18 @@ class MenuService {
             }
         }
 
+        let criteria: object = {
+            order: {
+                createdAt: "DESC"
+            }
+        }
+
+        if (!isEmpty(filter)) {
+            criteria = {
+                ...criteria,
+                filter
+            }
+        }
         return requestApiHelper<body>(
             interceptor.post(
                 "menus/search",
@@ -30,11 +44,7 @@ class MenuService {
                         page: pagination.page,
                         itemsPerPage: pagination.offset
                     },
-                    criteria: {
-                        order: {
-                            createdAt: "DESC"
-                        }
-                    }
+                    criteria
                 }
             )
         )

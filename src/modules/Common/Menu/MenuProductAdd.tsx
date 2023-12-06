@@ -130,7 +130,7 @@ const MenuProductAdd: FC<MenuProductAddProps> = ({ refetchProducts }) => {
                                                 data-parent-id={product.id}
                                                 className='block w-fit px-1 rounded text-xs flex-none'
                                             >
-                                                Nhân bản
+                                                Chọn
                                             </Button>
                                         </li>
                                     )

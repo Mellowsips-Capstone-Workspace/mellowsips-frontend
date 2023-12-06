@@ -4,6 +4,7 @@ import useBoolean from 'hooks/useBoolean'
 import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
 import Modal from 'modules/Common/Modal/Modal'
+import NoResult from 'modules/Common/NoResult'
 import { FC, MouseEvent, memo, useCallback, useMemo, useState } from 'react'
 import { Menu } from 'types/menus'
 import { Product } from 'types/product'
@@ -145,7 +146,7 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                 <div className='px-5 space-y-5'>
                     <ul className="grid grid-cols-2 gap-2">
                         {
-                            items.map(
+                            items.length ? items.map(
                                 (item, index) => (
                                     <li
                                         key={index}
@@ -191,6 +192,15 @@ const SelectProducts: FC<SelectProductsProps> = ({ products, name, originalName,
                                         }
                                     </li>
                                 )
+                            ) : (
+                                <NoResult
+                                    className='col-span-2 space-y-2'
+                                    message={
+                                        (
+                                            <p className='text-main-primary text-xs italic text-center'>Vui lòng thêm sản phẩm cho danh mục!</p>
+                                        )
+                                    }
+                                />
                             )
                         }
                     </ul>
