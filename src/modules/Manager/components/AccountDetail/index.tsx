@@ -8,7 +8,9 @@ import StoreSelect from 'modules/Common/Store/StoreSelect'
 import showToast from 'modules/Common/Toast'
 import { FC } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
+import { useAppSelector } from 'stores/root'
 import { Account } from 'types/account'
+import { Principle } from 'types/authenticate'
 
 type AccountDetailProps = {
     account: Account
@@ -17,9 +19,7 @@ type AccountDetailProps = {
 const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
     const { id, isActive } = account
     const [display, setDisplay] = useBoolean(false)
-
-
-
+    const { id: accountId } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     return (
         <div>
@@ -46,8 +46,6 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                     }
                     onSubmit={
                         async ({ id }) => {
-
-
                             const { status, body } = isActive ? await ManageAccountService.disable(id) : await ManageAccountService.active(id)
 
                             if (status === 200 && !isEmpty(body)) {
@@ -107,14 +105,16 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                                     {
                                                         label: "Quản lý cửa hàng",
                                                         value: "STORE_MANAGER"
+                                                    },
+                                                    {
+                                                        label: "Chủ lý cửa hàng",
+                                                        value: "OWNER"
                                                     }
                                                 ]
                                             }
-                                            placeholder="(84) ..."
                                         />
                                     </div>
                                     <StoreSelect />
-
                                     <div className="space-y-2">
                                         <label className="text-gray-500 font-medium">Email</label>
                                         <FormikTextField.Input
@@ -133,28 +133,33 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                 </Form>
                                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
                                     {
-                                        isActive ? (
-                                            <Button
-                                                form={id}
-                                                disabled={isSubmitting || !isValid}
-                                                type="submit"
-                                                variant="red"
-                                                className="group"
-                                            >
-                                                Vô hiệu hoá
-                                            </Button>
+                                        id === accountId ? null : (
+                                            <>
+                                                {
+                                                    isActive ? (
+                                                        <Button
+                                                            form={id}
+                                                            disabled={isSubmitting || !isValid}
+                                                            type="submit"
+                                                            variant="red"
+                                                            className="group"
+                                                        >
+                                                            Vô hiệu hoá
+                                                        </Button>
 
-                                        ) : (
-                                            <Button
-                                                form={id}
-                                                disabled={isSubmitting || !isValid}
-                                                type="submit"
-                                                variant="indigo"
-                                                className="group"
-                                            >
-                                                Kích hoạt
-                                            </Button>
-
+                                                    ) : (
+                                                        <Button
+                                                            form={id}
+                                                            disabled={isSubmitting || !isValid}
+                                                            type="submit"
+                                                            variant="indigo"
+                                                            className="group"
+                                                        >
+                                                            Kích hoạt
+                                                        </Button>
+                                                    )
+                                                }
+                                            </>
                                         )
                                     }
                                     <Button

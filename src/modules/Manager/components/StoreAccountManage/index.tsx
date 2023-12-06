@@ -118,6 +118,7 @@ const StoreAccount: FC = () => {
             setAccounts([])
         }
     }, [storeId, type])
+
     const refetch = useCallback(async () => {
         fetchData()
     }, [fetchData])
