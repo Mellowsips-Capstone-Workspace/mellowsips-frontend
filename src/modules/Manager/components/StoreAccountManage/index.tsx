@@ -101,9 +101,8 @@ const columns = [
 const StoreAccount: FC = () => {
     const [loading, setLoading] = useState(false)
     const [accounts, setAccounts] = useState<Account[]>([])
-    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore()
+    const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
     const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
-
 
     const fetchData = useCallback(async (page = 1, offset = 100) => {
         setLoading(true)
