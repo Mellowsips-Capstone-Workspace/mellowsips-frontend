@@ -46,7 +46,7 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
                     aria-invalid={!isEmpty(error) && touched}
                     className="flex min-w-full outline-none py-2.5 rounded-2 border px-3 aria-invalid:border-danger transition-colors duration-300"
                 >
-                    <p className="text-left grow">
+                    <p className="text-left truncate grow">
                         {
                             isObject(currentValue) ? currentValue.label : placeholder
                         }
@@ -59,10 +59,9 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
                 className="min-w-full"
                 style={{ zIndex: 10 }}
             >
-
                 <ul
                     style={{ width: trigger.current?.offsetWidth }}
-                    className="rounded-md list-none bg-white border overflow-hidden min-w-full max-h-20 overflow-y-auto scrollbar-sm"
+                    className="rounded-md list-none bg-white border overflow-hidden min-w-full max-h-32 overflow-y-auto scrollbar-sm"
                 >
                     {
                         options.length ? options.map(

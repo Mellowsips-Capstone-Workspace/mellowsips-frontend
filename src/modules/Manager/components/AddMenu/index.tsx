@@ -39,7 +39,6 @@ const AddMenu: FC<AddMenuProps> = () => {
                 className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
-
                 <Formik
                     initialValues={
                         {
@@ -97,22 +96,36 @@ const AddMenu: FC<AddMenuProps> = () => {
                         ({ isSubmitting }) => (
                             <>
                                 <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Tạo mới menu</p>
-
-                                <Form
-                                    id={id}
-                                    className="p-5 grid grid-cols-2 gap-5 grow overflow-y-auto w-220"
-                                >
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Tên menu</label>
-                                        <FormikTextField.Input
-                                            name="name"
-                                            placeholder="Tên menu"
-                                        />
-                                    </div>
-                                    {
-                                        principle.type !== ROLE.OWNER ? null : <StoreSelect />
-                                    }
-                                </Form>
+                                {
+                                    principle.type === ROLE.OWNER ? (
+                                        <Form
+                                            id={id}
+                                            className="p-5 grid grid-cols-2 gap-5 grow overflow-y-auto w-220"
+                                        >
+                                            <div className="space-y-2">
+                                                <label className="text-gray-500 font-medium">Tên menu</label>
+                                                <FormikTextField.Input
+                                                    name="name"
+                                                    placeholder="Tên menu"
+                                                />
+                                            </div>
+                                            <StoreSelect />
+                                        </Form>
+                                    ) : (
+                                        <Form
+                                            id={id}
+                                            className="p-5 grow overflow-y-auto w-110"
+                                        >
+                                            <div className="space-y-2">
+                                                <label className="text-gray-500 font-medium">Tên menu</label>
+                                                <FormikTextField.Input
+                                                    name="name"
+                                                    placeholder="Tên menu"
+                                                />
+                                            </div>
+                                        </Form>
+                                    )
+                                }
                                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
                                     <Button
                                         disabled={isSubmitting}

@@ -11,11 +11,6 @@ import ManageAccountService from 'services/ManageAccountService'
 import REGEX from 'validations/regex'
 import { object, string } from 'yup'
 
-// type AddQRCodeProps = {
-//     storeId: string | undefined
-//     addQRCode: (qr: QRCode) => void
-// }
-
 const AddAccount: FC = () => {
     const id = useId()
     const [display, setDisplay] = useBoolean(false)

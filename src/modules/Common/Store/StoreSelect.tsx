@@ -1,11 +1,15 @@
 import { isEmpty } from "lodash"
 import FormikTextField from "modules/Common/FormikTextField"
 import Loading from "modules/Common/Loading"
-import { useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import ManageStoreService from "services/ManageStoreService"
 import Store from "types/store"
 
-const StoreSelect = () => {
+type StoreSelectProps = {
+    showAll?: boolean
+}
+
+const StoreSelect: FC<StoreSelectProps> = ({ showAll = true }) => {
     const [loading, setLoading] = useState(false)
     const [stores, setStores] = useState<Store[]>([])
 
@@ -36,7 +40,16 @@ const StoreSelect = () => {
                     </div>
                 ) : stores ? (
                     <FormikTextField.DropdownInput
-                        options={[{ label: "Tất cả cửa hàng", value: null }, ...stores.map(({ id, name }) => ({ label: name, value: id }))]}
+                        options={
+                            showAll ? [
+                                { label: "Tất cả cửa hàng", value: null },
+                                ...stores.map(
+                                    ({ id, name }) => ({ label: name, value: id })
+                                )
+                            ] : stores.map(
+                                ({ id, name }) => ({ label: name, value: id })
+                            )
+                        }
                         name="storeId"
                         placeholder="Chon cửa hàng"
                     />

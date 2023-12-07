@@ -12,12 +12,16 @@ import { useAppSelector } from 'stores/root'
 import { Account } from 'types/account'
 import { Principle } from 'types/authenticate'
 
+export type AccountItem = Account & {
+    updateAccount: (account: Account) => void
+}
+
 type AccountDetailProps = {
-    account: Account
+    account: AccountItem
 }
 
 const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
-    const { id, isActive } = account
+    const { id, isActive, updateAccount } = account
     const [display, setDisplay] = useBoolean(false)
     const { id: accountId } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
@@ -58,7 +62,7 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                 )
 
                                 setDisplay.off()
-                                console.log(body.data)
+                                updateAccount(body.data)
                                 return
                             }
                             showToast(

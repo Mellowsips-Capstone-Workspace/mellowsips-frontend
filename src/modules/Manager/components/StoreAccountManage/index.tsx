@@ -8,7 +8,7 @@ import SelectStoreManage from 'modules/Common/SelectStoreManage'
 import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
-import AccountDetail from 'modules/Manager/components/AccountDetail'
+import AccountDetail, { AccountItem } from 'modules/Manager/components/AccountDetail'
 import AddAccount from 'modules/Manager/components/AddAccount'
 import { FC, useCallback, useEffect, useState } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
@@ -16,8 +16,7 @@ import { useAppSelector } from 'stores/root'
 import { Account } from 'types/account'
 import { Principle } from 'types/authenticate'
 
-
-const { accessor, display } = createColumnHelper<Account>()
+const { accessor, display } = createColumnHelper<AccountItem>()
 
 const columns = [
     accessor(
@@ -55,11 +54,23 @@ const columns = [
     accessor(
         "isVerified",
         {
-            header: "Trạng thái",
+            header: "Xác thực",
             cell: ({ getValue }) => getValue() ? (
                 <Badge className='text-xs px-0.5' intent="greenBold">Xác thực</Badge>
             ) : (
                 <Badge className='text-xs px-0.5' intent="secondary">Chưa xác thực</Badge>
+            ),
+            minSize: 150,
+        }
+    ),
+    accessor(
+        "isActive",
+        {
+            header: "Trạng thái",
+            cell: ({ getValue }) => getValue() ? (
+                <Badge className='text-xs px-0.5' intent="green">Kích hoạt</Badge>
+            ) : (
+                <Badge className='text-xs px-0.5' intent="secondaryBold">Bị vô hiệu hoá</Badge>
             ),
             minSize: 150,
         }
@@ -72,7 +83,6 @@ const columns = [
             minSize: 150,
         }
     ),
-
     accessor(
         "updatedBy",
         {
@@ -122,23 +132,33 @@ const StoreAccount: FC = () => {
         fetchData()
     }, [fetchData])
 
-
     useEffect(() => {
         refetch()
     }, [refetch])
 
+    const updateAccount = useCallback((account: Account) => {
+        const { id } = account
+        setAccounts(
+            (accounts) => {
+                const cloneAccounts = [...accounts]
+                const index = cloneAccounts.findIndex(account => account.id === id)
+                cloneAccounts.splice(index, 1, account)
+                return cloneAccounts
+            }
+        )
 
+    }, [])
     return (
         <div className="bg-white p-5 shadow rounded">
             {
                 loading ? (
                     <TableSkeleton column={5} />
                 ) : (
-                    <Table<Account>
+                    <Table<AccountItem>
                         actions={
                             (
                                 <div className='flex space-x-5'>
-                                    <AddAccount />
+                                    <AddAccount refetch={refetch} />
                                     {
                                         type === ROLE.OWNER ? (
                                             <div className='w-80'>
@@ -156,12 +176,13 @@ const StoreAccount: FC = () => {
                             )
                         }
                         columns={columns}
-                        data={accounts}
+                        data={accounts.map(account => ({ ...account, updateAccount }))}
                         refetch={refetch}
                         columnVisibility={
                             {
                                 updatedAt: false,
-                                updatedBy: false
+                                updatedBy: false,
+                                phone: false
                             }
                         }
                     />

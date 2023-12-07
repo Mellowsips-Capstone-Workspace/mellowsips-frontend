@@ -13,7 +13,7 @@ import { array, boolean, number, object, string } from "yup"
 
 const AddProduct: FC = () => {
     const navigate = useNavigate()
-    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
+    const { type, storeId } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     return (
         <Formik
@@ -25,7 +25,7 @@ const AddProduct: FC = () => {
                     description: "",
                     categories: [],
                     isSoldOut: false,
-                    storeId: null,
+                    storeId: type === ROLE.OWNER ? null : storeId,
                     productOptionSections: []
                 }
             }
@@ -38,7 +38,7 @@ const AddProduct: FC = () => {
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: principle.type === ROLE.OWNER ? string().nullable() : string(),
+                        storeId: type === ROLE.OWNER ? string().nullable() : string(),
                         productOptionSections: array(
                             object(
                                 {

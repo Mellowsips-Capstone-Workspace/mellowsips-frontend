@@ -1,3 +1,4 @@
+import ROLE from 'enums/role'
 import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
@@ -6,19 +7,40 @@ import FormikTextField from 'modules/Common/FormikTextField'
 import Modal from 'modules/Common/Modal/Modal'
 import StoreSelect from 'modules/Common/Store/StoreSelect'
 import showToast from 'modules/Common/Toast'
-import { FC, useId } from 'react'
+import { FC, useId, useMemo } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
+import { useAppSelector } from 'stores/root'
+import { Principle } from 'types/authenticate'
 import REGEX from 'validations/regex'
 import { object, string } from 'yup'
 
-// type AddQRCodeProps = {
-//     storeId: string | undefined
-//     addQRCode: (qr: QRCode) => void
-// }
+type AddAccountProps = {
+    refetch: () => void
+}
 
-const AddAccount: FC = () => {
+const AddAccount: FC<AddAccountProps> = ({ refetch }) => {
     const id = useId()
     const [display, setDisplay] = useBoolean(false)
+    const { type, storeId } = useAppSelector<Principle>(state => state.authenticate.principle!)
+
+    const roles = useMemo(() => {
+        return type === ROLE.OWNER ? [
+            {
+                label: "Nhân viên",
+                value: "STAFF"
+            },
+            {
+                label: "Quản lý cửa hàng",
+                value: "STORE_MANAGER"
+            }
+        ] : [
+            {
+                label: "Nhân viên",
+                value: "STAFF"
+            }
+        ]
+    }, [type])
+
 
     return (
         <div>
@@ -44,7 +66,7 @@ const AddAccount: FC = () => {
                             email: "",
                             displayName: "",
                             type: "STAFF",
-                            storeId: "",
+                            storeId: type === ROLE.OWNER ? null : storeId,
                             phone: ""
                         }
                     }
@@ -89,7 +111,7 @@ const AddAccount: FC = () => {
                                 )
 
                                 setDisplay.off()
-                                console.log(body.data)
+                                refetch()
                                 return
                             }
                             showToast(
@@ -123,26 +145,42 @@ const AddAccount: FC = () => {
                                             placeholder="Ví dụ: Nhân Viên A"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Loại tài khoản</label>
-                                        <FormikTextField.DropdownInput
-                                            name="type"
-                                            options={
-                                                [
-                                                    {
-                                                        label: "Nhân viên",
-                                                        value: "STAFF"
-                                                    },
-                                                    {
-                                                        label: "Quản lý cửa hàng",
-                                                        value: "STORE_MANAGER"
-                                                    }
-                                                ]
-                                            }
-                                            placeholder="(84) ..."
-                                        />
-                                    </div>
-                                    <StoreSelect />
+
+
+                                    {
+                                        type === ROLE.OWNER ? (
+                                            <div className="space-y-2">
+                                                <label className="text-gray-500 font-medium">Loại tài khoản</label>
+                                                <FormikTextField.DropdownInput
+                                                    name="type"
+                                                    options={roles}
+                                                    placeholder="Chọn quyền cho tài khoản"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className='cursor-not-allowed'>
+                                                <div className='pointer-events-none space-y-2'>
+                                                    <label className="text-gray-500 font-medium">Loại tài khoản</label>
+                                                    <FormikTextField.DropdownInput
+                                                        name="type"
+                                                        options={roles}
+                                                        placeholder="Chọn quyền cho tài khoản"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        type === ROLE.OWNER ? (
+                                            <StoreSelect showAll={false} />
+                                        ) : (
+                                            <div className='cursor-not-allowed'>
+                                                <div className='pointer-events-none'>
+                                                    <StoreSelect />
+                                                </div>
+                                            </div>
+                                        )
+                                    }
 
                                     <div className="space-y-2">
                                         <label className="text-gray-500 font-medium">Email</label>
