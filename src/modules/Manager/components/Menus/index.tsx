@@ -10,14 +10,15 @@ import useSelectStore from "modules/Common/SelectStoreManage/hooks/useSelectStor
 import { TableSkeleton } from "modules/Common/Skeleton"
 import Table from "modules/Common/Table"
 import AddMenu from "modules/Manager/components/AddMenu"
+import MenuAction, { MenuItem } from "modules/Manager/components/Menus/components/MenuAction"
 import { FC, useCallback, useEffect, useState } from "react"
-import { Link } from "react-router-dom"
 import MenuService from "services/MenuService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 import { Menu } from "types/menus"
 
-const { accessor, display } = createColumnHelper<Menu>()
+
+const { accessor, display } = createColumnHelper<MenuItem>()
 
 const columns = [
     accessor(
@@ -47,17 +48,7 @@ const columns = [
     display(
         {
             header: "Hành động",
-            cell: ({ row: { original } }) => {
-                return (
-                    <Link
-                        state={{ id: original.id }}
-                        to={original.id!}
-                        className="hover:text-main-primary"
-                    >
-                        Chi tiết
-                    </Link>
-                )
-            },
+            cell: ({ row: { original } }) => <MenuAction menu={original} />,
             minSize: 150
         }
     )
@@ -96,8 +87,8 @@ const Menus: FC = () => {
                     <TableSkeleton column={5} />
                 ) : (
                     <>
-                        <Table<Menu>
-                            data={menus}
+                        <Table<MenuItem>
+                            data={menus.map(menu => ({ ...menu, refetch: () => refetch(page, offset) }))}
                             columns={columns}
                             refetch={refetch}
                             actions={

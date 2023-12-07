@@ -23,16 +23,52 @@ type MenuProductProps = {
 
 const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading }) => {
     const { id: menuId } = useParams()
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const currentProductId = useRef<string | undefined>(undefined)
     const [displayCreateMode, setDisplayCreateMode] = useBoolean(false)
     const [displayClone, setDisplayClone] = useBoolean(false)
     const [displayUpdate, setDisplayUpdate] = useBoolean(false)
     const [displayCreate, setDisplayCreate] = useBoolean(false)
+    const [displayDelete, setDisplayDelete] = useBoolean(false)
     const { on: openCloneModal } = setDisplayClone
     const { on: openUpdateModal } = setDisplayUpdate
     const { on: openCreateModal } = setDisplayCreate
+    const { on: openDeleteModal, off: closeDeleteModal } = setDisplayDelete
     const { off: offDisplayCreateMode } = setDisplayCreateMode
     const [templates, setTemplates] = useState<Product[]>([])
+
+    const handleRemove = useCallback(async (event: MouseEvent<HTMLButtonElement>) => {
+        const { productId } = event.currentTarget.dataset
+        currentProductId.current = productId
+        openDeleteModal()
+    }, [openDeleteModal])
+
+    const handleRemoveProduct = useCallback(async () => {
+        setIsSubmitting(true)
+
+        const { status } = await ProductService.delete(currentProductId.current!)
+        setIsSubmitting(false)
+        if (status === 200) {
+            refetchProducts()
+            showToast(
+                {
+                    type: 'success',
+                    title: "Thành công",
+                    message: "Xoá sản phẩm thành công!"
+                }
+            )
+            closeDeleteModal()
+            return
+        }
+        showToast(
+            {
+                type: 'warning',
+                title: "Thất bại",
+                message: "Xoá sản phẩm thất bại."
+            }
+        )
+    }, [refetchProducts, closeDeleteModal])
+
 
     const fetchProductTemplates = useCallback(async () => {
         const { status, body } = await ProductService.searchTemplates({ pagination: { page: 1, offset: 1000 } })
@@ -95,8 +131,8 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                         <span>Sản phẩm</span>
                     </Button>
                     <Button
-                        variant="primary"
                         type='button'
+                        variant="indigo"
                         onClick={setDisplayCreateMode.on}
                     >
                         <PlusIcon className='mr-1 h-4 w-4' />
@@ -123,14 +159,24 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                                     <p className='truncate'>{item.name}</p>
                                     <p className='text-main-primary font-medium text-sm'>{item.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                 </div>
-                                <button
-                                    type='button'
-                                    data-product-id={item.id}
-                                    onClick={updateProduct}
-                                    className='block w-fit flex-none text-xs font-medium text-gray-500'
-                                >
-                                    Chi tiết
-                                </button>
+                                <div className='space-y-2'>
+                                    <button
+                                        type='button'
+                                        data-product-id={item.id}
+                                        onClick={updateProduct}
+                                        className='min-w-full px-1.5 py-0.5 rounded bg-gray-500 block w-fit flex-none text-xs font-medium text-white'
+                                    >
+                                        Chi tiết
+                                    </button>
+                                    <button
+                                        type='button'
+                                        onClick={handleRemove}
+                                        data-product-id={item.id}
+                                        className='min-w-full px-1.5 py-0.5 rounded bg-main-primary block w-fit flex-none text-xs font-medium text-white'
+                                    >
+                                        Xoá
+                                    </button>
+                                </div>
                             </li>
                         )
                     ) : (
@@ -229,6 +275,44 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
                 setDisplay={setDisplayUpdate}
                 refetchProducts={refetchProducts}
             />
+            <Modal
+                flag={displayDelete}
+                closeModal={setDisplayDelete.off}
+                closeOutside={false}
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
+            >
+                <div className='space-y-5'>
+                    <p className="px-5 py-2 shadow border-b truncate font-medium">Xác nhận xoá sản phẩm</p>
+                    <div className='space-y-5'>
+                        <p className='px-5'><span className='font-medium text-red-500'>Xác nhận xoá.</span> Sản phẩm sẽ bị xoá.</p>
+                        <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                            <Button
+                                type="button"
+                                variant="red"
+                                onClick={handleRemoveProduct}
+                                className="group"
+                            >
+                                {
+                                    isSubmitting ? (
+                                        <span className='hidden group-disabled:block mr-2'>
+                                            <Loading.Circle size={14} />
+                                        </span>
+                                    ) : null
+                                }
+                                <span>Xoá</span>
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="default"
+                                onClick={setDisplayDelete.off}
+                            >
+                                Huỷ
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }

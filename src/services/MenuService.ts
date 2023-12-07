@@ -63,6 +63,18 @@ class MenuService {
         )
     }
 
+    static delete(id: string) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+        }
+
+        return requestApiHelper<body>(
+            interceptor.delete(`menus/${id}`)
+        )
+    }
+
     static create(payload: object) {
         type body = {
             statusCode: number

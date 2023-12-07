@@ -10,7 +10,7 @@ import MenuProducts from "modules/Manager/components/UpdateMenu/MenuProducts"
 import { FC } from "react"
 import { Link } from "react-router-dom"
 import MenuService from "services/MenuService"
-import { Menu } from "types/menus"
+import { Menu, MenuSection } from "types/menus"
 import { Product } from "types/product"
 import REGEX from "validations/regex"
 import { array, object, string } from "yup"
@@ -50,13 +50,15 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts, load
             }
             onSubmit={
                 async ({ menuSections, ...values }) => {
+                    const ids = products.map(({ id }) => id)
                     const payload = {
                         ...values,
                         menuSections: isArray(menuSections) ? menuSections.map(
-                            (section: object, index) => (
+                            (section: MenuSection, index) => (
                                 {
                                     ...section,
-                                    priority: index + 1
+                                    priority: index + 1,
+                                    productIds: section.productIds.filter(id => ids.includes(id))
                                 }
                             )
                         ) : []

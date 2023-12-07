@@ -108,6 +108,18 @@ class ProductService {
             )
         )
     }
+    static delete(id: string) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: Product
+        }
+
+        return requestApiHelper<body>(
+            interceptor.delete("products/".concat(id))
+        )
+    }
 
 }
 
