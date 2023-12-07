@@ -107,7 +107,6 @@ const ManageStatus: FC = () => {
                 <div>
                     <h2 className="font-medium text-lg">Quản lý cửa hàng</h2>
                     <p>Quản lý thông tin cửa hàng</p>
-
                 </div>
                 {
                     [ROLE.OWNER, ROLE.STORE_MANAGER].includes(type) ? <StoreAction /> : null

@@ -5,6 +5,7 @@ import OpenTimeManage from "modules/Manager/components/OpenTimeManage";
 import BasicInfo from "modules/Manager/components/Store/components/BasicInfo";
 import ManageCategory from "modules/Manager/components/Store/components/ManageCategory";
 import ManageStatus from "modules/Manager/components/Store/components/ManageStatus";
+import StoreReview from "modules/Manager/components/Store/components/StoreReview";
 import StoreProvider from "modules/Manager/components/Store/contexts/StoreContext";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -72,6 +73,7 @@ const StoreDetail: FC<StoreDetailProps> = ({ storeId }) => {
                             <div className="col-span-2 space-y-5">
                                 <BasicInfo />
                                 <ManageCategory />
+                                <StoreReview />
                             </div>
                             <div className="space-y-5">
                                 <OpenTimeManage className="py-2 px-5 bg-white rounded" />

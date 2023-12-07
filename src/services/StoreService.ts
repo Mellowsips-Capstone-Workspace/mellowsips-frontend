@@ -16,6 +16,7 @@ class StoreService {
             interceptor.get(`stores/${id}`)
         )
     }
+
     static activeStore(id: string) {
         type body = {
             statusCode: number
@@ -54,6 +55,32 @@ class StoreService {
             interceptor.put(
                 `stores/${id}/update`,
                 data
+            )
+        )
+    }
+
+    static getStoreReview(id: string) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: any
+        }
+
+        return requestApiHelper<body>(
+            interceptor.post(
+                `stores/${id}`.concat("/reviews/search"),
+                {
+                    criteria: {
+                        order: {
+                            createdAt: "DESC"
+                        }
+                    },
+                    pagination: {
+                        page: 1,
+                        itemsPerPage: 10
+                    }
+                }
             )
         )
     }

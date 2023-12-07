@@ -1,3 +1,4 @@
+import ROLE from 'enums/role'
 import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
@@ -8,6 +9,8 @@ import QRCode from 'modules/Common/QRCode'
 import showToast from 'modules/Common/Toast'
 import { FC } from 'react'
 import QRService from 'services/QRService'
+import { useAppSelector } from 'stores/root'
+import { Principle } from 'types/authenticate'
 import { QRCode as QRCodeType } from 'types/store'
 import REGEX from 'validations/regex'
 import { object, string } from 'yup'
@@ -19,6 +22,8 @@ type QRCodeModelProps = QRCodeType & {
 const QRCodeModel: FC<QRCodeModelProps> = (props) => {
     const { name, id, updateQRCode, storeId } = props
     const [display, setDisplay] = useBoolean(false)
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
+
 
     const url = `https://mellowsipssv.site/mobile?storeId=${storeId}&qrId=${id}`
 
@@ -100,20 +105,24 @@ const QRCodeModel: FC<QRCodeModelProps> = (props) => {
                     </Formik>
                 </div>
                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
-                    <Button
-                        form={id}
-                        type="submit"
-                        variant="green"
-                        className="group"
-                    >
-                        Cập nhật
-                    </Button>
+                    {
+                        type === ROLE.STAFF ? null : (
+                            <Button
+                                form={id}
+                                type="submit"
+                                variant="green"
+                                className="group"
+                            >
+                                Cập nhật
+                            </Button>
+                        )
+                    }
                     <Button
                         type="button"
                         variant="default"
                         onClick={setDisplay.off}
                     >
-                        Huỷ
+                        Đóng
                     </Button>
                 </div>
             </Modal>

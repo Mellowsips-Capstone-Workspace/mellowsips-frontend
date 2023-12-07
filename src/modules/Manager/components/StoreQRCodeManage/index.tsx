@@ -16,7 +16,6 @@ import { Principle } from 'types/authenticate'
 import { QRCode } from 'types/store'
 
 type QRCodeItem = QRCode & {
-
     updateQRCode: (id: string, qr: QRCode) => void
 }
 
@@ -155,12 +154,12 @@ const StoreQRCodeManage: FC = () => {
                                                 storeId={storeId!}
                                                 addQRCode={addQRCode}
                                             />
-                                        ) : (
+                                        ) : type === ROLE.STORE_MANAGER ? (
                                             <AddQRCode
                                                 storeId={accountStoreId}
                                                 addQRCode={addQRCode}
                                             />
-                                        )
+                                        ) : null
                                     }
 
                                     {
