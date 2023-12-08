@@ -41,4 +41,15 @@ type Store = {
     partnerId: string
 } & Base
 
+
+export type Review = {
+    id: string
+    point: number
+    createdAt: string
+    updatedAt: string
+    createdBy: string
+    updatedBy: string
+    comment: string
+}
+
 export default Store

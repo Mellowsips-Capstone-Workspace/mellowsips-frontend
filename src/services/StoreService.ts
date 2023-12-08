@@ -1,6 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
-import Store from "types/store"
+import Store, { Review } from "types/store"
 
 class StoreService {
 
@@ -59,13 +59,25 @@ class StoreService {
         )
     }
 
-    static getStoreReview(id: string) {
+    static getStoreReview(
+        id: string,
+        options: {
+            pagination: { page: number, offset: number }
+        }
+    ) {
         type body = {
             statusCode: number
             message: string | undefined
             errorCode: null | string
-            data: any
+            data: {
+                itemsPerPage: number
+                page: number
+                results: Review[]
+                totalItems: number
+            }
         }
+
+        const { pagination } = options
 
         return requestApiHelper<body>(
             interceptor.post(
@@ -77,8 +89,8 @@ class StoreService {
                         }
                     },
                     pagination: {
-                        page: 1,
-                        itemsPerPage: 10
+                        page: pagination.page,
+                        itemsPerPage: pagination.offset
                     }
                 }
             )
