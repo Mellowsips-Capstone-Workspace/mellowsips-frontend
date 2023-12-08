@@ -1,5 +1,6 @@
 import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons"
 import { format, parseISO } from "date-fns"
+import { isEmpty } from "lodash"
 import { FC } from "react"
 import { type Review } from "types/store"
 
@@ -30,7 +31,12 @@ const Review: FC<ReviewProps> = ({ review }) => {
                         )
                     }
                 </div>
-                <span className="text-xs text-gray-500">{format(parseISO(review.updatedAt), 'HH:mm:ss dd-MM-yyyy')}</span>
+                {
+                    isEmpty(review.comment) ? null : (
+                        <p className="text-sm">{review.comment}</p>
+                    )
+                }
+                <p className="text-xs text-gray-500">{format(parseISO(review.updatedAt), 'HH:mm:ss dd-MM-yyyy')}</p>
             </div>
         </div>
     )
