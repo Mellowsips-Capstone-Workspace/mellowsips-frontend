@@ -13,17 +13,14 @@ const getRandomImage = () => (Math.floor(Math.random() * 15) + 1).toString().pad
 const Review: FC<ReviewProps> = ({ review }) => {
     return (
         <div className="p-2 rounded border flex space-x-2">
-            <div className="h-12 w-12 border rounded-full overflow-hidden">
+            <div className="h-12 w-12 flex-none border rounded-full overflow-hidden">
                 <img
                     className="block h-full w-full"
                     src={"https://isomorphic-furyroad.s3.amazonaws.com/public/avatars/avatar-".concat(getRandomImage()).concat(".webp")}
                 />
-
             </div>
             <div className="grow">
-                <div className="space-x-1">
-                    <span className="font-medium">{review.createdBy}</span>
-                </div>
+                <p className="font-medium">{review.createdBy}</p>
                 <div className="w-fit flex space-x-1">
                     {
                         Array(5).fill(review.point).map(
@@ -33,7 +30,7 @@ const Review: FC<ReviewProps> = ({ review }) => {
                 </div>
                 {
                     isEmpty(review.comment) ? null : (
-                        <p className="text-sm">{review.comment}</p>
+                        <p className="text-sm py-1">{review.comment}</p>
                     )
                 }
                 <p className="text-xs text-gray-500">{format(parseISO(review.updatedAt), 'HH:mm:ss dd-MM-yyyy')}</p>
