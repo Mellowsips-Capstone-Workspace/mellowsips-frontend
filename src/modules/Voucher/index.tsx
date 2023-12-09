@@ -1,7 +1,9 @@
 
 import { createColumnHelper } from '@tanstack/react-table'
+import { format } from 'date-fns'
 import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
+import Badge from 'modules/Common/Badge'
 import Pagination from 'modules/Common/Pagination/Pagination'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
@@ -12,6 +14,7 @@ import { nanoid } from 'nanoid'
 import { FC, useCallback, useEffect, useState } from 'react'
 import VoucherService from 'services/VoucherService'
 import { Voucher } from 'types/voucher'
+import { parseGMT7 } from 'utils/date'
 
 type VoucherItem = Voucher & {
     updateVoucher: (id: string, voucher: Voucher) => void
@@ -38,12 +41,27 @@ const columns = [
     accessor(
         "quantity",
         {
-            header: "Số lượng",
+            header: "Số lượng khả dụng",
             cell: ({ getValue }) => getValue(),
             minSize: 150,
         }
     ),
-
+    accessor(
+        "startDate",
+        {
+            header: "Ngày bắt đầu",
+            cell: ({ getValue }) => format(parseGMT7(getValue()), 'HH:mm dd-MM-yyyy'),
+            minSize: 150,
+        }
+    ),
+    accessor(
+        "endDate",
+        {
+            header: "Ngày kết thúc",
+            cell: ({ getValue }) => format(parseGMT7(getValue()), 'HH:mm dd-MM-yyyy'),
+            minSize: 150,
+        }
+    ),
     display(
         {
             header: "Giá trị",
@@ -54,6 +72,24 @@ const columns = [
                             original.discountType === "CASH" ? original.value.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) : original.value.toString().concat(" %")
                         }
                     </span>
+                )
+            },
+            minSize: 150
+        }
+    ),
+    display(
+        {
+            header: "Trạng thái",
+            cell: ({ row: { original } }) => {
+                const isExpired = isEmpty(original.endDate) ? false : parseGMT7(original.endDate) < new Date()
+                const isPending = isEmpty(original.startDate) ? false : parseGMT7(original.startDate) > new Date()
+
+                return isPending ? (
+                    <Badge intent="blue" className='text-sm px-1.5'>Sắp điễn ra</Badge>
+                ) : isExpired ? (
+                    <Badge intent="redBold" className='text-sm px-1.5'>Kết thúc</Badge>
+                ) : (
+                    <Badge intent="secondaryBold" className='text-sm px-1.5'>Đang diễn ra</Badge>
                 )
             },
             minSize: 150

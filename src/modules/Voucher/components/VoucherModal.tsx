@@ -14,7 +14,7 @@ import VoucherService from "services/VoucherService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
 import { VOUCHER_TYPE, Voucher } from "types/voucher"
-import { parseAndPlusGMT7, toGMT7 } from "utils/date"
+import { parseGMT7, toGMT7 } from "utils/date"
 import { date, number, object, string } from "yup"
 
 type VoucherModalProps = {
@@ -22,14 +22,16 @@ type VoucherModalProps = {
         updateVoucher: (id: string, voucher: Voucher) => void
     }
 }
+
 const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
     const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
     const { id, updateVoucher } = voucher
     const [display, setDisplay] = useBoolean(false)
     const { off } = setDisplay
 
-    const initStartDate = isString(voucher.startDate) ? parseAndPlusGMT7(voucher.startDate.replace("+07:00", "")) : new Date()
-    const isExpired = isEmpty(voucher.endDate) ? false : parseAndPlusGMT7(voucher.endDate) < new Date()
+    const initStartDate = isString(voucher.startDate) ? parseGMT7(voucher.startDate) : new Date()
+    const isExpired = isEmpty(voucher.endDate) ? false : parseGMT7(voucher.endDate) < new Date()
+    const isPending = isEmpty(voucher.startDate) ? false : parseGMT7(voucher.startDate) > new Date()
 
     const handleRevoke = useCallback(async () => {
         const { status, body } = await VoucherService.close(id)
@@ -126,7 +128,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         if (!isDate(value)) {
                                             return false
                                         }
-                                        return parseAndPlusGMT7(value.toISOString()) >= initStartDate
+                                        return value >= initStartDate
                                     }
                                 ).required("Vui lòng chọn ngày áp dụng."),
                                 endDate: date().test(
@@ -330,7 +332,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         )
                                     }
                                     {
-                                        isExpired ? null : (
+                                        (isExpired || isPending) ? null : (
                                             <Button
                                                 type="button"
                                                 variant="orange"
@@ -353,10 +355,8 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     </Button>
                                 </div>
                             </>
-
                         )
                     }
-
                 </Formik>
             </Modal >
         </div>

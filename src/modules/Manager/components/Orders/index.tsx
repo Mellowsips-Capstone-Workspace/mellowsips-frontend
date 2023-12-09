@@ -33,23 +33,26 @@ const columns = [
                     <span className="hover:cursor-pointer hover:text-main-primary">{original.details.cartItems.length} món</span>
                 </CartItem>
             ),
-            minSize: 150
+            minSize: 80
         }
     ),
-    display(
+    accessor(
+        "details.store.name",
         {
-            header: "Địa điểm",
-            cell: ({ row: { original } }) => {
-                return (
-                    <p className='space-x-1'>
-                        <span>{original.details.store.name}</span>
-                        <span>({original.qrCode.name})</span>
-                    </p>
-                )
-            },
+            header: "Quán",
+            cell: ({ getValue }) => getValue(),
             minSize: 150
         }
     ),
+    accessor(
+        "qrCode.name",
+        {
+            header: "Bàn",
+            cell: ({ getValue }) => getValue(),
+            minSize: 80
+        }
+    ),
+
     accessor(
         "status",
         {
@@ -106,7 +109,7 @@ const columns = [
                     </>
                 )
             },
-            minSize: 150
+            minSize: 100
         }
     ),
     accessor(
@@ -114,14 +117,14 @@ const columns = [
         {
             header: "Thời gian tạo",
             cell: ({ getValue }) => format(parseISO(getValue()), 'HH:mm:ss dd-MM-yyyy'),
-            minSize: 150,
+            minSize: 160,
         }
     ),
     display(
         {
             header: "Hành động",
             cell: ({ row: { original } }) => <OrderDetail order={original} />,
-            minSize: 100
+            minSize: 80
         }
     )
 ]

@@ -6,6 +6,7 @@ export const VOUCHER_TYPE = {
 export type Voucher = {
     value: number
     quantity: number
+    originalQuantity: number
     discountType: "CASH" | "PERCENT"
     startDate: string
     endDate: string

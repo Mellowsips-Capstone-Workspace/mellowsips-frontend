@@ -1,9 +1,4 @@
-export const parseAndPlusGMT7 = (value: string) => {
-    const date = new Date(value)
-    return new Date(date.getTime() + (7 * 3600 * 1000))
-}
-
-/**
+/*
  * Đang rất cay khi phải viết các hàm này Giang m hết trò để làm rồi à, cứ nghĩ đủ trò điên điên không 😡😡😡??
  */
 export const toGMT7 = (date: Date) => {
@@ -11,7 +6,7 @@ export const toGMT7 = (date: Date) => {
 }
 
 
-/**
+/*
  * 😡😡😡 Lúc mời làm kêu tất cả server dùng giờ quốc tế hay lắm mà 😊 sao giờ bắt làm cái trò này.
  * Không làm được thì lúc đầu đừng nói
  */

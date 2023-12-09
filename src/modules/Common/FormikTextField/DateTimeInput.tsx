@@ -7,7 +7,6 @@ import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from "react
 import { Matcher } from "react-day-picker";
 import { Calendar } from "shadcn/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "shadcn/ui/popover";
-import { parseAndPlusGMT7 } from "utils/date";
 
 type SelectHourProps = {
     hour: number
@@ -125,14 +124,13 @@ const SelectMinute: FC<SelectMinuteProps> = ({ minuteStep, minute, setMinute }) 
 
 type DateTimeInputProps = {
     name: string
-    plusGMT7?: boolean
     disabled?: Matcher
     placeholder?: string
 }
 
-const DateTimeInput: FC<DateTimeInputProps> = ({ name, placeholder = "Chọn ngày", disabled, plusGMT7 = false }) => {
+const DateTimeInput: FC<DateTimeInputProps> = ({ name, placeholder = "Chọn ngày", disabled }) => {
     const [{ value }, { error, touched, }, { setValue, setTouched }] = useField(name)
-    const [date, setDate] = useState<Date | undefined>(isEmpty(value) ? undefined : (plusGMT7 ? parseAndPlusGMT7(value) : new Date(value)))
+    const [date, setDate] = useState<Date | undefined>(isEmpty(value) ? undefined : new Date(value))
 
     const onSelect = useCallback((date: Date | undefined) => {
         if (isUndefined(date)) {
