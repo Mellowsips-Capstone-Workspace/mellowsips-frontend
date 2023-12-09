@@ -76,7 +76,12 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
             >
                 <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Chi tiết mã giảm giá</p>
                 <Formik
-                    initialValues={voucher}
+                    initialValues={
+                        {
+                            ...voucher,
+                            isHidden: voucher.isHidden || false
+                        }
+                    }
                     validationSchema={
                         object().shape(
                             {
@@ -84,7 +89,6 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     "test-value",
                                     "Giá trị không hợp lệ 1-100(%) hoặc tối thiểu 1000đ",
                                     function (value) {
-
                                         const { discountType } = this.parent
                                         if (isUndefined(value) || isEmpty(value)) {
                                             return false

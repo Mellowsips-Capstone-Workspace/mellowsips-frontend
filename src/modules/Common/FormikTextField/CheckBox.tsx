@@ -1,6 +1,6 @@
 import { useField } from "formik";
 import { isEmpty } from "lodash";
-import { FC } from "react";
+import { ChangeEvent, FC, useCallback } from "react";
 
 type CheckboxProps = {
     name: string
@@ -8,7 +8,11 @@ type CheckboxProps = {
 }
 
 const Checkbox: FC<CheckboxProps> = ({ name, label }) => {
-    const [{ onChange, value }] = useField(name);
+    const [, { value }, { setValue }] = useField(name);
+
+    const handleOnChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setValue(event.currentTarget.checked, true)
+    }, [setValue])
 
     return (
         <div className="w-fit">
@@ -18,7 +22,7 @@ const Checkbox: FC<CheckboxProps> = ({ name, label }) => {
                         type="checkbox"
                         checked={Boolean(value)}
                         name={name}
-                        onChange={onChange}
+                        onChange={handleOnChange}
                     />
                     <span className="checked rounded"></span>
                 </div>

@@ -16,6 +16,7 @@ export type Voucher = {
     code: string
     partnerId: string
     storeId: string | null
+    isHidden: boolean
 } & {
     id: string
     createdAt: string
