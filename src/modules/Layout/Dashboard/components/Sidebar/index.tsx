@@ -213,7 +213,6 @@ const getNavigates = (role) => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 )
-
             },
             {
                 disable: false,
@@ -254,6 +253,18 @@ const getNavigates = (role) => {
             },
             {
                 disable: false,
+                path: "menus",
+                label: "Menu",
+                pattern: "/menus/*",
+                icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-full h-full">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                )
+
+            },
+            {
+                disable: false,
                 path: "qr",
                 label: "Mã QR",
                 pattern: "/qr/*",
@@ -271,6 +282,13 @@ const getNavigates = (role) => {
                 pattern: "/stores/*",
                 icon: <HomeIcon className="h-full w-full" />
 
+            },
+            {
+                disable: false,
+                path: "products",
+                label: "Sản phẩm",
+                pattern: "/products/*",
+                icon: <CubeIcon className="h-full w-full" />
             }
         ]
     }

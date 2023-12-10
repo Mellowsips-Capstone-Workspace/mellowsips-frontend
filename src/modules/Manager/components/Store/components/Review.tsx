@@ -8,7 +8,9 @@ type ReviewProps = {
     review: Review
 }
 
-const getRandomImage = () => (Math.floor(Math.random() * 15) + 1).toString().padStart(2, "0")
+const getRandomImageByPhone = (phone: string) => {
+    return (phone.split("").map(parseInt).filter(item => item).reduce((accumulator, current) => accumulator + current, 0) % 14) + 1
+}
 
 const Review: FC<ReviewProps> = ({ review }) => {
     return (
@@ -16,7 +18,7 @@ const Review: FC<ReviewProps> = ({ review }) => {
             <div className="h-12 w-12 flex-none border rounded-full overflow-hidden">
                 <img
                     className="block h-full w-full"
-                    src={"https://isomorphic-furyroad.s3.amazonaws.com/public/avatars/avatar-".concat(getRandomImage()).concat(".webp")}
+                    src={`/images/avatar-${getRandomImageByPhone(review.createdBy)}.png`}
                 />
             </div>
             <div className="grow">
