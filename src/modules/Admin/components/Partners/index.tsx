@@ -1,53 +1,25 @@
 import { createColumnHelper } from '@tanstack/react-table'
-import { format, parseISO } from 'date-fns'
+import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
-import Badge from 'modules/Common/Badge'
+import { Business } from 'modules/Common/ApplicationBadge'
+import Keyword from 'modules/Common/Keyword'
+import Pagination from 'modules/Common/Pagination/Pagination'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
 import { FC, useCallback, useEffect, useState } from 'react'
-import AdminStoreService from 'services/AdminStoreService'
-import Store from 'types/store'
+import AdminPartnerService from 'services/AdminPartnerService'
+import { Partner } from 'types/account'
 
-// type AccountItem = Account & {
-//     updateAccount: (id: string, account: Account) => void
-// }
 
-const { accessor, display } = createColumnHelper<Store>()
+
+const { accessor } = createColumnHelper<Partner>()
 
 const columns = [
     accessor(
         "name",
         {
             header: "Tên",
-            cell: ({ getValue }) => getValue(),
-            minSize: 150,
-        }
-    ),
-    accessor(
-        "isActive",
-        {
-            header: "Trạng thái",
-            cell: ({ getValue }) => getValue() ? (
-                <Badge className='text-xs px-0.5' intent="blue">Đang hoạt động</Badge>
-            ) : (
-                <Badge className='text-xs px-0.5' intent="red">Vô hiệu hoá</Badge>
-            ),
-            minSize: 150,
-        }
-    ),
-    accessor(
-        "email",
-        {
-            header: "Email",
-            cell: ({ getValue }) => getValue() ? getValue() : "N/A",
-            minSize: 150,
-        }
-    ),
-    accessor(
-        "phone",
-        {
-            header: "Phone",
-            cell: ({ getValue }) => getValue() ? getValue() : "N/A",
+            cell: ({ getValue }) => getValue() || <span className='text-gray-400'>Trống</span>,
             minSize: 150,
         }
     ),
@@ -55,42 +27,47 @@ const columns = [
         "updatedBy",
         {
             header: "Cập nhật bởi",
-            cell: ({ getValue }) => getValue(),
+            cell: ({ getValue }) => getValue() || <span className='text-gray-400'>Trống</span>,
             minSize: 150,
         }
     ),
     accessor(
-        "updatedAt",
+        "taxCode",
         {
-            header: "Cập nhật gần nhất",
-            cell: ({ getValue }) => format(parseISO(getValue()), 'HH:mm:ss dd-MM-yyyy'),
+            header: "Mã thuế",
+            cell: ({ getValue }) => getValue() || <span className='text-gray-400'>Trống</span>,
             minSize: 150,
         }
     ),
-    display(
+    accessor(
+        "type",
         {
-            header: "Hành động",
-            cell: () => <span className='hover:text-main-primary'>Chi tiết</span>,
-            // cell: ({ row: { original } }) => <AccountDetail account={original} />,
-            minSize: 150
+            header: "Hình thức",
+            cell: ({ getValue }) => <Business type={getValue()} />,
+            minSize: 150,
         }
-    )
+    ),
+
 ]
 
 const Partners: FC = () => {
     const [loading, setLoading] = useState(false)
-    const [partners, setPartners] = useState<Store[]>([])
+    const [partners, setPartners] = useState<Partner[]>([])
+    const { page, offset, maxPage, setPagination, setPage } = usePagination()
+    const [keyword, setKeyword] = useState("")
 
-    const fetchData = useCallback(async (page = 1, offset = 1000) => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
-        const { status, body } = await AdminStoreService.search({ pagination: { page, offset } })
+        const { status, body } = await AdminPartnerService.search({ pagination: { page, offset }, keyword })
         setLoading(false)
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
             setPartners(body.data.results)
+            setPagination({ page, maxResult: body.data.totalItems })
         } else {
             setPartners([])
         }
-    }, [])
+    }, [page, offset, setPagination, keyword])
+
     const refetch = useCallback(async () => {
         fetchData()
     }, [fetchData])
@@ -100,34 +77,47 @@ const Partners: FC = () => {
         refetch()
     }, [refetch])
 
-    // const updateAccount = useCallback((id: string, account: Account) => {
-    //     setAccounts(
-    //         accounts => {
-    //             const updated = [...accounts]
-    //             const index = updated.findIndex((account) => account.id === id)
-    //             updated.splice(index, 1, account)
-    //             return updated
-    //         }
-    //     )
-    // }, [])
-
     return (
         <div className="bg-white p-5 shadow rounded">
             {
                 loading ? (
                     <TableSkeleton column={5} />
                 ) : (
-                    <Table<Store>
-                        columns={columns}
-                        data={partners}
-                        refetch={refetch}
-                        columnVisibility={
-                            {
-                                updatedAt: false,
-                                updatedBy: false
+                    <div className='space-y-5'>
+
+                        <Table<Partner>
+                            actions={
+                                (
+                                    <div className='w-72'>
+                                        <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                    </div>
+                                )
                             }
+                            columns={columns}
+                            data={partners}
+                            refetch={refetch}
+                            columnVisibility={
+                                {
+                                    updatedAt: false
+                                }
+                            }
+                        />
+
+                        {
+                            maxPage > 0 ? (
+                                <div className="flex justify-between items-center font-medium">
+                                    <p>{`Trang ${page} trên ${maxPage}`}</p>
+
+                                    <Pagination
+                                        page={page}
+                                        maxPage={maxPage}
+                                        setPage={setPage}
+                                    />
+                                </div>
+                            ) : null
                         }
-                    />
+
+                    </div>
                 )
             }
         </div>

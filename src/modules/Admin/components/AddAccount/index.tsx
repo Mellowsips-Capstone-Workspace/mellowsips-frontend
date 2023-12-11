@@ -84,7 +84,6 @@ const AddAccount: FC = () => {
                                 )
 
                                 setDisplay.off()
-                                console.log(body.data)
                                 return
                             }
                             showToast(

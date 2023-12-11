@@ -27,6 +27,7 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
             <Button
                 variant="orange"
                 onClick={setDisplay.on}
+                className="min-h-full"
             >
                 Tạo mới voucher
             </Button>

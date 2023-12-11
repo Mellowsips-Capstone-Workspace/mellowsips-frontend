@@ -1,11 +1,15 @@
+import ROLE from 'enums/role'
 import { isEmpty } from 'lodash'
 import Loading from 'modules/Common/Loading'
 import { Widget } from 'modules/Layout/Dashboard'
 import Update from 'modules/Manager/components/UpdateMenu'
+import ViewMenu from 'modules/Manager/components/ViewMenu'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import MenuService from 'services/MenuService'
 import ProductService from 'services/ProductService'
+import { useAppSelector } from 'stores/root'
+import { Principle } from 'types/authenticate'
 import { Menu, MenuSection } from 'types/menus'
 import { Product } from 'types/product'
 
@@ -14,10 +18,10 @@ const UpdateMenu = () => {
     const [fetching, setFetching] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
     const [menu, setMenu] = useState<Menu>()
+    const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
 
     const { id: menuId } = useParams()
     const navigate = useNavigate()
-
 
     const refetchProducts = useCallback(async () => {
         setFetching(true)
@@ -43,29 +47,24 @@ const UpdateMenu = () => {
         (
             async () => {
                 setLoading(true)
-
                 const [requestProducts, requestMenu] = await Promise.all(
                     [
                         ProductService.getMenuProducts(menuId!),
                         MenuService.getById(menuId!)
                     ]
                 )
-
                 setLoading(false)
 
                 if (requestProducts.status === 200 && !isEmpty(requestProducts.body) && Array.isArray(requestProducts.body.data)) {
                     setProducts(requestProducts.body.data)
                 } else {
                     setProducts([])
-                    return
                 }
 
                 if (requestMenu.status === 200 && !isEmpty(requestMenu.body)) {
-
                     setMenu(requestMenu.body.data)
                 } else {
                     navigate("/menus")
-                    return
                 }
             }
         )()
@@ -80,31 +79,37 @@ const UpdateMenu = () => {
                         <p className="text-gray-500 text-center">Đang chuẩn bị tài nguyên. Vui lòng đợi trong giây lát!</p>
                     </div>
                 ) : (menu && products) ? (
-                    <Update
-                        loading={fetching}
-                        products={products}
-                        menu={
-                            {
-                                ...menu,
-                                menuSections: Array.isArray(menu.menuSections) ? menu.menuSections.sort(
-                                    (first, second) => {
-                                        if (first.priority === second.priority) {
-                                            return 1
-                                        }
-                                        return first.priority < second.priority ? -1 : 1
-                                    }
-                                ).map(
-                                    (section: MenuSection) => (
+                    <>
+                        {
+                            type === ROLE.STAFF ? <ViewMenu menu={menu} /> : (
+                                <Update
+                                    loading={fetching}
+                                    products={products}
+                                    menu={
                                         {
-                                            ...section,
-                                            productIds: section.products.map(({ id }) => id!)
+                                            ...menu,
+                                            menuSections: Array.isArray(menu.menuSections) ? menu.menuSections.sort(
+                                                (first, second) => {
+                                                    if (first.priority === second.priority) {
+                                                        return 1
+                                                    }
+                                                    return first.priority < second.priority ? -1 : 1
+                                                }
+                                            ).map(
+                                                (section: MenuSection) => (
+                                                    {
+                                                        ...section,
+                                                        productIds: section.products.map(({ id }) => id!)
+                                                    }
+                                                )
+                                            ) : []
                                         }
-                                    )
-                                ) : []
-                            }
+                                    }
+                                    refetchProducts={refetchProducts}
+                                />
+                            )
                         }
-                        refetchProducts={refetchProducts}
-                    />
+                    </>
                 ) : null
             }
         </Widget>

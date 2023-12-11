@@ -147,7 +147,6 @@ const Products: FC = () => {
                             maxPage > 0 ? (
                                 <div className="flex justify-between items-center font-medium">
                                     <p>{`Trang ${page} trên ${maxPage}`}</p>
-
                                     <Pagination
                                         page={page}
                                         maxPage={maxPage}

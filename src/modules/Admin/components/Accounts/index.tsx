@@ -1,9 +1,11 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
+import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
 import AccountDetail from 'modules/Admin/components/AccountDetail'
-import AddAccount from 'modules/Admin/components/AddAccount'
 import Badge from 'modules/Common/Badge'
+import Keyword from 'modules/Common/Keyword'
+import Pagination from 'modules/Common/Pagination/Pagination'
 import RoleBadge from 'modules/Common/RoleBadge'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
@@ -110,20 +112,23 @@ const columns = [
 const Accounts: FC = () => {
     const [loading, setLoading] = useState(false)
     const [accounts, setAccounts] = useState<Account[]>([])
+    const { page, offset, maxPage, setPagination, setPage } = usePagination({ page: 1, offset: 50 })
+    const [keyword, setKeyword] = useState("")
 
-    const fetchData = useCallback(async (page = 1, offset = 100) => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
-
-        const { status, body } = await ManageAccountService.search({ pagination: { page, offset } })
+        const { status, body } = await ManageAccountService.search({ pagination: { page, offset }, keyword })
 
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
             setAccounts(body.data.results)
+            setPagination({ page, maxResult: body.data.totalItems })
         } else {
             setAccounts([])
         }
-    }, [])
+    }, [keyword, page, offset, setPagination])
+
     const refetch = useCallback(async () => {
         fetchData()
     }, [fetchData])
@@ -144,72 +149,56 @@ const Accounts: FC = () => {
         )
     }, [])
 
-    // const addQRCode = useCallback((qr: QRCode) => {
-    //     setCodes(codes => [...codes, qr])
-    // }, [])
-
-    // const refetch = useCallback(async () => {
-    //     if (isEmpty(storeId)) {
-    //         return
-    //     }
-    //     setLoading(true)
-
-    //     const { status, body } = await QRService.getByStoreId(storeId)
-    //     setLoading(false)
-
-    //     if (status === 200 && !isEmpty(body) && Array.isArray(body.data)) {
-    //         setCodes(body.data)
-    //     } else {
-    //         setCodes([])
-    //     }
-    // }, [storeId])
-
-    // if (loading) {
-    //     return (
-    //         <div className='bg-white p-5 shadow rounded'>
-    //             <div className="flex justify-center items-center space-x-1 p-2 text-xs">
-    //                 <Loading.Circle className="text-main-primary" size={14} />
-    //                 <span className="text-gray-400">Đang tải danh sách cửa hàng</span>
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
     return (
         <div className="bg-white p-5 shadow rounded">
             {
                 loading ? (
                     <TableSkeleton column={5} />
                 ) : (
-                    <Table<AccountItem>
-                        actions={
-                            (
-                                <div className='flex space-x-5'>
-                                    <AddAccount />
-                                </div>
-                            )
-                        }
-                        columns={columns}
-                        data={
-                            accounts.map(
-                                account => (
-                                    {
-                                        ...account,
-                                        updateAccount
-                                    }
+                    <div className='space-y-5'>
+                        <Table<AccountItem>
+                            actions={
+                                (
+                                    <div className='w-72'>
+                                        <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                    </div>
                                 )
-                            )
-                        }
-                        refetch={refetch}
-                        columnVisibility={
-                            {
-                                updatedAt: false,
-                                updatedBy: false,
-                                type: false,
-                                provider: false
                             }
+                            columns={columns}
+                            data={
+                                accounts.map(
+                                    account => (
+                                        {
+                                            ...account,
+                                            updateAccount
+                                        }
+                                    )
+                                )
+                            }
+                            refetch={refetch}
+                            columnVisibility={
+                                {
+                                    updatedAt: false,
+                                    updatedBy: false,
+                                    type: false,
+                                    provider: false
+                                }
+                            }
+                        />
+                        {
+                            maxPage > 0 ? (
+                                <div className="flex justify-between items-center font-medium">
+                                    <p>{`Trang ${page} trên ${maxPage}`}</p>
+
+                                    <Pagination
+                                        page={page}
+                                        maxPage={maxPage}
+                                        setPage={setPage}
+                                    />
+                                </div>
+                            ) : null
                         }
-                    />
+                    </div>
                 )
             }
         </div>

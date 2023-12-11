@@ -24,7 +24,7 @@ type BusinessProps = {
     type: string
 }
 
-const Business: FC<BusinessProps> = ({ type }) => {
+export const Business: FC<BusinessProps> = ({ type }) => {
     return (
         <>
             {
