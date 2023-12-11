@@ -75,7 +75,7 @@ class OrderService {
         const url = "orders/".concat(orderId).concat("/events/").concat(status)
 
         return requestApiHelper<body>(
-            isEmpty(reason) ? interceptor.put(url) : interceptor.put(url, { reason })
+            interceptor.put(url, { reason: isEmpty(reason) ? "" : reason })
         )
     }
 

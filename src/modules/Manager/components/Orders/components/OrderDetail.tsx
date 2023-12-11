@@ -8,9 +8,12 @@ import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import OrderBadge from 'modules/Common/OrderBadge'
 import showToast from 'modules/Common/Toast'
+import SuggestReason from 'modules/Manager/components/Orders/components/SuggestReason'
 import { FC, useCallback, useState } from 'react'
 import OrderService from 'services/OrderService'
 import { Order, OrderStatus } from 'types/order'
+import REGEX from 'validations/regex'
+import { object, string } from 'yup'
 
 type OrderDetailProps = {
     order: Order & {
@@ -423,12 +426,19 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                     <p className="px-5 py-1 shadow border-b truncate font-medium">Xác nhận huỷ đơn hàng</p>
                     <div className='space-y-5'>
                         <div className='space-y-2'>
-                            <p className='px-5'>Đơn hàng sẽ bị huỷ bỏ.<span className='font-medium text-red-500'>Xác nhận huỷ đơn.</span></p>
+                            <p className='px-5 text-center'>Đơn hàng sẽ bị huỷ bỏ.<span className='font-medium text-red-500'>Xác nhận huỷ đơn.</span></p>
                             <Formik
                                 initialValues={
                                     {
                                         reason: ""
                                     }
+                                }
+                                validationSchema={
+                                    object().shape(
+                                        {
+                                            reason: string().matches(REGEX.notBlank, "Vui lòng nhập hoặc chọn lý do từ chối.").required("Vui lòng nhập hoặc chọn lý do từ chối.")
+                                        }
+                                    )
                                 }
                                 onSubmit={
                                     (values) => {
@@ -440,21 +450,19 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                             >
                                 <Form
                                     id={id}
-                                    className='px-5'
+                                    className='px-5 w-110'
                                 >
                                     <FormikTextField.Input
                                         name='reason'
                                         placeholder='Thêm lý do huỷ'
                                     />
-
+                                    <SuggestReason name='reason' />
                                 </Form>
-
                             </Formik>
-
                         </div>
                         <div className="border-t py-2 px-5 flex justify-end space-x-5">
                             <Button
-                                type="button"
+                                type="submit"
                                 variant="red"
                                 form={id}
                                 disabled={submitting}

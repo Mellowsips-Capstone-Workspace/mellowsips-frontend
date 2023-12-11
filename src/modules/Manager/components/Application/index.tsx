@@ -15,6 +15,7 @@ type ChangeStatusProps = {
     application: Application
     setApplication: (application: Application) => void
 }
+
 const ChangeStatus: FC<ChangeStatusProps> = ({ application, setApplication }) => {
     const { id: applicationId, status } = application
     const buttonEvent = useRef<HTMLButtonElement>(null)
