@@ -1,5 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { isEmpty } from "lodash"
 import { Order, OrderStatus } from "types/order"
 
 class OrderService {
@@ -61,7 +62,8 @@ class OrderService {
 
     static changeStatus(
         orderId: string,
-        status: string
+        status: string,
+        reason?: string
     ) {
         type body = {
             statusCode: number
@@ -70,10 +72,10 @@ class OrderService {
             data: Order
         }
 
+        const url = "orders/".concat(orderId).concat("/events/").concat(status)
+
         return requestApiHelper<body>(
-            interceptor.put(
-                "orders/".concat(orderId).concat("/events/").concat(status)
-            )
+            isEmpty(reason) ? interceptor.put(url) : interceptor.put(url, { reason })
         )
     }
 

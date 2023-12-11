@@ -1,7 +1,9 @@
+import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isArray, isEmpty, isString } from 'lodash'
 import Button from 'modules/Common/Button'
 import DocumentPreview from 'modules/Common/Document'
+import FormikTextField from 'modules/Common/FormikTextField'
 import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import OrderBadge from 'modules/Common/OrderBadge'
@@ -11,7 +13,7 @@ import OrderService from 'services/OrderService'
 import { Order, OrderStatus } from 'types/order'
 
 type OrderDetailProps = {
-    order: Order & Order & {
+    order: Order & {
         updateOrder: (id: string, order: Order) => void
     }
 }
@@ -37,9 +39,9 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
         )
     }
 
-    const handleCancelOrder = useCallback(async () => {
+    const handleCancelOrder = useCallback(async (reason: string) => {
         setSubmitting(true)
-        const { status, body } = await OrderService.changeStatus(id, "reject")
+        const { status, body } = await OrderService.changeStatus(id, "reject", reason)
         setSubmitting(false)
 
         if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
@@ -210,7 +212,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 flag={display}
                 closeModal={off}
                 closeOutside={false}
-                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl w-screen flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='flex justify-between px-5 py-2 shadow border-b'>
@@ -277,7 +279,15 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                             <p>Tổng:</p>
                             <span className='text-main-primary font-medium'>{order.details.finalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
                         </div>
+                        {
+                            isEmpty(order.rejectReason) ? null : (
+                                <div className='flex items-center space-x-2'>
+                                    <OrderBadge status={order.status} />
 
+                                    <span className='text-gray-500'>{order.rejectReason}</span>
+                                </div>
+                            )
+                        }
                     </div>
                     <hr />
                     {
@@ -406,18 +416,47 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 flag={displayConfirm}
                 closeModal={setDisplayConfirm.off}
                 closeOutside={false}
-                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='space-y-5'>
                     <p className="px-5 py-1 shadow border-b truncate font-medium">Xác nhận huỷ đơn hàng</p>
                     <div className='space-y-5'>
-                        <p className='px-5'>Đơn hàng sẽ bị huỷ bỏ.<span className='font-medium text-red-500'>Xác nhận huỷ đơn.</span></p>
+                        <div className='space-y-2'>
+                            <p className='px-5'>Đơn hàng sẽ bị huỷ bỏ.<span className='font-medium text-red-500'>Xác nhận huỷ đơn.</span></p>
+                            <Formik
+                                initialValues={
+                                    {
+                                        reason: ""
+                                    }
+                                }
+                                onSubmit={
+                                    (values) => {
+                                        const reason = values.reason as string
+                                        handleCancelOrder(reason)
+                                    }
+                                }
+
+                            >
+                                <Form
+                                    id={id}
+                                    className='px-5'
+                                >
+                                    <FormikTextField.Input
+                                        name='reason'
+                                        placeholder='Thêm lý do huỷ'
+                                    />
+
+                                </Form>
+
+                            </Formik>
+
+                        </div>
                         <div className="border-t py-2 px-5 flex justify-end space-x-5">
                             <Button
                                 type="button"
                                 variant="red"
-                                onClick={handleCancelOrder}
+                                form={id}
                                 disabled={submitting}
                                 className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
                             >
@@ -441,7 +480,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                 flag={displayConfirmComplete}
                 closeModal={setDisplayConfirmComplete.off}
                 closeOutside={false}
-                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='space-y-5'>

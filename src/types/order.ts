@@ -36,6 +36,7 @@ export type Order = {
         finalPrice: number
         vouchers: (Voucher & { discountAmount: number })[]
     }
+    rejectReason: string | null
     qrCode: QRCode
     latestTransaction: any | null
 }
