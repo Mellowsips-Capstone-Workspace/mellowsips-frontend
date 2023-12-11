@@ -174,7 +174,7 @@ const Orders: FC = () => {
                         columns={columns}
                         actions={
                             type === ROLE.OWNER ? (
-                                <div className='w-80'>
+                                <div className='w-72'>
                                     <SelectStoreManage
                                         stores={stores}
                                         storeId={storeId}

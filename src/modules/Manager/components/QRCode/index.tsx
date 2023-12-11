@@ -23,8 +23,6 @@ const QRCodeModel: FC<QRCodeModelProps> = (props) => {
     const { name, id, updateQRCode, storeId } = props
     const [display, setDisplay] = useBoolean(false)
     const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
-
-
     const url = `https://mellowsipssv.site/mobile?storeId=${storeId}&qrId=${id}`
 
     return (

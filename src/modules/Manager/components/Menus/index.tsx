@@ -4,6 +4,7 @@ import ROLE from "enums/role"
 import usePagination from "hooks/usePagination"
 import { isEmpty } from "lodash"
 import Badge from "modules/Common/Badge"
+import Keyword from "modules/Common/Keyword"
 import Pagination from "modules/Common/Pagination/Pagination"
 import SelectStoreManage from "modules/Common/SelectStoreManage"
 import useSelectStore from "modules/Common/SelectStoreManage/hooks/useSelectStore"
@@ -55,6 +56,7 @@ const columns = [
 ]
 
 const Menus: FC = () => {
+    const [keyword, setKeyword] = useState("")
     const [loading, setLoading] = useState(false)
     const [menus, setMenus] = useState<Menu[]>([])
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
@@ -63,9 +65,7 @@ const Menus: FC = () => {
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
-
-        const { status, body } = type === ROLE.OWNER ? await MenuService.search({ pagination: { page, offset }, filter: { storeId } }) : await MenuService.search({ pagination: { page, offset } })
-
+        const { status, body } = type === ROLE.OWNER ? await MenuService.search({ pagination: { page, offset }, filter: { storeId }, keyword }) : await MenuService.search({ pagination: { page, offset }, keyword })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
@@ -74,7 +74,7 @@ const Menus: FC = () => {
         } else {
             setMenus([])
         }
-    }, [setPagination, type, storeId])
+    }, [setPagination, type, storeId, keyword])
 
     useEffect(() => {
         refetch(page, offset)
@@ -95,9 +95,12 @@ const Menus: FC = () => {
                                 (
                                     <div className="flex space-x-5">
                                         <AddMenu refetch={refetch} />
+                                        <div className="w-72">
+                                            <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                        </div>
                                         {
                                             type === ROLE.OWNER ? (
-                                                <div className='w-80'>
+                                                <div className='w-72'>
                                                     <SelectStoreManage
                                                         stores={stores}
                                                         storeId={storeId}

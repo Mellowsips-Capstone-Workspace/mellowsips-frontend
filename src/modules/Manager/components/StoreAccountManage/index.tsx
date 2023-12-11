@@ -1,8 +1,11 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { format, parseISO } from 'date-fns'
 import ROLE from 'enums/role'
+import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
 import Badge from 'modules/Common/Badge'
+import Keyword from 'modules/Common/Keyword'
+import Pagination from 'modules/Common/Pagination/Pagination'
 import RoleBadge from 'modules/Common/RoleBadge'
 import SelectStoreManage from 'modules/Common/SelectStoreManage'
 import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore'
@@ -113,20 +116,24 @@ const StoreAccount: FC = () => {
     const [accounts, setAccounts] = useState<Account[]>([])
     const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
     const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
+    const { page, offset, maxPage, setPagination, setPage } = usePagination()
+    const [keyword, setKeyword] = useState("")
 
-    const fetchData = useCallback(async (page = 1, offset = 100) => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
 
-        const { status, body } = type === ROLE.OWNER ? await ManageAccountService.search({ pagination: { page, offset }, filter: { storeId } }) : await ManageAccountService.search({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await ManageAccountService.search({ pagination: { page, offset }, filter: { storeId }, keyword }) : await ManageAccountService.search({ pagination: { page, offset }, keyword })
 
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
             setAccounts(body.data.results)
+            setPagination({ page: body.data.page, maxResult: body.data.totalItems })
+
         } else {
             setAccounts([])
         }
-    }, [storeId, type])
+    }, [storeId, type, setPagination, keyword, page, offset])
 
     const refetch = useCallback(async () => {
         fetchData()
@@ -146,46 +153,63 @@ const StoreAccount: FC = () => {
                 return cloneAccounts
             }
         )
-
     }, [])
+
     return (
         <div className="bg-white p-5 shadow rounded">
             {
                 loading ? (
                     <TableSkeleton column={5} />
                 ) : (
-                    <Table<AccountItem>
-                        actions={
-                            (
-                                <div className='flex space-x-5'>
-                                    <AddAccount refetch={refetch} />
-                                    {
-                                        type === ROLE.OWNER ? (
-                                            <div className='w-80'>
-                                                <SelectStoreManage
-                                                    stores={stores}
-                                                    storeId={storeId}
-                                                    loading={loadingStores}
-                                                    setStoreId={setStoreId}
-                                                    showSelectAll={true}
-                                                />
-                                            </div>
-                                        ) : null
-                                    }
-                                </div>
-                            )
-                        }
-                        columns={columns}
-                        data={accounts.map(account => ({ ...account, updateAccount }))}
-                        refetch={refetch}
-                        columnVisibility={
-                            {
-                                updatedAt: false,
-                                updatedBy: false,
-                                phone: false
+                    <div className='space-y-5'>
+                        <Table<AccountItem>
+                            actions={
+                                (
+                                    <div className='flex space-x-5'>
+                                        <AddAccount refetch={refetch} />
+                                        <div className='w-72'>
+                                            <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                        </div>
+                                        {
+                                            type === ROLE.OWNER ? (
+                                                <div className='w-72'>
+                                                    <SelectStoreManage
+                                                        stores={stores}
+                                                        storeId={storeId}
+                                                        loading={loadingStores}
+                                                        setStoreId={setStoreId}
+                                                        showSelectAll={true}
+                                                    />
+                                                </div>
+                                            ) : null
+                                        }
+                                    </div>
+                                )
                             }
+                            columns={columns}
+                            data={accounts.map(account => ({ ...account, updateAccount }))}
+                            refetch={refetch}
+                            columnVisibility={
+                                {
+                                    updatedAt: false,
+                                    updatedBy: false,
+                                    phone: false
+                                }
+                            }
+                        />
+                        {
+                            maxPage > 0 ? (
+                                <div className="flex justify-between items-center font-medium">
+                                    <p>{`Trang ${page} trên ${maxPage}`}</p>
+                                    <Pagination
+                                        page={page}
+                                        maxPage={maxPage}
+                                        setPage={setPage}
+                                    />
+                                </div>
+                            ) : null
                         }
-                    />
+                    </div>
                 )
             }
         </div>

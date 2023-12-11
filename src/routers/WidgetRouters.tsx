@@ -17,7 +17,7 @@ const DashboardWidget = lazy(() => import("modules/Manager/widgets/Dashboard"))
 const StoreAccountManageWidget = lazy(() => import("modules/Manager/widgets/StoreAccountManage"))
 const MenuManageWidget = lazy(() => import("modules/Manager/widgets/MenuManage"))
 const UpdateMenuWidget = lazy(() => import("modules/Manager/widgets/UpdateMenu"))
-
+const ReviewWidget = lazy(() => import("modules/Manager/widgets/StoreReview"))
 
 export const ApplicationRoute = (
     <Route path="applications">
@@ -165,6 +165,17 @@ export const StoreAccountRoute = (
             }
         />
     </Route>
+)
+
+export const StoreReviewRoute = (
+    <Route
+        path="reviews"
+        element={
+            <Suspense fallback={<WidgetLoading />}>
+                <ReviewWidget />
+            </Suspense>
+        }
+    />
 )
 
 export const DashboardRoute = (

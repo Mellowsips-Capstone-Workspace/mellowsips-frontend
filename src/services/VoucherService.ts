@@ -1,5 +1,6 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
+import { isEmpty } from "lodash"
 import { Voucher } from "types/voucher"
 
 class VoucherService {
@@ -7,9 +8,10 @@ class VoucherService {
     static search(
         options: {
             pagination: { page: number, offset: number }
+            keyword?: string
         }
     ) {
-        const { pagination } = options
+        const { pagination, keyword } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -30,11 +32,9 @@ class VoucherService {
                         page: pagination.page,
                         itemsPerPage: pagination.offset
                     },
-                    // criteria: {
-                    //     filter: {
-                    //         discountType
-                    //     }
-                    // }
+                    criteria: {
+                        keyword: isEmpty(keyword) ? "" : keyword
+                    }
                 }
             )
         )

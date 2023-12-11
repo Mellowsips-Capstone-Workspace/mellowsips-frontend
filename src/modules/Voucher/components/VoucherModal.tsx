@@ -1,13 +1,14 @@
 import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import useBoolean from "hooks/useBoolean"
-import { isDate, isEmpty, isNumber, isString, isUndefined } from "lodash"
+import { isDate, isEmpty, isNumber, isUndefined } from "lodash"
 import Button from "modules/Common/Button"
 import FormikTextField from "modules/Common/FormikTextField"
 import Loading from "modules/Common/Loading"
 import Modal from "modules/Common/Modal/Modal"
 import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
+import DisableField from "modules/Voucher/components/DisableField"
 import VoucherDateTimeInput from "modules/Voucher/components/VoucherDateTimeInput"
 import { FC, useCallback } from "react"
 import VoucherService from "services/VoucherService"
@@ -29,7 +30,6 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
     const [display, setDisplay] = useBoolean(false)
     const { off } = setDisplay
 
-    const initStartDate = isString(voucher.startDate) ? parseGMT7(voucher.startDate) : new Date()
     const isExpired = isEmpty(voucher.endDate) ? false : parseGMT7(voucher.endDate) < new Date()
     const isPending = isEmpty(voucher.startDate) ? false : parseGMT7(voucher.startDate) > new Date()
 
@@ -132,7 +132,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         if (!isDate(value)) {
                                             return false
                                         }
-                                        return value >= initStartDate
+                                        return isDate(value)
                                     }
                                 ).required("Vui lòng chọn ngày áp dụng."),
                                 endDate: date().test(
@@ -190,134 +190,158 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     className="w-220 p-5 grow overflow-y-auto grid grid-cols-2 gap-5"
                                     id={id}
                                 >
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary font-medium">Hình thức</label>
-                                        <FormikTextField.RadioGroup
-                                            name="discountType"
-                                            options={
-                                                [
-                                                    {
-                                                        label: "Mức giảm",
-                                                        value: VOUCHER_TYPE.CASH
-                                                    },
-                                                    {
-                                                        label: "Theo phần trăm",
-                                                        value: VOUCHER_TYPE.PERCENT
-                                                    }
-                                                ]
-                                            }
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary font-medium">Hình thức</label>
-                                        <FormikTextField.Checkbox
-                                            name="isHidden"
-                                            label="Hiển thị"
-                                        />
-                                    </div>
-                                    {
-                                        principle.type === ROLE.OWNER ? <StoreSelect /> : null
-                                    }
+                                    <DisableField disable={isExpired || !isPending}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary font-medium">Hình thức</label>
+                                            <FormikTextField.RadioGroup
+                                                name="discountType"
+                                                options={
+                                                    [
+                                                        {
+                                                            label: "Mức giảm",
+                                                            value: VOUCHER_TYPE.CASH
+                                                        },
+                                                        {
+                                                            label: "Theo phần trăm",
+                                                            value: VOUCHER_TYPE.PERCENT
+                                                        }
+                                                    ]
+                                                }
+                                            />
+                                        </div>
+                                    </DisableField>
+                                    <DisableField disable={isExpired}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary font-medium">Hình thức</label>
+                                            <FormikTextField.Checkbox
+                                                name="isHidden"
+                                                label="Hiển thị"
+                                            />
+                                        </div>
+                                    </DisableField>
+                                    <DisableField disable={isExpired || !isPending}>
+                                        {
+                                            principle.type === ROLE.OWNER ? <StoreSelect /> : null
+                                        }
+                                    </DisableField>
                                     <hr className="col-span-2" />
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary font-medium">Mã code</label>
-                                        <FormikTextField.Input
-                                            name="code"
-                                            placeholder="Ví dụ: EYAXWlk"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary space-x-1 font-medium">
-                                            <span>Đơn tối thiểu</span>
-                                            <span className="text-xs text-gray-400">(đ)</span>
-                                        </label>
-                                        <FormikTextField.NumberInput
-                                            name="minOrderAmount"
-                                            placeholder="Ví dụ: áp dụng cho đơn từ 0đ"
-                                        />
-                                    </div>
+                                    <DisableField disable={true}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary font-medium">Mã code</label>
+                                            <FormikTextField.Input
+                                                name="code"
+                                                placeholder="Ví dụ: EYAXWlk"
+                                            />
+                                        </div>
+                                    </DisableField>
+                                    <DisableField disable={isExpired || !isPending}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary space-x-1 font-medium">
+                                                <span>Đơn tối thiểu</span>
+                                                <span className="text-xs text-gray-400">(đ)</span>
+                                            </label>
+                                            <FormikTextField.NumberInput
+                                                name="minOrderAmount"
+                                                placeholder="Ví dụ: áp dụng cho đơn từ 0đ"
+                                            />
+                                        </div>
+                                    </DisableField>
                                     <hr className="col-span-2" />
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary font-medium">Số lượng</label>
-                                        <FormikTextField.Input
-                                            name="quantity"
-                                            placeholder="Ví dụ: số lượt sử dụng tối đa"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary font-medium">Số lượt sử dụng tối đa cho một người mua</label>
-                                        <FormikTextField.Input
-                                            name="maxUsesPerUser"
-                                            placeholder="Ví dụ: 1"
-                                        />
-                                    </div>
+                                    <DisableField disable={isExpired}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary font-medium">Số lượng</label>
+                                            <FormikTextField.Input
+                                                name="quantity"
+                                                placeholder="Ví dụ: số lượt sử dụng tối đa"
+                                            />
+                                        </div>
+                                    </DisableField>
+                                    <DisableField disable={isExpired}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary font-medium">Số lượt sử dụng tối đa cho một người mua</label>
+                                            <FormikTextField.Input
+                                                name="maxUsesPerUser"
+                                                placeholder="Ví dụ: 1"
+                                            />
+                                        </div>
+                                    </DisableField>
                                     {
                                         discountType === VOUCHER_TYPE.CASH ? (
-                                            <div className="space-y-2">
-                                                <label className="text-main-secondary font-medium">Mức giảm</label>
-                                                <FormikTextField.Input
-                                                    name="value"
-                                                    placeholder="Ví dụ: 1000 đ"
-                                                />
-                                            </div>
-                                        ) : null
-                                    }
-                                    {
-                                        discountType === VOUCHER_TYPE.PERCENT ? (
-                                            <div className="space-y-2">
-                                                <label className="text-main-secondary font-medium">Phần trăm</label>
-                                                <FormikTextField.Input
-                                                    name="value"
-                                                    placeholder="Ví dụ: 5%"
-                                                />
-                                            </div>
+                                            <DisableField disable={isExpired || !isPending}>
+                                                <div className="space-y-2">
+                                                    <label className="text-main-secondary font-medium">Mức giảm</label>
+                                                    <FormikTextField.Input
+                                                        name="value"
+                                                        placeholder="Ví dụ: 1000 đ"
+                                                    />
+                                                </div>
+                                            </DisableField>
                                         ) : null
                                     }
 
-                                    {
-                                        discountType === VOUCHER_TYPE.PERCENT ? (
-                                            <div className="space-y-2">
-                                                <label className="text-main-secondary space-x-1 font-medium">
-                                                    <span>Mức giảm tối đa</span>
-                                                    <span className="text-xs text-gray-400">(Tuỳ chọn)</span>
-                                                </label>
-                                                <FormikTextField.NumberInput
-                                                    name="maxDiscountAmount"
-                                                    placeholder="Không giới hạn"
-                                                />
-                                            </div>
-                                        ) : null
-                                    }
+                                    <DisableField disable={isExpired || !isPending}>
+                                        {
+                                            discountType === VOUCHER_TYPE.PERCENT ? (
+                                                <div className="space-y-2">
+                                                    <label className="text-main-secondary font-medium">Phần trăm</label>
+                                                    <FormikTextField.Input
+                                                        name="value"
+                                                        placeholder="Ví dụ: 5%"
+                                                    />
+                                                </div>
+                                            ) : null
+                                        }
+                                    </DisableField>
+                                    <DisableField disable={isExpired || !isPending}>
+                                        {
+                                            discountType === VOUCHER_TYPE.PERCENT ? (
+                                                <div className="space-y-2">
+                                                    <label className="text-main-secondary space-x-1 font-medium">
+                                                        <span>Mức giảm tối đa</span>
+                                                        <span className="text-xs text-gray-400">(Tuỳ chọn)</span>
+                                                    </label>
+                                                    <FormikTextField.NumberInput
+                                                        name="maxDiscountAmount"
+                                                        placeholder="Không giới hạn"
+                                                    />
+                                                </div>
+                                            ) : null
+                                        }
+                                    </DisableField>
 
                                     <hr className="col-span-2"></hr>
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary space-x-1 font-medium">
-                                            <span>Ngày bắt đầu áp dụng</span>
-                                        </label>
-                                        <VoucherDateTimeInput
-                                            name="startDate"
-                                            placeholder="Chọn ngày bắt đầu"
-                                            disabled={
-                                                {
-                                                    before: new Date()
+                                    <DisableField disable={isExpired || !isPending}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary space-x-1 font-medium">
+                                                <span>Ngày bắt đầu áp dụng</span>
+                                            </label>
+                                            <VoucherDateTimeInput
+                                                name="startDate"
+                                                placeholder="Chọn ngày bắt đầu"
+                                                disabled={
+                                                    {
+                                                        before: new Date()
+                                                    }
                                                 }
-                                            }
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-main-secondary space-x-1 font-medium">
-                                            <span>Thời gian kết thúc</span>
-                                        </label>
-                                        <VoucherDateTimeInput
-                                            name="endDate"
-                                            placeholder="Chọn ngày kết thúc"
-                                            disabled={
-                                                {
-                                                    before: new Date()
+                                            />
+                                        </div>
+                                    </DisableField>
+                                    <DisableField disable={isExpired}>
+                                        <div className="space-y-2">
+                                            <label className="text-main-secondary space-x-1 font-medium">
+                                                <span>Thời gian kết thúc</span>
+                                            </label>
+                                            <VoucherDateTimeInput
+                                                name="endDate"
+                                                placeholder="Chọn ngày kết thúc"
+                                                disabled={
+                                                    {
+                                                        before: new Date()
+                                                    }
                                                 }
-                                            }
-                                        />
-                                    </div>
+                                            />
+                                        </div>
+                                    </DisableField>
                                 </Form>
                                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
                                     {

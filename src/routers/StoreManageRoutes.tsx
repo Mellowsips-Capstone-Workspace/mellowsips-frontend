@@ -3,7 +3,7 @@ import { FC } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import PrintRoutes from "routers/PrintRoutes"
 import VoucherRoute from "routers/VoucherRoutes"
-import { MenuRoutes, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreRoute } from "routers/WidgetRouters"
+import { MenuRoutes, OrderRoute, ProductRoute, QRRoute, StoreAccountRoute, StoreReviewRoute, StoreRoute } from "routers/WidgetRouters"
 
 const StoreManageRoutes: FC = () => {
 
@@ -21,6 +21,7 @@ const StoreManageRoutes: FC = () => {
                 {VoucherRoute}
                 {MenuRoutes}
                 {StoreAccountRoute}
+                {StoreReviewRoute}
                 <Route
                     path="*"
                     element={<Navigate to="/orders" replace={true} />}

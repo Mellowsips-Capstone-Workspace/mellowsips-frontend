@@ -9,9 +9,10 @@ class MenuService {
         options: {
             pagination: { page: number, offset: number }
             filter?: object
+            keyword: string
         }
     ) {
-        const { pagination, filter } = options
+        const { pagination, filter, keyword } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -34,6 +35,13 @@ class MenuService {
             criteria = {
                 ...criteria,
                 filter
+            }
+        }
+
+        if (!isEmpty(keyword)) {
+            criteria = {
+                ...criteria,
+                keyword
             }
         }
         return requestApiHelper<body>(

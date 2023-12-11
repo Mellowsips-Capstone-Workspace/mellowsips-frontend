@@ -174,7 +174,6 @@ const StoreQRCodeManage: FC = () => {
                                             </div>
                                         ) : null
                                     }
-
                                 </div>
                             )
                         }

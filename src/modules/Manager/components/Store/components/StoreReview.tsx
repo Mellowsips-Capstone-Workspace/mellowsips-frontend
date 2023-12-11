@@ -5,7 +5,7 @@ import Button from "modules/Common/Button"
 import Loading from "modules/Common/Loading"
 import NoResult from "modules/Common/NoResult"
 import Pagination from "modules/Common/Pagination/Pagination"
-import Review from "modules/Manager/components/Store/components/Review"
+import Review from "modules/Manager/components/Feedback/components/Review"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import StoreService from "services/StoreService"
@@ -15,7 +15,6 @@ const StoreReview = () => {
     const [loading, setLoading] = useState(false)
     const [reviews, setReviews] = useState<Review[]>([])
     const { page, offset, maxPage, setPagination, setPage } = usePagination({ offset: 10, page: 1 })
-
 
     const fetch = useCallback(async () => {
         setLoading(true)

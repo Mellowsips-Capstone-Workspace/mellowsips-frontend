@@ -8,9 +8,10 @@ class ManageAccountService {
         options: {
             pagination: { page: number, offset: number }
             filter?: object
+            keyword?: string
         }
     ) {
-        const { pagination, filter } = options
+        const { pagination, filter, keyword } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -25,7 +26,8 @@ class ManageAccountService {
         let criteria: object = {
             order: {
                 createdAt: "DESC"
-            }
+            },
+            keyword: isEmpty(keyword) ? "" : keyword
         }
 
         if (!isEmpty(filter)) {

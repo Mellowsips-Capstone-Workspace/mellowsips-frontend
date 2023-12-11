@@ -75,7 +75,7 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
                 (
                     <div className='flex justify-between'>
                         <h2 className="font-medium text-main-primary text-lg">Các sản phẩm bán chạy</h2>
-                        <div className='w-80 flex-none'>
+                        <div className='w-72 flex-none'>
                             <SelectStoreManage
                                 stores={stores}
                                 storeId={storeId}

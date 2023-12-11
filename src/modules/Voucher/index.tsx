@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import usePagination from 'hooks/usePagination'
 import { isEmpty } from 'lodash'
 import Badge from 'modules/Common/Badge'
+import Keyword from 'modules/Common/Keyword'
 import Pagination from 'modules/Common/Pagination/Pagination'
 import { TableSkeleton } from 'modules/Common/Skeleton'
 import Table from 'modules/Common/Table'
@@ -104,37 +105,36 @@ const columns = [
     )
 ]
 const VoucherManage: FC = () => {
+    const [keyword, setKeyword] = useState("")
     const [loading, setLoading] = useState(false)
     const [vouchers, setVouchers] = useState<Voucher[]>([])
-    const { page, maxPage, setPagination, setPage } = usePagination()
+    const { page, maxPage, setPagination, setPage, offset } = usePagination()
 
     const fetch = useCallback(async (page = 1, offset = 10, type = "CASH") => {
         setLoading(true)
-        const { status, body } = await VoucherService.search({ pagination: { page, offset } })
+        const { status, body } = await VoucherService.search({ pagination: { page, offset }, keyword })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
             setVouchers(body.data.results)
-
             setPagination({ page, maxResult: body.data.totalItems, offset })
         } else {
             setVouchers([])
         }
-    }, [setPagination])
+    }, [setPagination, keyword])
 
-    const refetch = useCallback(async (page = 1, offset = 10) => {
+    const refetch = useCallback(async () => {
         setLoading(true)
         const { status, body } = await VoucherService.search({ pagination: { page, offset } })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
             setVouchers(body.data.results)
-
             setPagination({ page, maxResult: body.data.totalItems, offset })
         } else {
             setVouchers([])
         }
-    }, [setPagination])
+    }, [setPagination, page, offset])
 
     const updateVoucher = useCallback((id: string, voucher: Voucher) => {
         setVouchers(
@@ -146,7 +146,6 @@ const VoucherManage: FC = () => {
             }
         )
     }, [])
-
 
     useEffect(() => {
         fetch(page, 10)
@@ -162,10 +161,17 @@ const VoucherManage: FC = () => {
                     loading ? (
                         <TableSkeleton column={5} />
                     ) : (
-
                         <Table<VoucherItem>
                             key={nanoid()}
-                            actions={<VoucherCreate refetch={refetch} />}
+                            actions={
+                                <div className='flex space-x-5'>
+
+                                    <VoucherCreate refetch={refetch} />
+                                    <div className='w-72'>
+                                        <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                    </div>
+                                </div>
+                            }
                             columns={columns}
                             data={vouchers.map(voucher => ({ ...voucher, updateVoucher }))}
                             refetch={refetch}

@@ -5,6 +5,7 @@ import usePagination from "hooks/usePagination"
 import { isEmpty } from "lodash"
 import Badge from "modules/Common/Badge"
 import DocumentPreview from "modules/Common/Document"
+import Keyword from "modules/Common/Keyword"
 import Pagination from "modules/Common/Pagination/Pagination"
 import SelectStoreManage from "modules/Common/SelectStoreManage"
 import useSelectStore from "modules/Common/SelectStoreManage/hooks/useSelectStore"
@@ -87,11 +88,12 @@ const Products: FC = () => {
     const { storeId, setStoreId, stores, loading: loadingStores } = useSelectStore(null, false)
     const { type } = useAppSelector<Principle>(state => state.authenticate.principle!)
     const { page, offset, maxPage, setPagination, setPage } = usePagination()
+    const [keyword, setKeyword] = useState("")
 
     const refetch = useCallback(async (page = 1, offset = 10) => {
         setLoading(true)
 
-        const { status, body } = type === ROLE.OWNER ? await ProductService.searchTemplates({ pagination: { page, offset }, filter: { storeId } }) : await ProductService.searchTemplates({ pagination: { page, offset } })
+        const { status, body } = type === ROLE.OWNER ? await ProductService.searchTemplates({ pagination: { page, offset }, filter: { storeId }, keyword }) : await ProductService.searchTemplates({ pagination: { page, offset }, keyword })
         setLoading(false)
 
         if (status === 200 && !isEmpty(body) && Array.isArray(body.data.results)) {
@@ -100,7 +102,7 @@ const Products: FC = () => {
         } else {
             setProducts([])
         }
-    }, [setPagination, type, storeId])
+    }, [setPagination, type, storeId, keyword])
 
     useEffect(() => {
         refetch(page, offset)
@@ -118,9 +120,12 @@ const Products: FC = () => {
                                 (
                                     <div className="flex space-x-5">
                                         <Link className="px-5 py-1.5 rounded bg-main-primary text-white" to="create">Thêm mới </Link>
+                                        <div className="w-72">
+                                            <Keyword keyword={keyword} setKeyword={setKeyword} />
+                                        </div>
                                         {
                                             type === ROLE.OWNER ? (
-                                                <div className='w-80'>
+                                                <div className='w-72'>
                                                     <SelectStoreManage
                                                         stores={stores}
                                                         storeId={storeId}
