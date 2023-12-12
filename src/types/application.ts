@@ -78,6 +78,7 @@ export type Application = {
     status: typeof APPLICATION_STATUS[keyof typeof APPLICATION_STATUS]
     type: "CREATE_ORGANIZATION" | "UPDATE_ORGANIZATION" | "DELETE_ORGANIZATION"
     partnerId: string | null
+    rejectReason?: string
 } & Base
 
 export default ApplicationModel

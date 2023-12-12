@@ -7,7 +7,7 @@ const ApplicationManage = () => {
             <div className="bg-white rounded px-5 py-2 space-y-2 shadow">
                 <div className="space-y-1">
                     <h2 className="text-xl font-semibold">Quản lý đơn</h2>
-                    <p>Bao gồm các đơn của các đối tác cửa hàng trên hệ thống Mellow Sips.</p>
+                    <p>Bao gồm các đơn trên hệ thống Mellow Sips.</p>
                 </div>
             </div>
             <Applications />

@@ -1,14 +1,19 @@
 import { CheckIcon, Cross2Icon } from '@radix-ui/react-icons'
 import { APPLICATION_EVENT, APPLICATION_STATUS } from 'enums/application'
+import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
+import SuggestReason from 'modules/Admin/components/Application/components/SuggestReason'
 import Button from 'modules/Common/Button'
+import FormikTextField from 'modules/Common/FormikTextField'
 import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import showToast from 'modules/Common/Toast'
 import { FC, memo, useCallback, useRef } from 'react'
 import AdminApplicationService from 'services/AdminApplicationService'
 import { Application } from 'types/application'
+import REGEX from 'validations/regex'
+import { object, string } from 'yup'
 
 type ChangeStatusProps = {
     application: Application
@@ -89,7 +94,7 @@ const ChangeStatus: FC<ChangeStatusProps> = ({ application, setApplication }) =>
                 flag={displayApprove}
                 closeModal={setDisplayApprove.off}
                 closeOutside={false}
-                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='space-y-5'>
@@ -125,20 +130,68 @@ const ChangeStatus: FC<ChangeStatusProps> = ({ application, setApplication }) =>
                 flag={displayReject}
                 closeModal={setDisplayReject.off}
                 closeOutside={false}
-                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-20 flex items-center"
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
                 <div className='space-y-5'>
                     <p className="px-5 py-1 shadow border-b truncate font-medium">Xác nhận chuyển đổi trạng thái</p>
                     <div className='space-y-5'>
                         <p className='px-5'>Xác nhận <span className='text-red-500 font-semibold'>từ chối đối tác</span> trên hệ thống của Mellow Sips</p>
+                        <Formik
+                            initialValues={
+                                {
+                                    reason: ""
+                                }
+                            }
+                            validationSchema={
+                                object().shape(
+                                    {
+                                        reason: string().matches(REGEX.notBlank, "Vui lòng nhập hoặc chọn lý do từ chối.").required("Vui lòng nhập hoặc chọn lý do từ chối.")
+                                    }
+                                )
+                            }
+                            onSubmit={
+                                async (values) => {
+                                    const buttonElement = buttonEvent.current!
+
+                                    buttonElement.disabled = true
+                                    const { status, body } = await AdminApplicationService.transition(applicationId, APPLICATION_EVENT.REJECT, values)
+                                    buttonElement.disabled = false
+
+                                    if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
+                                        showToast(
+                                            {
+                                                type: "warning",
+                                                title: "Cảnh báo",
+                                                message: "Chuyển trạng thái đang xử lý đơn thất bại."
+                                            }
+                                        )
+                                        return
+                                    }
+
+                                    setDisplayReject.off()
+                                    setApplication({ ...body.data, status: APPLICATION_STATUS.REJECTED })
+                                }
+                            }
+
+                        >
+                            <Form
+                                id={applicationId}
+                                className='px-5 w-110'
+                            >
+                                <FormikTextField.Input
+                                    name='reason'
+                                    placeholder='Thêm lý do huỷ'
+                                />
+                                <SuggestReason name='reason' />
+                            </Form>
+                        </Formik>
                         <div className="border-t py-2 px-5 flex justify-end space-x-5">
                             <Button
-                                type="button"
+                                type="submit"
                                 variant="red"
                                 ref={buttonEvent}
-                                onClick={handleTransition}
-                                data-event={APPLICATION_EVENT.REJECT}
+                                form={applicationId}
                                 className="group"
                             >
                                 <span className='hidden group-disabled:block mr-2'>

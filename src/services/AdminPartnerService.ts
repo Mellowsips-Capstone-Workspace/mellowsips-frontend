@@ -1,9 +1,10 @@
 import interceptor from "apis/interceptor"
 import { requestApiHelper } from "helpers/api"
 import { isEmpty } from "lodash"
+import PartnerService from "services/PartnerService"
 import { Partner } from "types/account"
 
-class AdminPartnerService {
+class AdminPartnerService extends PartnerService {
 
     static search(
         options: {

@@ -8,9 +8,11 @@ const SuggestReason: FC<SuggestReasonProps> = ({ name }) => {
     const [, , { setValue }] = useField(name)
 
     const reasons = [
-        "Rất tiếc sản phẩm tạm hết. Quý khách vui lòng đặt sản phẩm khác.",
-        "Xin lỗi vì sư bất tiện này hiện tại cửa hàng không thể xử lý đơn hàng này.",
-        "Thành thật xin lỗi, sản phẩm đã hết hàng trước thời hạn dự kiến. Kính mong sự thông cảm của quý khách.",
+        "Thông tin cửa hàng chưa hợp lệ. Vui lòng cập nhật lại thông tin.",
+        "Thông tin doanh nghiệp chưa hợp lệ. Vui lòng cập nhật lại thông tin.",
+        "Thông tin đối soát chưa hợp lệ. Vui lòng cập nhật lại thông tin.",
+        "Thông tin thanh toán chưa hợp lệ. Vui lòng cập nhật lại thông tin.",
+        "Xin lỗi vì sư bất tiện này hiện tại chúng hệ thống không thể xử lý đơn này.",
     ]
 
     const handleSelectReason = useCallback((event: MouseEvent<HTMLSpanElement>) => {
@@ -19,7 +21,7 @@ const SuggestReason: FC<SuggestReasonProps> = ({ name }) => {
 
     return (
         <div className='space-y-1 py-2'>
-            <p className='font-medium text-sm text-gray-500'>Chọn nhanh lý do huỷ:</p>
+            <p className='font-medium text-sm text-gray-500'>Chọn nhanh lý do từ chối:</p>
             {
                 reasons.map(
                     (reason, index) => (

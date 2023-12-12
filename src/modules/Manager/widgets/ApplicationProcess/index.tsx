@@ -67,6 +67,20 @@ const ApplicationProcess: FC = () => {
                             </div>
                         </div>
 
+                        {
+                            isEmpty(application.rejectReason) ? null : (
+                                <div className="p-5 space-y-2 bg-white rounded shadow">
+                                    <div className="w-fit">
+                                        <ApplicationBadge.Status status={application.status} />
+                                    </div>
+                                    <p className="font-medium space-x-1">
+                                        <span className="text-gray-400">Mô tả:</span>
+                                        <span className="text-main-primary italic">{application.rejectReason}</span>
+                                    </p>
+                                </div>
+                            )
+                        }
+
                         <div className="w-full bg-white rounded shadow">
                             <div className="px-5 space-y-5">
                                 <div className="flex border-b items-center justify-between flex-wrap-reverse">

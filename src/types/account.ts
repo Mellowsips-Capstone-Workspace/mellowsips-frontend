@@ -26,7 +26,7 @@ export type Partner = {
     logo: string | null
     businessCode: string | null
     taxCode: string | null
-    type: 'PERSONAL'
+    type: string
     businessIdentityIssueDate: string | null
     businessIdentityImages: string[] | null
 }
