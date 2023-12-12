@@ -101,6 +101,7 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                             name="type"
                                             options={
                                                 [
+
                                                     {
                                                         label: "Nhân viên",
                                                         value: "STAFF"
@@ -108,10 +109,18 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                                     {
                                                         label: "Quản lý cửa hàng",
                                                         value: "STORE_MANAGER"
+                                                    },
+                                                    {
+                                                        label: "Chủ lý cửa hàng",
+                                                        value: "OWNER"
+                                                    },
+                                                    {
+                                                        label: "Khách hàng",
+                                                        value: "CUSTOMER"
                                                     }
+
                                                 ]
                                             }
-                                            placeholder="(84) ..."
                                         />
                                     </div>
                                     <StoreSelect />

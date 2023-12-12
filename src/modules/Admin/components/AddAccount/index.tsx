@@ -130,10 +130,17 @@ const AddAccount: FC = () => {
                                                     {
                                                         label: "Quản lý cửa hàng",
                                                         value: "STORE_MANAGER"
+                                                    },
+                                                    {
+                                                        label: "Chủ lý cửa hàng",
+                                                        value: "OWNER"
+                                                    },
+                                                    {
+                                                        label: "Khách hàng",
+                                                        value: "CUSTOMER"
                                                     }
                                                 ]
                                             }
-                                            placeholder="(84) ..."
                                         />
                                     </div>
                                     <StoreSelect />
