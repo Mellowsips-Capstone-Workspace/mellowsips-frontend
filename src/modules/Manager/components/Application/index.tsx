@@ -1,5 +1,5 @@
 import { CheckIcon, Cross2Icon, Pencil2Icon } from '@radix-ui/react-icons'
-import { APPLICATION_EVENT, APPLICATION_STATUS } from 'enums/application'
+import { APPLICATION_EVENT, APPLICATION_STATUS, APPLICATION_TYPE } from 'enums/application'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
 import Button from 'modules/Common/Button'
@@ -79,7 +79,7 @@ const ChangeStatus: FC<ChangeStatusProps> = ({ application, setApplication }) =>
                 status === APPLICATION_STATUS.DRAFT ? (
                     <>
                         <Link
-                            to="/applications/edit"
+                            to={application.type === APPLICATION_TYPE.ADD_STORE ? "/applications/add-store/edit" : "/applications/edit"}
                             state={application}
                             onClick={setDisplaySubmit.on}
                             className="flex space-x-1 items-center border rounded px-3 py-1 bg-indigo-500 text-white"

@@ -6,36 +6,7 @@ import { Link } from "react-router-dom"
 import PartnerService from "services/PartnerService"
 import { useAppSelector } from "stores/root"
 import { Principle } from "types/authenticate"
-// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "shadcn/ui/dropdown-menu"
 
-{/* <DropdownMenu>
-    <DropdownMenuTrigger
-        className="flex-none bg-main-primary text-white px-5 py-2 rounded outline-none"
-    >
-        Tạo đơn
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Mẫu đơn</DropdownMenuLabel>
-        <DropdownMenuItem>
-            <Link
-                to="create"
-                className="hover:text-primary cursor-pointer"
-            >
-                Đăng ký doanh nghiệp
-            </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem>
-            <Link
-                to=""
-                className="hover:text-primary cursor-pointer"
-
-            >
-                Yêu cầu cập nhật thông tin
-            </Link>
-        </DropdownMenuItem>
-    </DropdownMenuContent>
-</DropdownMenu> */}
 const ApplicationManage = () => {
     const { partnerId } = useAppSelector<Principle>(state => state.authenticate.principle!)
     const pending = isEmpty(partnerId)
@@ -49,7 +20,6 @@ const ApplicationManage = () => {
                     return
                 }
                 setIsEnterprise(true)
-
             }
         )()
     }, [partnerId])
@@ -72,7 +42,7 @@ const ApplicationManage = () => {
                             </Link>
                         ) : isEnterprise ? (
                             <Link
-                                to="create-store"
+                                to="add-store"
                                 className="flex-none bg-main-primary text-white px-5 py-2 rounded outline-none"
                             >
                                 Đăng ký thêm cửa hàng

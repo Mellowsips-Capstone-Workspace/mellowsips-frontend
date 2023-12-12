@@ -8,7 +8,8 @@ class AdminApplicationService extends ApplicationService {
     static search(
         options: {
             pagination: { page: number, offset: number }
-        }
+        },
+        type: string
     ) {
         const { pagination } = options
         type body = {
@@ -33,7 +34,7 @@ class AdminApplicationService extends ApplicationService {
                     },
                     criteria: {
                         filter: {
-                            type: "CREATE_ORGANIZATION",
+                            type,
                             status: [APPLICATION_STATUS.WAITING, APPLICATION_STATUS.REJECTED, APPLICATION_STATUS.APPROVED, APPLICATION_STATUS.PROCESSING]
                         },
                         order: {

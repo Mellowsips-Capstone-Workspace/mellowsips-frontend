@@ -76,7 +76,7 @@ export type Application = {
     approvedBy: string | null
     jsonData: ApplicationModel
     status: typeof APPLICATION_STATUS[keyof typeof APPLICATION_STATUS]
-    type: "CREATE_ORGANIZATION" | "UPDATE_ORGANIZATION" | "DELETE_ORGANIZATION"
+    type: string
     partnerId: string | null
     rejectReason?: string
 } & Base

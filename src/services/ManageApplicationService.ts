@@ -9,9 +9,10 @@ class ManageApplicationService extends ApplicationService {
     static search(
         options: {
             pagination: { page: number, offset: number }
+            type: string
         }
     ) {
-        const { pagination } = options
+        const { pagination, type } = options
         type body = {
             statusCode: number
             message: string | undefined
@@ -34,7 +35,7 @@ class ManageApplicationService extends ApplicationService {
                     },
                     criteria: {
                         filter: {
-                            type: "CREATE_ORGANIZATION"
+                            type
                         },
                         order: {
                             createdAt: "DESC"

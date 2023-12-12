@@ -1,4 +1,4 @@
-import { APPLICATION_STATUS, ORGANIZATION } from 'enums/application'
+import { APPLICATION_STATUS, APPLICATION_TYPE, ORGANIZATION } from 'enums/application'
 import { baseBadge } from 'modules/Common/Badge'
 import { FC } from 'react'
 
@@ -10,9 +10,13 @@ const Type: FC<TypeProps> = ({ type }) => {
     return (
         <>
             {
-                type === "CREATE_ORGANIZATION" ? (
+                type === APPLICATION_TYPE.CREATE_ORGANIZATION ? (
                     <div className={baseBadge({ intent: "blue", className: "h-fit w-fit py-0.5 px-1.5 mx-auto text-xs" })}>
                         Tạo doanh nghiệp
+                    </div>
+                ) : type === APPLICATION_TYPE.ADD_STORE ? (
+                    <div className={baseBadge({ intent: "orange", className: "h-fit w-fit py-0.5 px-1.5 mx-auto text-xs" })}>
+                        Thêm mới cửa hàng
                     </div>
                 ) : null
             }

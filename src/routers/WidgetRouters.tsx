@@ -4,8 +4,11 @@ import { Navigate, Route } from "react-router-dom"
 
 const ApplicationManage = lazy(() => import("modules/Manager/widgets/ApplicationManage"))
 const CreateApplicationWidget = lazy(() => import("modules/Manager/widgets/CreateApplication"))
+const CreateStoreApplicationWidget = lazy(() => import("modules/Manager/widgets/CreateStoreApplication"))
 const EditApplicationWidget = lazy(() => import("modules/Manager/widgets/EditApplication"))
+const EditCreateStoreApplicationWidget = lazy(() => import("modules/Manager/widgets/EditCreateStoreApplication"))
 const ApplicationProcessWidget = lazy(() => import("modules/Manager/widgets/ApplicationProcess"))
+const ApplicationCreateStoreProcessWidget = lazy(() => import("modules/Manager/widgets/ApplicationCreateStoreProcess"))
 const QRCodeManageWidget = lazy(() => import("modules/Manager/widgets/QRCodeManage"))
 const StoreManageWidget = lazy(() => import("modules/Manager/widgets/StoreManage"))
 const StoreWidget = lazy(() => import("modules/Manager/widgets/Store"))
@@ -38,6 +41,14 @@ export const ApplicationRoute = (
             }
         />
         <Route
+            path="add-store"
+            element={
+                <Suspense fallback={<WidgetLoading />}>
+                    <CreateStoreApplicationWidget />
+                </Suspense>
+            }
+        />
+        <Route
             path="edit"
             element={
                 <Suspense fallback={<WidgetLoading />}>
@@ -46,10 +57,26 @@ export const ApplicationRoute = (
             }
         />
         <Route
+            path="add-store/edit"
+            element={
+                <Suspense fallback={<WidgetLoading />}>
+                    <EditCreateStoreApplicationWidget />
+                </Suspense>
+            }
+        />
+        <Route
             path="process"
             element={
                 <Suspense fallback={<WidgetLoading />}>
                     <ApplicationProcessWidget />
+                </Suspense>
+            }
+        />
+        <Route
+            path="add-store/process"
+            element={
+                <Suspense fallback={<WidgetLoading />}>
+                    <ApplicationCreateStoreProcessWidget />
                 </Suspense>
             }
         />

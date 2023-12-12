@@ -6,6 +6,7 @@ import VoucherRoute from "routers/VoucherRoutes";
 
 const ApplicationManageWidget = lazy(() => import("modules/Admin/widgets/ApplicationManage"))
 const ApplicationProcessWidget = lazy(() => import('modules/Admin/widgets/ApplicationProcess'))
+const ApplicationCreateStoreProcessWidget = lazy(() => import('modules/Admin/widgets/ApplicationCreateStoreProcess'))
 const AccountManageWidget = lazy(() => import('modules/Admin/widgets/AccountManage'))
 const PartnersManageWidget = lazy(() => import('modules/Admin/widgets/PartnerManage'))
 
@@ -30,6 +31,14 @@ const AdminRoutes: FC = () => {
                         element={
                             <Suspense fallback={<WidgetLoading />}>
                                 <ApplicationProcessWidget />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="add-store/view"
+                        element={
+                            <Suspense fallback={<WidgetLoading />}>
+                                <ApplicationCreateStoreProcessWidget />
                             </Suspense>
                         }
                     />

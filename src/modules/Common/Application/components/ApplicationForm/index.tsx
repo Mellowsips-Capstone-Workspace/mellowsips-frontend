@@ -121,7 +121,6 @@ const ApplicationForm: FC<ApplicationFormProps> = ({ onSubmit, onSubmitDraft, sh
                                     }
                                 )
                             )
-
                         }
                     )
                 }
