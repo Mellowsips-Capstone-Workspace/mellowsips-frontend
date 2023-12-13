@@ -4,19 +4,24 @@ import FormikTextField from 'modules/Common/FormikTextField';
 import { FC } from 'react';
 import ApplicationModel, { MAX_ALLOWED_NUMBER_STORES } from 'types/application';
 
-const Merchant: FC<void | FieldArrayRenderProps> = (props) => {
+type MerchantProps = (FieldArrayRenderProps | void) & {
+    limitStore: boolean
+}
+
+const Merchant: FC<MerchantProps> = (props) => {
 
     if (isNull(props) || isUndefined(props)) {
         return
     }
     const { form, push, remove } = props as FieldArrayRenderProps
+    const { limitStore } = props as MerchantProps
     const { merchant, organization: { businessType } } = form.values as ApplicationModel
     const currentNumberMerchants = merchant.length
 
     return (
         <>
             {
-                businessType === "ENTERPRISE" ? (
+                (businessType === "ENTERPRISE" && limitStore) ? (
                     <p className="text-main-primary flex items-baseline">
                         <i className="fas fa-info-circle"></i>
                         <i className="inline-block ps-2">Cho phép tạo tối đa {MAX_ALLOWED_NUMBER_STORES} cửa hàng. Bạn có thể tạo thêm các chi nhánh mới sau khi khởi tạo doanh nghiệp thành công.</i>
@@ -84,12 +89,39 @@ const Merchant: FC<void | FieldArrayRenderProps> = (props) => {
                                     />
                                 </div>
                             </div>
+
                             {
-                                (
-                                    businessType === "ENTERPRISE" &&
-                                    (index === currentNumberMerchants - 1) &&
-                                    ((index + 1) < MAX_ALLOWED_NUMBER_STORES)
-                                ) ? (
+                                limitStore ? (
+                                    <>
+                                        {
+                                            (
+                                                businessType === "ENTERPRISE" &&
+                                                (index === currentNumberMerchants - 1) &&
+                                                ((index + 1) < MAX_ALLOWED_NUMBER_STORES)
+                                            ) ? (
+                                                <button
+                                                    className="block w-full bg-main-primary text-white rounded-lg py-2 px-5 font-semibold"
+                                                    type="button"
+                                                    onClick={
+                                                        () => push(
+                                                            {
+                                                                name: "",
+                                                                phone: "",
+                                                                email: "",
+                                                                address: "",
+                                                                images: [],
+                                                                menuImages: []
+                                                            }
+                                                        )
+                                                    }
+                                                >
+                                                    <i className="fas fa-plus"></i>
+                                                    <span className="ms-2">Thêm mới cửa hàng</span>
+                                                </button>
+                                            ) : null
+                                        }
+                                    </>
+                                ) : (
                                     <button
                                         className="block w-full bg-main-primary text-white rounded-lg py-2 px-5 font-semibold"
                                         type="button"
@@ -109,8 +141,9 @@ const Merchant: FC<void | FieldArrayRenderProps> = (props) => {
                                         <i className="fas fa-plus"></i>
                                         <span className="ms-2">Thêm mới cửa hàng</span>
                                     </button>
-                                ) : null
+                                )
                             }
+
                         </div>
                     )
                 )
@@ -120,16 +153,18 @@ const Merchant: FC<void | FieldArrayRenderProps> = (props) => {
 
 }
 
-const MerchantInformation = () => {
+type MerchantInformationProps = {
+    limitStore?: boolean
+}
+const MerchantInformation: FC<MerchantInformationProps> = ({ limitStore = false }) => {
     return (
         <div className="space-y-5 mb-10">
             <FieldArray
                 name="merchant"
-                component={Merchant}
+                render={(props) => <Merchant {...props} limitStore={limitStore} />}
             />
         </div>
     )
 }
 
 export default MerchantInformation
-

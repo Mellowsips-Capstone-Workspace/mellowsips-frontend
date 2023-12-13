@@ -143,7 +143,7 @@ const Applications = () => {
                         className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
                     />
                     <Tab.Item
-                        displayValue="Tạo thêm doanh nhiệp"
+                        displayValue="Tạo thêm cửa hàng"
                         value={APPLICATION_TYPE.ADD_STORE}
                         className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
                     />

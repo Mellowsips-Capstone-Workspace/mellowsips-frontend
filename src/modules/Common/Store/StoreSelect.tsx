@@ -31,7 +31,7 @@ const StoreSelect: FC<StoreSelectProps> = ({ showAll = true }) => {
 
     return (
         <div className="space-y-2">
-            <label className="text-gray-500 font-medium">Chọn cửa hàng</label>
+            <label className="text-gray-500 font-medium">Cửa hàng</label>
             {
                 loading ? (
                     <div className="flex justify-center items-center space-x-1 border p-2 text-xs">
@@ -51,7 +51,7 @@ const StoreSelect: FC<StoreSelectProps> = ({ showAll = true }) => {
                             )
                         }
                         name="storeId"
-                        placeholder="Chon cửa hàng"
+                        placeholder="Chọn cửa hàng"
                     />
                 ) : null
             }

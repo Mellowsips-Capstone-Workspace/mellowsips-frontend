@@ -125,7 +125,7 @@ const ApplicationForm: FC<ApplicationFormProps> = ({ onSubmit, onSubmitDraft, sh
                     )
                 }
             >
-                <MerchantInformation />
+                <MerchantInformation limitStore={true} />
             </FormikStepper.Step>
 
             <FormikStepper.Step

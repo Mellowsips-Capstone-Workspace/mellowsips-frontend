@@ -1,10 +1,10 @@
+import ROLE from 'enums/role'
 import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
 import Button from 'modules/Common/Button'
 import FormikTextField from 'modules/Common/FormikTextField'
 import Modal from 'modules/Common/Modal/Modal'
-import StoreSelect from 'modules/Common/Store/StoreSelect'
 import showToast from 'modules/Common/Toast'
 import { FC } from 'react'
 import ManageAccountService from 'services/ManageAccountService'
@@ -75,115 +75,97 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                     }
                 >
                     {
-                        ({ isSubmitting, isValid }) => (
-                            <>
-                                <Form
-                                    id={id}
-                                    className='p-5 grow overflow-y-auto w-220 grid grid-cols-2 gap-x-5 gap-y-2 pointer-events-none'
-                                >
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Tên đăng nhập</label>
-                                        <FormikTextField.Input
-                                            name="username"
-                                            placeholder="Ví dụ: nhanvien"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Tên</label>
-                                        <FormikTextField.Input
-                                            name="displayName"
-                                            placeholder="Ví dụ: Nhân Viên A"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Loại tài khoản</label>
-                                        <FormikTextField.DropdownInput
-                                            name="type"
-                                            options={
-                                                [
+                        ({ isSubmitting, isValid, values }) => {
 
-                                                    {
-                                                        label: "Nhân viên",
-                                                        value: "STAFF"
-                                                    },
-                                                    {
-                                                        label: "Quản lý cửa hàng",
-                                                        value: "STORE_MANAGER"
-                                                    },
-                                                    {
-                                                        label: "Chủ lý cửa hàng",
-                                                        value: "OWNER"
-                                                    },
-                                                    {
-                                                        label: "Khách hàng",
-                                                        value: "CUSTOMER"
-                                                    }
 
-                                                ]
-                                            }
-                                        />
-                                    </div>
-                                    <StoreSelect />
-
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Email</label>
-                                        <FormikTextField.Input
-                                            name="email"
-                                            placeholder="Ví dụ: nhanvien@gmail.com"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-gray-500 font-medium">Số điện thoại (tuỳ chọn)</label>
-                                        <FormikTextField.PhoneInput
-                                            name="phone"
-                                            startWith="84"
-                                            placeholder="(84) ..."
-                                        />
-                                    </div>
-                                </Form>
-                                <div className="border-t py-2 px-5 flex justify-end space-x-5">
-
-                                    {
-                                        accountId === id ? null : (
-                                            <>
-                                                {
-                                                    isActive ? (
-                                                        <Button
-                                                            form={id}
-                                                            disabled={isSubmitting || !isValid}
-                                                            type="submit"
-                                                            variant="red"
-                                                            className="group"
-                                                        >
-                                                            Vô hiệu hoá
-                                                        </Button>
-
-                                                    ) : (
-                                                        <Button
-                                                            form={id}
-                                                            disabled={isSubmitting || !isValid}
-                                                            type="submit"
-                                                            variant="indigo"
-                                                            className="group"
-                                                        >
-                                                            Kích hoạt
-                                                        </Button>
-
-                                                    )
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    <Button
-                                        type="button"
-                                        variant="default"
-                                        onClick={setDisplay.off}
+                            return (
+                                <>
+                                    <Form
+                                        id={id}
+                                        className='p-5 grow overflow-y-auto w-220 grid grid-cols-2 gap-x-5 gap-y-2 pointer-events-none'
                                     >
-                                        Huỷ
-                                    </Button>
-                                </div>
-                            </>
-                        )
+                                        <div className="space-y-2">
+                                            <label className="text-gray-500 font-medium">Tên đăng nhập</label>
+                                            <FormikTextField.Input
+                                                name="username"
+                                                placeholder="Ví dụ: nhanvien"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-gray-500 font-medium">Tên</label>
+                                            <FormikTextField.Input
+                                                name="displayName"
+                                                placeholder="Ví dụ: Nhân Viên A"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-gray-500 font-medium">Loại tài khoản</label>
+                                            <div className='border rounded-lg px-3 py-2.5'>
+                                                {
+                                                    values.type === ROLE.ADMIN ? "Admin" : values.type === ROLE.STAFF ? "Nhân viên" : values.type === ROLE.OWNER ? "Chủ cửa hàng" : values.type === ROLE.STORE_MANAGER ? "Quản lý cửa hàng" : "Khách hàng"
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-gray-500 font-medium">Email</label>
+                                            <FormikTextField.Input
+                                                name="email"
+                                                placeholder="Ví dụ: nhanvien@gmail.com"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-gray-500 font-medium">Số điện thoại (tuỳ chọn)</label>
+                                            <FormikTextField.PhoneInput
+                                                name="phone"
+                                                startWith="84"
+                                                placeholder="(84) ..."
+                                            />
+                                        </div>
+                                    </Form>
+                                    <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                                        {
+                                            accountId === id ? null : (
+                                                <>
+                                                    {
+                                                        isActive ? (
+                                                            <Button
+                                                                form={id}
+                                                                disabled={isSubmitting || !isValid}
+                                                                type="submit"
+                                                                variant="red"
+                                                                className="group"
+                                                            >
+                                                                Vô hiệu hoá
+                                                            </Button>
+
+                                                        ) : (
+                                                            <Button
+                                                                form={id}
+                                                                disabled={isSubmitting || !isValid}
+                                                                type="submit"
+                                                                variant="indigo"
+                                                                className="group"
+                                                            >
+                                                                Kích hoạt
+                                                            </Button>
+
+                                                        )
+                                                    }
+                                                </>
+                                            )
+                                        }
+                                        <Button
+                                            type="button"
+                                            variant="default"
+                                            onClick={setDisplay.off}
+                                        >
+                                            Huỷ
+                                        </Button>
+                                    </div>
+                                </>
+                            )
+                        }
+
                     }
                 </Formik>
             </Modal>

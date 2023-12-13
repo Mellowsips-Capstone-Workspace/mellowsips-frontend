@@ -13,6 +13,9 @@ const ApplicationManage = () => {
     const [isEnterprise, setIsEnterprise] = useState(false)
 
     useEffect(() => {
+        if (isEmpty(partnerId)) {
+            return
+        }
         (
             async () => {
                 const { status, body } = await PartnerService.getById(partnerId!)
@@ -51,7 +54,7 @@ const ApplicationManage = () => {
                     }
                 </div>
             </div>
-            <Applications />
+            <Applications enterprise={isEnterprise} />
         </Widget>
     )
 }

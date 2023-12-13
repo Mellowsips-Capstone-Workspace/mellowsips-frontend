@@ -1,3 +1,4 @@
+import ROLE from 'enums/role'
 import { Form, Formik } from 'formik'
 import useBoolean from 'hooks/useBoolean'
 import { isEmpty } from 'lodash'
@@ -76,7 +77,7 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                     }
                 >
                     {
-                        ({ isSubmitting, isValid }) => (
+                        ({ isSubmitting, isValid, values }) => (
                             <>
                                 <Form
                                     id={id}
@@ -98,27 +99,17 @@ const AccountDetail: FC<AccountDetailProps> = ({ account }) => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-gray-500 font-medium">Loại tài khoản</label>
-                                        <FormikTextField.DropdownInput
-                                            name="type"
-                                            options={
-                                                [
-                                                    {
-                                                        label: "Nhân viên",
-                                                        value: "STAFF"
-                                                    },
-                                                    {
-                                                        label: "Quản lý cửa hàng",
-                                                        value: "STORE_MANAGER"
-                                                    },
-                                                    {
-                                                        label: "Chủ lý cửa hàng",
-                                                        value: "OWNER"
-                                                    }
-                                                ]
+                                        <div className='border rounded-lg px-3 py-2.5'>
+                                            {
+                                                values.type === ROLE.ADMIN ? "Admin" : values.type === ROLE.STAFF ? "Nhân viên" : values.type === ROLE.OWNER ? "Chủ cửa hàng" : values.type === ROLE.STORE_MANAGER ? "Quản lý cửa hàng" : "Khách hàng"
                                             }
-                                        />
+                                        </div>
                                     </div>
-                                    <StoreSelect />
+                                    {
+                                        values.type !== ROLE.OWNER ? (
+                                            <StoreSelect showAll={false} />
+                                        ) : null
+                                    }
                                     <div className="space-y-2">
                                         <label className="text-gray-500 font-medium">Email</label>
                                         <FormikTextField.Input

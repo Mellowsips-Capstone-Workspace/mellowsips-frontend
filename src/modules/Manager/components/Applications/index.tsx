@@ -106,7 +106,7 @@ const columns = [
     )
 ]
 
-const Applications: FC = () => {
+const Applications: FC<{ enterprise?: boolean }> = ({ enterprise = false }) => {
     const [loading, setLoading] = useState(false)
     const [applications, setApplications] = useState<Application[]>([])
     const [type, setType] = useState(APPLICATION_TYPE.CREATE_ORGANIZATION)
@@ -130,9 +130,6 @@ const Applications: FC = () => {
         refetch(page, offset)
     }, [refetch, page, offset])
 
-    console.log(applications);
-
-
 
     return (
         <>
@@ -147,11 +144,16 @@ const Applications: FC = () => {
                         value={APPLICATION_TYPE.CREATE_ORGANIZATION}
                         className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
                     />
-                    <Tab.Item
-                        displayValue="Tạo thêm doanh nhiệp"
-                        value={APPLICATION_TYPE.ADD_STORE}
-                        className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
-                    />
+                    {
+                        enterprise ? (
+                            <Tab.Item
+                                displayValue="Tạo thêm cửa hàng"
+                                value={APPLICATION_TYPE.ADD_STORE}
+                                className="flex-none font-medium py-4 border-b-2 border-transparent cursor-pointer aria-checked:text-main-primary aria-checked:border-b-main-primary transition-all duration-300"
+                            />
+                        ) : null
+                    }
+
                 </Tab.Container>
             </div>
             <div className="w-full p-5 space-y-5 bg-white rounded shadow">
