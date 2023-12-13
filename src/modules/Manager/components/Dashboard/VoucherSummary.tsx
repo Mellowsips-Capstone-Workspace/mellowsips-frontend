@@ -44,8 +44,8 @@ function CustomLabel(props: any) {
 type VoucherSummaryProps = {
     className?: string
     range: { startDate: string | null, endDate: string | null }
-
 }
+
 const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState<{ name: string, value: number }[]>([])

@@ -10,10 +10,10 @@ import { calculatePercentage } from "utils/number";
 type OrderStatusStatisticProps = {
     className?: string
     range: { startDate: string | null, endDate: string | null }
+    storeId: string | null | undefined
 }
 
-const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className, range }) => {
-
+const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className, range, storeId }) => {
 
     const [data, setData] = useState(
         [
@@ -40,14 +40,12 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className, range 
 
     const [loading, setLoading] = useState(true)
 
-
-
     useEffect(() => {
         (
             async () => {
                 setLoading(true)
 
-                const { body, status } = await DashboardService.getBusinessStatistics(range)
+                const { body, status } = await DashboardService.getBusinessStatistics({ ...range, storeId })
 
                 if (status === 200 && !isEmpty(body) && body.statusCode === 200) {
                     const { flakedOrderAmount, successOrderAmount, pendingOrderAmount } = body.data
@@ -83,7 +81,7 @@ const OrderStatusStatistic: FC<OrderStatusStatisticProps> = ({ className, range 
 
             }
         )()
-    }, [range])
+    }, [range, storeId])
 
     return (
         <WidgetCard

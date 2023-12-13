@@ -2,8 +2,6 @@ import { isArray, isEmpty, isNull } from 'lodash';
 import TrophyIcon from 'modules/Common/Icons/trophy';
 import Loading from 'modules/Common/Loading';
 import NoResult from 'modules/Common/NoResult';
-import SelectStoreManage from 'modules/Common/SelectStoreManage';
-import useSelectStore from 'modules/Common/SelectStoreManage/hooks/useSelectStore';
 import showToast from 'modules/Common/Toast';
 import WidgetCard from 'modules/Common/WidgetCard';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -17,6 +15,7 @@ type ProductItem = Product & {
 type TopProductProps = {
     className?: string
     range: { startDate: string | null, endDate: string | null }
+    storeId: string | null | undefined
 }
 
 const colors = [
@@ -25,12 +24,11 @@ const colors = [
     "text-[#00b8d9] bg-[#e5f8fb]"
 ]
 
-const TopProduct: FC<TopProductProps> = ({ className, range }) => {
+const TopProduct: FC<TopProductProps> = ({ className, range, storeId }) => {
 
     const [loading, setLoading] = useState(true)
     const [products, setProducts] = useState<ProductItem[]>([])
 
-    const { loading: loadingStore, setStoreId, storeId, stores } = useSelectStore(null, false)
 
     useEffect(() => {
 
@@ -73,23 +71,13 @@ const TopProduct: FC<TopProductProps> = ({ className, range }) => {
             descriptionClassName="text-xl font-semibold text-gray-900 mt-1.5 2xl:text-2xl"
             title={
                 (
-                    <div className='flex justify-between'>
-                        <h2 className="font-medium text-main-primary text-lg">Các sản phẩm bán chạy</h2>
-                        <div className='w-72 flex-none'>
-                            <SelectStoreManage
-                                stores={stores}
-                                storeId={storeId}
-                                showSelectAll={true}
-                                loading={loadingStore}
-                                setStoreId={setStoreId}
-                            />
-                        </div>
-                    </div>
+                    <h2 className="font-medium text-main-primary text-lg">Các sản phẩm bán chạy</h2>
+
                 )
             }
         >
             {
-                (loading || loadingStore) ? (
+                loading ? (
                     <div className="h-64 mx-auto w-fit flex justify-center items-center space-x-1 p-2 text-xs">
                         <Loading.Circle className="text-main-primary" size={14} />
                         <span className="text-gray-400">Đang tải dữ liệu.</span>
