@@ -122,25 +122,32 @@ const Merchant: FC<MerchantProps> = (props) => {
                                         }
                                     </>
                                 ) : (
-                                    <button
-                                        className="block w-full bg-main-primary text-white rounded-lg py-2 px-5 font-semibold"
-                                        type="button"
-                                        onClick={
-                                            () => push(
-                                                {
-                                                    name: "",
-                                                    phone: "",
-                                                    email: "",
-                                                    address: "",
-                                                    images: [],
-                                                    menuImages: []
-                                                }
-                                            )
+                                    <>
+                                        {
+                                            (index === currentNumberMerchants - 1) ? (
+                                                <button
+                                                    className="block w-full bg-main-primary text-white rounded-lg py-2 px-5 font-semibold"
+                                                    type="button"
+                                                    onClick={
+                                                        () => push(
+                                                            {
+                                                                name: "",
+                                                                phone: "",
+                                                                email: "",
+                                                                address: "",
+                                                                images: [],
+                                                                menuImages: []
+                                                            }
+                                                        )
+                                                    }
+                                                >
+                                                    <i className="fas fa-plus"></i>
+                                                    <span className="ms-2">Thêm mới cửa hàng</span>
+                                                </button>
+
+                                            ) : null
                                         }
-                                    >
-                                        <i className="fas fa-plus"></i>
-                                        <span className="ms-2">Thêm mới cửa hàng</span>
-                                    </button>
+                                    </>
                                 )
                             }
 
