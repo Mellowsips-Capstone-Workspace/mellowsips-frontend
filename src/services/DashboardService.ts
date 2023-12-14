@@ -69,6 +69,23 @@ class DashboardService {
             )
         )
     }
+
+    static getAdminDashboard(payload: any) {
+        type body = {
+            statusCode: number
+            message: string | undefined
+            errorCode: null | string
+            data: any
+        }
+
+        return requestApiHelper<body>(
+            interceptor.post(
+                "dashboard/system/statistics",
+                payload
+            )
+        )
+    }
+
 }
 
 export default DashboardService

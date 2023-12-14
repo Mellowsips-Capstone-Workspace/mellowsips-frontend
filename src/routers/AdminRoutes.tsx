@@ -9,6 +9,7 @@ const ApplicationProcessWidget = lazy(() => import('modules/Admin/widgets/Applic
 const ApplicationCreateStoreProcessWidget = lazy(() => import('modules/Admin/widgets/ApplicationCreateStoreProcess'))
 const AccountManageWidget = lazy(() => import('modules/Admin/widgets/AccountManage'))
 const PartnersManageWidget = lazy(() => import('modules/Admin/widgets/PartnerManage'))
+const DashboardWidget = lazy(() => import('modules/Admin/widgets/Dashboard'))
 
 const AdminRoutes: FC = () => {
     return (
@@ -62,7 +63,15 @@ const AdminRoutes: FC = () => {
                     }
                 />
 
-                <Route path="*" element={<Navigate to="/vouchers" />} />
+                <Route
+                    path="dashboard"
+                    element={
+                        <Suspense fallback={<WidgetLoading />}>
+                            <DashboardWidget />
+                        </Suspense>
+                    }
+                />
+                <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>
         </Routes>
     )
