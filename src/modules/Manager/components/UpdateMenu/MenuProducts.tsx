@@ -19,9 +19,10 @@ type MenuProductProps = {
     loading: boolean
     products: Product[]
     refetchProducts: () => void
+    storeId: string | null
 }
 
-const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading }) => {
+const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading, storeId }) => {
     const { id: menuId } = useParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const currentProductId = useRef<string | undefined>(undefined)
@@ -71,20 +72,13 @@ const MenuProducts: FC<MenuProductProps> = ({ refetchProducts, products, loading
 
 
     const fetchProductTemplates = useCallback(async () => {
-        const { status, body } = await ProductService.searchTemplates({ pagination: { page: 1, offset: 1000 } })
+        const { status, body } = await ProductService.searchTemplates({ pagination: { page: 1, offset: 1000 }, filter: { storeId } })
         if (status !== 200 || isEmpty(body) || isEmpty(body.data.results)) {
             setTemplates([])
-            showToast(
-                {
-                    type: "warning",
-                    title: "Chú ý",
-                    message: "Hiện tại không thể tải được các sản phẩm mẫu."
-                }
-            )
         } else {
             setTemplates(body.data.results)
         }
-    }, [])
+    }, [storeId])
 
     const addProduct = useCallback((event: MouseEvent<HTMLButtonElement>) => {
         const { productId } = event.currentTarget.dataset

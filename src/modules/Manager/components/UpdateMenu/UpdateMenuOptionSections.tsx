@@ -1,26 +1,24 @@
 import { DragHandleDots2Icon } from '@radix-ui/react-icons'
 import { FieldArray, FieldArrayRenderProps } from 'formik'
-import { isArray, isNull, isUndefined } from 'lodash'
+import { isNull, isUndefined } from 'lodash'
 import Button from 'modules/Common/Button'
 import FormikTextField from 'modules/Common/FormikTextField'
-import SelectProducts from 'modules/Common/Menu/SelectProducts'
+import SelectProducts from 'modules/Manager/components/UpdateMenu/SelectProducts'
 import { nanoid } from 'nanoid'
-import { FC, useCallback, useEffect, useRef } from 'react'
+import { FC, useCallback, useRef } from 'react'
 import { Menu, MenuSection } from 'types/menus'
 import { Product } from 'types/product'
 
 type SectionProps = (void | FieldArrayRenderProps) & {
     products: Product[],
-    refetch: () => void
+    refetchProducts: () => void
 }
 
-const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
+const Sections: FC<SectionProps> = ({ products, refetchProducts, ...props }) => {
     const currentMenuSections = useRef<MenuSection[] | null>(null)
     const { form, swap, push, name, remove } = props as FieldArrayRenderProps
-    const { menuSections, storeId } = form.values as Menu
+    const { menuSections } = form.values as Menu
     currentMenuSections.current = menuSections
-
-    const { setFieldValue } = form
     const position = useRef({ pick: -1, target: -1 })
     const handleSwap = useCallback((index: number, targetIndex: number) => {
         if (position.current.pick === -1 || position.current.target === -1 || index === targetIndex) {
@@ -49,23 +47,6 @@ const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
         handleSwap(position.current.pick, position.current.target)
         position.current = { pick: -1, target: -1 }
     }, [handleSwap])
-
-    useEffect(() => {
-        if (isNull(currentMenuSections.current)) {
-            return
-        }
-
-        const menuSections = currentMenuSections.current.map(
-            ({ productIds, ...section }) => (
-                {
-                    ...section,
-                    productIds: isArray(productIds) ? productIds : []
-                }
-            )
-        )
-
-        setFieldValue(name, menuSections, true)
-    }, [setFieldValue, name, storeId])
 
     if (isNull(props) || isUndefined(props)) {
         return
@@ -109,11 +90,11 @@ const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
 
                                         <SelectProducts
                                             index={index}
+                                            originalName={name}
                                             key={nanoid()}
                                             products={products}
-                                            originalName={name}
-                                            refetchProducts={refetch}
                                             name={`${name}.${index}.productIds`}
+                                            refetchProducts={refetchProducts}
                                         />
                                     </div>
                                     <DragHandleDots2Icon className="cursor-move" />
@@ -154,16 +135,24 @@ const Sections: FC<SectionProps> = ({ products, refetch, ...props }) => {
     )
 }
 
-type MenuOptionSectionsProps = {
+type UpdateMenuOptionSectionsProps = {
     products: Product[]
-    refetch: () => void
+    refetchProducts: () => void
 }
-const MenuOptionSections: FC<MenuOptionSectionsProps> = ({ products, refetch }) => (
+const UpdateMenuOptionSections: FC<UpdateMenuOptionSectionsProps> = ({ products, refetchProducts }) => (
     <FieldArray
         name="menuSections"
         key="menuSections"
-        render={(props) => <Sections {...props} products={products} refetch={refetch} />}
+        render={
+            (props) => (
+                <Sections
+                    {...props}
+                    products={products}
+                    refetchProducts={refetchProducts}
+                />
+            )
+        }
     />
 )
 
-export default MenuOptionSections
+export default UpdateMenuOptionSections

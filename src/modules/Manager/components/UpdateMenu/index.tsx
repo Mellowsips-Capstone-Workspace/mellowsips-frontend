@@ -3,10 +3,10 @@ import { isArray, isEmpty } from "lodash"
 import Button from "modules/Common/Button"
 import FormikTextField from "modules/Common/FormikTextField"
 import Loading from "modules/Common/Loading"
-import UpdateMenuOptionSections from "modules/Common/Menu/UpdateMenuOptionSections"
 import StoreSelect from "modules/Common/Store/StoreSelect"
 import showToast from "modules/Common/Toast"
 import MenuProducts from "modules/Manager/components/UpdateMenu/MenuProducts"
+import UpdateMenuOptionSections from "modules/Manager/components/UpdateMenu/UpdateMenuOptionSections"
 import { FC } from "react"
 import { Link } from "react-router-dom"
 import MenuService from "services/MenuService"
@@ -144,6 +144,7 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts, load
                                 products={products}
                                 loading={loading}
                                 refetchProducts={refetchProducts}
+                                storeId={menu.storeId!}
                             />
                         </div>
                         <div className="rounded border">
