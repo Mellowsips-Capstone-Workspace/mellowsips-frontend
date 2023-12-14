@@ -6,6 +6,7 @@ import Loading from "modules/Common/Loading"
 import showToast from "modules/Common/Toast"
 import NotificationApplicationApprove from "modules/Notification/components/NotificationApplicationApprove"
 import { FC, MouseEvent, useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import NotificationService from "services/NotificationService"
 import StompClientService, { StompMessage } from "services/StompClientService"
 
@@ -184,7 +185,25 @@ const Notification: FC = () => {
                                 (notification) => (
                                     <div className="flex" key={notification.id}>
                                         <div className="grow">
-                                            <p className="text-sm font-medium truncate">{notification.subject}</p>
+                                            {
+                                                notification.key.includes("ORDER") ? (
+                                                    <Link
+                                                        className="truncate text-sm font-medium hover:text-main-primary transition-colors"
+                                                        to="/orders"
+                                                    >
+                                                        {notification.subject}
+                                                    </Link>
+                                                ) : notification.key.includes("APPLICATION") ? (
+                                                    <Link
+                                                        to="/applications"
+                                                        className="truncate text-sm font-medium hover:text-main-primary transition-colors"
+                                                    >
+                                                        {notification.subject}
+                                                    </Link>
+                                                ) : (
+                                                    <p className="text-sm font-medium truncate">{notification.subject}</p>
+                                                )
+                                            }
                                             <p className="text-gray-500 text-sm italic">{format(parseISO(notification.createdAt), 'HH:mm:ss dd-MM-yyyy ')}</p>
                                         </div>
                                         <div className="flex-none">
