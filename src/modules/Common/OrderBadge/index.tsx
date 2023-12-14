@@ -33,6 +33,9 @@ const OrderBadge: FC<OrderBadgeProps> = ({ status }) => {
             {
                 status === OrderStatus.COMPLETED ? "Hoàn thành" : null
             }
+            {
+                status === OrderStatus.DECLINED ? "Bị boom 💣" : null
+            }
         </Badge>
     )
 }
