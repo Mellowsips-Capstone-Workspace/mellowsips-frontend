@@ -153,7 +153,6 @@ const UpdateMenu: FC<UpdateMenuProps> = ({ menu, products, refetchProducts, load
                                 refetchProducts={refetchProducts}
                             />
                         </div>
-
                     </Form>
                 )
             }

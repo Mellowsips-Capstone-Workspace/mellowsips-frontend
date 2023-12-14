@@ -8,6 +8,7 @@ import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import OrderBadge from 'modules/Common/OrderBadge'
 import showToast from 'modules/Common/Toast'
+import SuggestDeclineReason from 'modules/Manager/components/Orders/components/SuggestDeclineReason'
 import SuggestReason from 'modules/Manager/components/Orders/components/SuggestReason'
 import { FC, useCallback, useState } from 'react'
 import OrderService from 'services/OrderService'
@@ -25,9 +26,11 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
     const { id, updateOrder, initialTransactionMethod } = order
     const [display, setDisplay] = useBoolean(false)
     const [displayConfirm, setDisplayConfirm] = useBoolean(false)
+    const [displayDecline, setDisplayDecline] = useBoolean(false)
     const [displayConfirmComplete, setDisplayConfirmComplete] = useBoolean(false)
     const { on, off } = setDisplay
     const { off: offConfirm } = setDisplayConfirm
+    const { off: offDecline } = setDisplayDecline
     const [submitting, setSubmitting] = useState(false)
 
     const handlePrintOrder = () => {
@@ -69,6 +72,33 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
         offConfirm()
     }, [id, offConfirm, updateOrder])
 
+    const handleDeclineOrder = useCallback(async (reason: string) => {
+        setSubmitting(true)
+        const { status, body } = await OrderService.changeStatus(id, "decline", reason)
+        setSubmitting(false)
+
+        if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
+            showToast(
+                {
+                    type: "error",
+                    title: "Thất bại",
+                    message: "Chuyển sang trạng thái boom hàng thất bại."
+                }
+            )
+            return
+        }
+
+        showToast(
+            {
+                type: "success",
+                title: "Thành công",
+                message: "Chuyển sang trạng thái boom hàng thành công."
+            }
+        )
+        updateOrder(id, body.data)
+        offDecline()
+    }, [id, offDecline, updateOrder])
+
     const handleProcessingOrder = useCallback(async () => {
         setSubmitting(true)
         const { status, body } = await OrderService.changeStatus(id, "process")
@@ -95,7 +125,6 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
         updateOrder(id, body.data)
         offConfirm()
     }, [id, offConfirm, updateOrder])
-
 
     const handleConfirmReceiveOrder = useCallback(async () => {
         setSubmitting(true)
@@ -286,7 +315,6 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                             isEmpty(order.rejectReason) ? null : (
                                 <div className='flex items-center space-x-2'>
                                     <OrderBadge status={order.status} />
-
                                     <span className='text-gray-500'>{order.rejectReason}</span>
                                 </div>
                             )
@@ -336,6 +364,19 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                     }
                 </div>
                 <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                    {
+                        (order.status === OrderStatus.COMPLETED && order.initialTransactionMethod === "CASH") ? (
+                            <Button
+                                type="button"
+                                variant="red"
+                                onClick={setDisplayDecline.on}
+                                disabled={submitting}
+                                className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+                            >
+                                Bị boom
+                            </Button>
+                        ) : null
+                    }
                     {
                         [OrderStatus.RECEIVED as string, OrderStatus.COMPLETED as string].includes(order.status) ? (
                             <Button
@@ -415,6 +456,7 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                     </Button>
                 </div>
             </Modal >
+
             <Modal
                 flag={displayConfirm}
                 closeModal={setDisplayConfirm.off}
@@ -477,6 +519,76 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                                 type="button"
                                 variant="default"
                                 onClick={setDisplayConfirm.off}
+                            >
+                                Đóng
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                flag={displayDecline}
+                closeModal={setDisplayDecline.off}
+                closeOutside={false}
+                className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
+                innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
+            >
+                <div className='space-y-5'>
+                    <p className="px-5 py-1 shadow border-b truncate font-medium">Xác nhận huỷ đơn hàng</p>
+                    <div className='space-y-5'>
+                        <div className='space-y-2'>
+                            <p className='px-5 text-center'>Đơn hàng đã bị boom.<span className='font-medium text-red-500'>Xác nhận chuyển sang trạng thái bị boom.</span></p>
+                            <Formik
+                                initialValues={
+                                    {
+                                        reason: ""
+                                    }
+                                }
+                                validationSchema={
+                                    object().shape(
+                                        {
+                                            reason: string().matches(REGEX.notBlank, "Vui lòng nhập hoặc thêm chú thích cho đơn hàng bị boom.").required("Vui lòng nhập hoặc thêm chú thích cho đơn hàng bị boom.")
+                                        }
+                                    )
+                                }
+                                onSubmit={
+                                    (values) => {
+                                        const reason = values.reason as string
+                                        handleDeclineOrder(reason)
+                                    }
+                                }
+
+                            >
+                                <Form
+                                    id={id}
+                                    className='px-5 w-110'
+                                >
+                                    <FormikTextField.Input
+                                        name='reason'
+                                        placeholder='Thêm chú thích cho đơn hàng bị boom'
+                                    />
+                                    <SuggestDeclineReason totalPrice={order.finalPrice} name='reason' />
+                                </Form>
+                            </Formik>
+                        </div>
+                        <div className="border-t py-2 px-5 flex justify-end space-x-5">
+                            <Button
+                                type="submit"
+                                variant="red"
+                                form={id}
+                                disabled={submitting}
+                                className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+                            >
+                                <span className='hidden group-disabled:block mr-2'>
+                                    <Loading.Circle size={14} />
+                                </span>
+                                <span>Xác đã bị boom</span>
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="default"
+                                onClick={setDisplayDecline.off}
                             >
                                 Đóng
                             </Button>
