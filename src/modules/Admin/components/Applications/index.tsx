@@ -18,7 +18,7 @@ const { accessor, display } = createColumnHelper<Application>()
 const columns = [
     display(
         {
-            header: "Người tạo đơn",
+            header: "Người tạo",
             cell: ({ row: { original } }) => original.jsonData.organization.name || original.createdBy,
             minSize: 250,
         }
