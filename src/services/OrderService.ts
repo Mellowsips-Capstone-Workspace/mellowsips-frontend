@@ -20,7 +20,8 @@ class OrderService {
                 OrderStatus.RECEIVED,
                 OrderStatus.REJECTED,
                 OrderStatus.ORDERED,
-                OrderStatus.COMPLETED
+                OrderStatus.COMPLETED,
+                OrderStatus.DECLINED
             ],
             order = "DESC",
             filter = {}
