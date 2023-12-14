@@ -8,7 +8,6 @@ import Loading from 'modules/Common/Loading'
 import Modal from 'modules/Common/Modal/Modal'
 import OrderBadge from 'modules/Common/OrderBadge'
 import showToast from 'modules/Common/Toast'
-import SuggestDeclineReason from 'modules/Manager/components/Orders/components/SuggestDeclineReason'
 import SuggestReason from 'modules/Manager/components/Orders/components/SuggestReason'
 import { FC, useCallback, useState } from 'react'
 import OrderService from 'services/OrderService'
@@ -72,9 +71,9 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
         offConfirm()
     }, [id, offConfirm, updateOrder])
 
-    const handleDeclineOrder = useCallback(async (reason: string) => {
+    const handleDeclineOrder = useCallback(async () => {
         setSubmitting(true)
-        const { status, body } = await OrderService.changeStatus(id, "decline", reason)
+        const { status, body } = await OrderService.changeStatus(id, "decline")
         setSubmitting(false)
 
         if (status !== 200 || isEmpty(body) || body.statusCode !== 200) {
@@ -539,45 +538,13 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                     <div className='space-y-5'>
                         <div className='space-y-2'>
                             <p className='px-5 text-center'>Đơn hàng đã bị boom.<span className='font-medium text-red-500'>Xác nhận chuyển sang trạng thái bị boom.</span></p>
-                            <Formik
-                                initialValues={
-                                    {
-                                        reason: ""
-                                    }
-                                }
-                                validationSchema={
-                                    object().shape(
-                                        {
-                                            reason: string().matches(REGEX.notBlank, "Vui lòng nhập hoặc thêm chú thích cho đơn hàng bị boom.").required("Vui lòng nhập hoặc thêm chú thích cho đơn hàng bị boom.")
-                                        }
-                                    )
-                                }
-                                onSubmit={
-                                    (values) => {
-                                        const reason = values.reason as string
-                                        handleDeclineOrder(reason)
-                                    }
-                                }
-
-                            >
-                                <Form
-                                    id={id}
-                                    className='px-5 w-110'
-                                >
-                                    <FormikTextField.Input
-                                        name='reason'
-                                        placeholder='Thêm chú thích cho đơn hàng bị boom'
-                                    />
-                                    <SuggestDeclineReason totalPrice={order.finalPrice} name='reason' />
-                                </Form>
-                            </Formik>
                         </div>
                         <div className="border-t py-2 px-5 flex justify-end space-x-5">
                             <Button
                                 type="submit"
                                 variant="red"
-                                form={id}
                                 disabled={submitting}
+                                onClick={handleDeclineOrder}
                                 className='disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
                             >
                                 <span className='hidden group-disabled:block mr-2'>
