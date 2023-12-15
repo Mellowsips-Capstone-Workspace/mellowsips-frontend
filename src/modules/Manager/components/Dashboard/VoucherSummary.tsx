@@ -4,42 +4,41 @@ import TicketIcon from 'modules/Common/Icons/ticket';
 import Loading from 'modules/Common/Loading';
 import WidgetCard from 'modules/Common/WidgetCard';
 import { FC, useEffect, useState } from 'react';
-import { Cell, Label, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import DashboardService from 'services/DashboardService';
 import VoucherService from 'services/VoucherService';
 
 
 const COLORS = ['#BFDBFE', '#0070F3'];
 
-function CustomLabel(props: any) {
-    const { cx, cy } = props.viewBox;
-    return (
-        <>
-            <text
-                x={cx}
-                y={cy - 5}
-                fill="#111111"
-                className="recharts-text recharts-label"
-                textAnchor="middle"
-                dominantBaseline="central"
-            >
-                <tspan fill="#111111" alignmentBaseline="middle" fontSize="36px">
-                    {props.value1}
-                </tspan>
-            </text>
-            <text
-                x={cx}
-                y={cy + 20}
-                fill="#666666"
-                className="recharts-text recharts-label"
-                textAnchor="middle"
-                dominantBaseline="central"
-            >
-                <tspan fill="#666666" fontSize="14px">{props.value2}</tspan>
-            </text>
-        </>
-    );
-}
+// function CustomLabel(props: any) {
+//     const { cx, cy } = props.viewBox;
+//     return (
+//         <>
+//             <text
+//                 x={cx}
+//                 y={cy - 5}
+//                 fill="#111111"
+//                 className="recharts-text recharts-label"
+//                 textAnchor="middle"
+//                 dominantBaseline="central"
+//             >
+//                 <tspan fill="#111111" alignmentBaseline="middle" fontSize="36px">
+//                     {props.value1}
+//                 </tspan>
+//             </text>
+//             <text
+//                 x={cx}
+//                 y={cy + 20}
+//                 fill="#666666"
+//                 className="recharts-text recharts-label"
+//                 textAnchor="middle"
+//                 dominantBaseline="central"
+//             >
+//                 <tspan fill="#666666" fontSize="14px">{props.value2}</tspan>
+//             </text>
+//         </>
+//     );
+// }
 
 type VoucherSummaryProps = {
     className?: string
@@ -55,10 +54,7 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
         (
             async () => {
                 setLoading(true)
-
                 const { body, status } = await DashboardService.getBusinessStatistics(range)
-
-
 
                 if (status === 200 && !isEmpty(body) && body.statusCode === 200 && Array.isArray(body.data.amountForStores)) {
                     const { pendingVoucherAmount, usedVoucherAmount } = body.data
@@ -129,7 +125,7 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
                     </div>
                 ) : data.length ? (
                     <div className='py-5 space-y-5'>
-                        <div className='mx-auto h-64 aspect-square'>
+                        {/* <div className='mx-auto h-64 aspect-square'>
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart className="[&_.recharts-layer:focus]:outline-none [&_.recharts-sector:focus]:outline-none dark:[&_.recharts-text.recharts-label]:first-of-type:fill-white">
                                     <Pie
@@ -165,7 +161,7 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
                                     </Pie>
                                 </PieChart>
                             </ResponsiveContainer>
-                        </div>
+                        </div> */}
                         <div className="space-y-2">
                             {
                                 data.map(

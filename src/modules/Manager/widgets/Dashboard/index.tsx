@@ -76,6 +76,7 @@ const Dashboard = () => {
             {
                 storeLoading ? null : (
                     <div className="grid grid-cols-2 gap-5">
+
                         <OrderStatusStatistic
                             range={range}
                             className="h-fit"
@@ -85,6 +86,7 @@ const Dashboard = () => {
                             range={range}
                             storeId={type === ROLE.OWNER ? storeId : accountStoreId}
                         />
+
                         {
                             type === ROLE.OWNER ? (
                                 <StoreRevenueStatistic
@@ -97,6 +99,7 @@ const Dashboard = () => {
                             type === ROLE.OWNER ? (
                                 <VoucherSummary
                                     range={range}
+                                    className="h-fit"
                                 />
                             ) : null
                         }

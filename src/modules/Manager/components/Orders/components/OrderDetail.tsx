@@ -291,14 +291,22 @@ const OrderDetail: FC<OrderDetailProps> = ({ order }) => {
                         </div>
 
                         {
-                            isArray(order.details.vouchers) && order.details.vouchers.length ? (
+                            isArray(order.voucherOrders) && order.voucherOrders.length ? (
                                 <div className='flex items-start space-x-2'>
                                     <p>Khuyến mãi:</p>
                                     <div>
                                         {
-                                            order.details.vouchers.map(
-                                                voucher => (
-                                                    <p key={voucher.id} className='text-gray-500'> -{voucher.discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                            order.voucherOrders.map(
+                                                (voucher, index) => (
+                                                    <p key={voucher.id} className='text-gray-500 space-x-2'>
+                                                        <span>-{voucher.discountAmount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
+                                                        <span>({voucher.description})</span>
+                                                        {
+                                                            isArray(order.details.vouchers) && order.details.vouchers.at(index) ? (
+                                                                <span>{order.details.vouchers.at(index)!.code}</span>
+                                                            ) : null
+                                                        }
+                                                    </p>
                                                 )
                                             )
                                         }
