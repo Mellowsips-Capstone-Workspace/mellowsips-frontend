@@ -264,8 +264,7 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                                         discountType === VOUCHER_TYPE.PERCENT ? (
                                             <div className="space-y-2">
                                                 <label className="text-main-secondary space-x-1 font-medium">
-                                                    <span>Mức giảm tối đa</span>
-                                                    <span className="text-xs text-gray-400">(Tuỳ chọn)</span>
+                                                    Mức giảm tối đa
                                                 </label>
                                                 <FormikTextField.NumberInput
                                                     name="maxDiscountAmount"

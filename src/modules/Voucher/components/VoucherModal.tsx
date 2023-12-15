@@ -124,7 +124,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     }
                                 ),
                                 minOrderAmount: number().min(0).nullable(),
-                                code: string().required("Code là bắt buộc.").matches(/^[a-zA-Z]{5,9}$/, "Bao gồm 5-9 ký tự chữ."),
+                                code: string().required("Code là bắt buộc.").matches(/^[a-zA-Z0-9]{5,9}$/, "Bao gồm 5-9 ký tự chữ và số."),
                                 startDate: date().test(
                                     "startDate",
                                     "Ngày không hợp lệ.",
