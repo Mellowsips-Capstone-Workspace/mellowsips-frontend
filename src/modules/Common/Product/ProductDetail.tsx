@@ -5,14 +5,11 @@ import ProductOptionSections from "modules/Common/Product/ProductOptionSections"
 import showToast from "modules/Common/Toast"
 import { FC } from "react"
 import ProductService from "services/ProductService"
-import { useAppSelector } from "stores/root"
-import { Principle } from "types/authenticate"
 import { Product as ProductType } from "types/product"
 import { array, boolean, number, object, string } from "yup"
 
 const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
     const { id } = product
-    const principle = useAppSelector<Principle>(state => state.authenticate.principle!)
     return (
         <Formik
             initialValues={product}
