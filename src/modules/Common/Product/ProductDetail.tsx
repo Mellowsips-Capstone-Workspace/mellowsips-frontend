@@ -1,4 +1,3 @@
-import ROLE from "enums/role"
 import { Form, Formik } from "formik"
 import { isArray, isEmpty } from "lodash"
 import EssentialInfo from "modules/Common/Product/EssentialInfo"
@@ -26,7 +25,7 @@ const ProductDetail: FC<{ product: ProductType }> = ({ product }) => {
                         description: string().nullable(),
                         categories: array(string()),
                         isSoldOut: boolean().required("Trường này không được để trống."),
-                        storeId: principle.type === ROLE.OWNER ? string().nullable() : string().required("Trường này không được để trống."),
+                        storeId: string().nullable(),
                         productOptionSections: array(
                             object(
                                 {
