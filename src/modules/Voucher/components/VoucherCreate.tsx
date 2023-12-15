@@ -29,7 +29,7 @@ const VoucherCreate: FC<{ refetch: () => void }> = ({ refetch }) => {
                 onClick={setDisplay.on}
                 className="min-h-full"
             >
-                Tạo mới voucher
+                Tạo mới khuyến mãi
             </Button>
             <Modal
                 flag={display}
