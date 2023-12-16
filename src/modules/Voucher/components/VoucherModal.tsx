@@ -74,7 +74,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                 className="fixed top-0 left-0 z-10 h-screen w-screen bg-slate-900/50 py-5 flex items-center"
                 innerClassName="max-w-5xl flex flex-col max-h-full bg-white mx-auto overflow-auto rounded"
             >
-                <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Chi tiết mã giảm giá</p>
+                <p className="px-5 flex-none py-2 shadow border-b truncate font-medium">Chi tiết khuyến mãi</p>
                 <Formik
                     initialValues={
                         {
