@@ -19,7 +19,7 @@ const columns = [
     display(
         {
             header: "Người tạo",
-            cell: ({ row: { original } }) => original.jsonData.organization.name || original.createdBy,
+            cell: ({ row: { original } }) => original.createdBy,
             minSize: 250,
         }
     ),

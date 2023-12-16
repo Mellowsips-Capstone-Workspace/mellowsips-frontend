@@ -1,5 +1,6 @@
 import { format, parseISO } from "date-fns";
 import { isNull, isUndefined } from "lodash";
+import AccountSummary from "modules/Admin/components/Dashboard/AccountSummary";
 import VoucherSummary from "modules/Admin/components/Dashboard/VoucherSummary";
 import DateRangeSelect from "modules/Common/DateRangeSelect";
 import { Widget } from "modules/Layout/Dashboard";
@@ -47,6 +48,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
+            <AccountSummary />
             <VoucherSummary range={range} />
 
         </Widget>
