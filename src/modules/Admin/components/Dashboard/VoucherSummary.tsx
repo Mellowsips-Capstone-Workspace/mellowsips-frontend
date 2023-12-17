@@ -1,19 +1,37 @@
-import { isEmpty, isNull } from 'lodash';
+import { format, parseISO } from 'date-fns';
+import { isEmpty, isNull, isUndefined } from 'lodash';
+import DateRangeSelect from 'modules/Common/DateRangeSelect';
 import Loading from 'modules/Common/Loading';
 import WidgetCard from 'modules/Common/WidgetCard';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { DateRange } from 'react-day-picker';
 import DashboardService from 'services/DashboardService';
+import { subtractDate } from 'utils/date';
 
 const COLORS = ['#BFDBFE', '#0070F3'];
 
 type VoucherSummaryProps = {
     className?: string
-    range: { startDate: string | null, endDate: string | null }
 }
 
-const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
+const VoucherSummary: FC<VoucherSummaryProps> = ({ className }) => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState<{ name: string, value: number }[]>([])
+
+    const [range, setRange] = useState<{ startDate: string | null, endDate: string | null }>(
+        {
+            startDate: format(subtractDate(new Date(), 7), "yyyy-MM-dd"),
+            endDate: format(new Date(), "yyyy-MM-dd")
+        }
+    )
+
+    const handleSetRange = useCallback(({ from, to }: DateRange) => {
+        const range = {
+            startDate: isUndefined(from) ? null : format(from, "yyyy-MM-dd"),
+            endDate: isUndefined(to) ? null : format(to, "yyyy-MM-dd")
+        }
+        setRange(range)
+    }, [])
 
     useEffect(() => {
         (
@@ -46,8 +64,25 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
         <WidgetCard
             title={
                 (
-                    <h2 className="font-medium text-main-primary text-lg">Tổng quan về mã giảm giá</h2>
-
+                    <div className="flex justify-between items-center">
+                        <h2 className="font-medium text-main-primary text-lg">Tổng quan về mã giảm giá</h2>
+                        <div className="flex space-x-4 border rounded px-2 py-0.5">
+                            <div className="flex space-x-1 text-gray-500">
+                                <span className="font-medium">{range.startDate!.split("-").reverse().join("/")}</span>
+                                <span>-</span>
+                                <span className="font-medium">{isNull(range.endDate) ? "hôm nay" : range.endDate.split("-").reverse().join("/")}</span>
+                            </div>
+                            <DateRangeSelect
+                                initial={
+                                    {
+                                        from: isNull(range.startDate) ? undefined : parseISO(range.startDate),
+                                        to: isNull(range.endDate) ? undefined : parseISO(range.endDate)
+                                    }
+                                }
+                                onSelect={handleSetRange}
+                            />
+                        </div>
+                    </div>
                 )
             }
             className={className}

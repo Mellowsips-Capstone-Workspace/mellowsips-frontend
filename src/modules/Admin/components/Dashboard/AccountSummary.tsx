@@ -60,7 +60,7 @@ const AccountSummary: FC<AccountSummaryProps> = ({ className }) => {
                     </div>
                 ) : data ? (
                     <div className='py-5 space-y-5'>
-                        <div className="grid grid-cols-4 gap-5">
+                        <div className="grid grid-cols-2 gap-5">
                             <div className='p-5 bg-white border rounded shadow'>
                                 <div className='flex space-x-5'>
                                     <div className='h-14 w-14'>
