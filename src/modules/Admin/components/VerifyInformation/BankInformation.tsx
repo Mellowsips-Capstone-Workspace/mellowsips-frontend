@@ -74,7 +74,7 @@ const BankInformation = () => {
 
                             <div className="space-y-1">
                                 <label className="text-gray-500 font-medium">Số tài khoản</label>
-                                <FormikTextField.NumberInput
+                                <FormikTextField.Input
                                     name="accountNumber"
                                     placeholder="Ví dụ: 79447988"
                                 />

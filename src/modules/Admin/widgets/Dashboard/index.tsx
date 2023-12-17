@@ -26,6 +26,8 @@ const Dashboard = () => {
 
     return (
         <Widget className="space-y-5">
+            <AccountSummary />
+
             <div className="col-span-2 bg-white rounded shadow p-5 h-fit">
                 <div className="flex justify-between items-center">
                     <h2 className="font-medium text-main-primary text-lg">Tổng quan</h2>
@@ -48,7 +50,6 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <AccountSummary />
             <VoucherSummary range={range} />
 
         </Widget>
