@@ -27,7 +27,7 @@ const VoucherSummary: FC<VoucherSummaryProps> = ({ className, range }) => {
 
                     setData(
                         [
-                            { name: "Đang được sử dụng", value: pendingVoucherAmount },
+                            { name: "Đang xử lý", value: pendingVoucherAmount },
                             { name: "Đã sử dụng", value: usedVoucherAmount },
                         ]
                     )

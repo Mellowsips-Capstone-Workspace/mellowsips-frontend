@@ -1,4 +1,4 @@
-import BankHelper from 'helpers/bank';
+import VietQRHelper from 'helpers/vietQR';
 import { isEmpty } from 'lodash';
 import FormikTextField from 'modules/Common/FormikTextField';
 import { FC, useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ const OthersInformation: FC = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await BankHelper.getBankList()
+                const response = await VietQRHelper.getBankList()
 
                 if (response.error) {
                     return

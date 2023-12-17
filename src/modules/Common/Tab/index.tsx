@@ -12,9 +12,10 @@ type ItemProps = {
     className?: string
     displayValue: string
     value: string
+    children?: ReactNode
 }
 
-const Item: FC<ItemProps> = ({ className, value, displayValue }) => {
+const Item: FC<ItemProps> = ({ className, value, displayValue, children }) => {
     const { tab, setTab } = useContext<ContextType>(Context)!
 
     const handleSetTab = useCallback((event: MouseEvent<HTMLDivElement>) => {
@@ -28,7 +29,9 @@ const Item: FC<ItemProps> = ({ className, value, displayValue }) => {
             data-value={value}
             onClick={handleSetTab}
         >
-            {displayValue}
+            {
+                children || displayValue
+            }
         </div>
     )
 }

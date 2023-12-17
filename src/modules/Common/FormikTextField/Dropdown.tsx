@@ -44,7 +44,7 @@ const Dropdown: FC<DropdownProps> = ({ name, placeholder = "Chọn ngày", optio
                     type="button"
                     ref={trigger}
                     aria-invalid={!isEmpty(error) && touched}
-                    className="flex min-w-full outline-none py-2.5 rounded-2 border px-3 aria-invalid:border-danger transition-colors duration-300"
+                    className="flex min-w-full max-w-full outline-none py-2.5 rounded-2 border px-3 aria-invalid:border-danger transition-colors duration-300"
                 >
                     <p className="text-left truncate grow">
                         {

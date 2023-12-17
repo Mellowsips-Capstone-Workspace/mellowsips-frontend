@@ -81,7 +81,9 @@ module.exports = {
             minHeight: {
                 "dynamic-screen": "100dvh",
                 "dashboard-header": "3.5rem",
-                "dashboard-body": "calc(100dvh - 3.5rem)"
+                "dashboard-body": "calc(100dvh - 3.5rem)",
+                "110": "27.5rem",
+                "96": "26rem",
             },
             height: {
                 "dynamic-screen": "100dvh",

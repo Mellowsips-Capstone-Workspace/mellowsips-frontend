@@ -1,6 +1,7 @@
 import { APPLICATION_EVENT, APPLICATION_STATUS } from "enums/application"
 import { isEmpty } from "lodash"
 import ChangeStatus from "modules/Admin/components/Application"
+import VerifyInformation from "modules/Admin/components/VerifyInformation/VerifyInformation"
 import ApplicationBadge from "modules/Common/ApplicationBadge"
 import Merchant from "modules/Common/ApplicationData/Merchant"
 import Organization from "modules/Common/ApplicationData/Organization"
@@ -159,6 +160,8 @@ const ApplicationProcess: FC = () => {
                     </div>
                 ) : null
             }
+
+            <VerifyInformation />
         </Widget>
     )
 }
