@@ -235,22 +235,19 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                         </div>
                                     </DisableField>
                                     <DisableField disable={isExpired || !isPending}>
-                                        <div className="space-y-2">
-                                            <label className="text-main-secondary space-x-1 font-medium">
-                                                <span>Đơn tối thiểu</span>
-                                                <span className="text-xs text-gray-400">(đ)</span>
-                                            </label>
-                                            <FormikTextField.NumberInput
-                                                name="minOrderAmount"
-                                                placeholder="Ví dụ: áp dụng cho đơn từ 0đ"
-                                            />
-                                        </div>
+                                        <FormikTextField.CurrencyVNDInput
+                                            name="minOrderAmount"
+                                            labelClassName="text-main-secondary space-x-1 font-medium"
+                                            label="Đơn tối thiểu"
+                                            className="space-y-2"
+                                            placeholder="Ví dụ: áp dụng cho đơn từ 0đ"
+                                        />
                                     </DisableField>
                                     <hr className="col-span-2" />
                                     <DisableField disable={isExpired}>
                                         <div className="space-y-2">
                                             <label className="text-main-secondary font-medium">Số lượng</label>
-                                            <FormikTextField.Input
+                                            <FormikTextField.NumberInput
                                                 name="quantity"
                                                 placeholder="Ví dụ: số lượt sử dụng tối đa"
                                             />
@@ -259,7 +256,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     <DisableField disable={isExpired}>
                                         <div className="space-y-2">
                                             <label className="text-main-secondary font-medium">Số lượt sử dụng tối đa cho một người mua</label>
-                                            <FormikTextField.Input
+                                            <FormikTextField.NumberInput
                                                 name="maxUsesPerUser"
                                                 placeholder="Ví dụ: 1"
                                             />
@@ -268,13 +265,13 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                     {
                                         discountType === VOUCHER_TYPE.CASH ? (
                                             <DisableField disable={isExpired || !isPending}>
-                                                <div className="space-y-2">
-                                                    <label className="text-main-secondary font-medium">Mức giảm</label>
-                                                    <FormikTextField.Input
-                                                        name="value"
-                                                        placeholder="Ví dụ: 1000 đ"
-                                                    />
-                                                </div>
+                                                <FormikTextField.CurrencyVNDInput
+                                                    name="value"
+                                                    label="Mức giảm"
+                                                    labelClassName="text-main-secondary font-medium"
+                                                    className="space-y-2"
+                                                    placeholder="Ví dụ: 1000 đ"
+                                                />
                                             </DisableField>
                                         ) : null
                                     }
@@ -284,7 +281,7 @@ const VoucherModal: FC<VoucherModalProps> = ({ voucher }) => {
                                             discountType === VOUCHER_TYPE.PERCENT ? (
                                                 <div className="space-y-2">
                                                     <label className="text-main-secondary font-medium">Phần trăm</label>
-                                                    <FormikTextField.Input
+                                                    <FormikTextField.NumberInput
                                                         name="value"
                                                         placeholder="Ví dụ: 5%"
                                                     />

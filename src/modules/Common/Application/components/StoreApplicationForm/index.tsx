@@ -11,10 +11,12 @@ import { array, mixed, object, string } from "yup"
 
 
 const StoreApplicationForm: FC = () => {
+    console.log("STore");
+
     const navigate = useNavigate()
     const onSubmit = useCallback(async (values: object) => {
         const payload = {
-            type: APPLICATION_TYPE.CREATE_ORGANIZATION,
+            type: APPLICATION_TYPE.ADD_STORE,
             status: APPLICATION_STATUS.WAITING,
             jsonData: values
         }
