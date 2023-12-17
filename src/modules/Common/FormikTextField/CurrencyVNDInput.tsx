@@ -1,5 +1,5 @@
 import { useField } from "formik";
-import { isEmpty, isNumber } from "lodash";
+import { isEmpty, isNumber, isString } from "lodash";
 import { nanoid } from "nanoid";
 import { ChangeEvent, FC, useCallback, useEffect } from "react";
 import { toCurrency } from "utils/text";
@@ -28,7 +28,6 @@ const CurrencyVNDInput: FC<CurrencyVNDInputProps> = ({ className, labelClassName
             return
         }
 
-
         if (REGEX.textNumber.test(value)) {
             setValue(value)
         }
@@ -41,7 +40,7 @@ const CurrencyVNDInput: FC<CurrencyVNDInputProps> = ({ className, labelClassName
             <label key={nanoid()} className={labelClassName}>
                 <span>{label}</span>
                 {
-                    isNumber(value) ? (
+                    (isNumber(value) || (isString(value) && REGEX.number.test(value))) ? (
                         <span className="px-0.5 font-normal">({toCurrency(value)})</span>
                     ) : null
                 }
