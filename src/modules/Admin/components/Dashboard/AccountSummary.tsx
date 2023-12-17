@@ -1,4 +1,5 @@
-import { isEmpty } from 'lodash';
+import ROLE from 'enums/role';
+import { isArray, isEmpty } from 'lodash';
 import Loading from 'modules/Common/Loading';
 import NoResult from 'modules/Common/NoResult';
 import WidgetCard from 'modules/Common/WidgetCard';
@@ -24,13 +25,15 @@ const AccountSummary: FC<AccountSummaryProps> = ({ className }) => {
                     accounts: 0
                 }
                 const [partnerRequest, accountRequest] = await Promise.all([AdminPartnerService.search({ pagination: { offset: 10000, page: 1 } }), ManageAccountService.search({ pagination: { offset: 1000, page: 1 } })])
+
                 if (partnerRequest.status === 200 && !isEmpty(partnerRequest.body) && partnerRequest.body.statusCode === 200) {
                     const { results } = partnerRequest.body.data
                     data.partners = results.length
                 }
-                if (accountRequest.status === 200 && !isEmpty(accountRequest.body) && accountRequest.body.statusCode === 200) {
+
+                if (accountRequest.status === 200 && !isEmpty(accountRequest.body) && accountRequest.body.statusCode === 200 && isArray(accountRequest.body.data.results)) {
                     const { results } = accountRequest.body.data
-                    data.accounts = results.length
+                    data.accounts = results.filter(({ type }) => type === ROLE.CUSTOMER).length
                 }
 
                 setData(data)
@@ -100,7 +103,7 @@ const AccountSummary: FC<AccountSummaryProps> = ({ className }) => {
                                         </svg>
                                     </div>
                                     <div>
-                                        <p className='font-medium'>Tài khoản</p>
+                                        <p className='font-medium'>Khách hàng</p>
                                         <span className='text-xl font-medium'>{data.accounts}</span>
                                     </div>
                                 </div>
